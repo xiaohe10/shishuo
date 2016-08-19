@@ -62,8 +62,9 @@ if status == "error" means error
 
 
 1. 热门页面下的 师说录制的课程列表
-1. 热门页面下的 学生录制的课程列表
-2. 磨课的视频专区的课程列表
+2. 热门页面下的 学生录制的课程列表
+3. 磨课的视频专区的课程列表
+
 > * /lesson/list
 
 > * Input Parameters
