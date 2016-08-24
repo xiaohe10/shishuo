@@ -165,7 +165,7 @@ if status == "error" means error
 ##练习
 ###新建题目，并进行抽题
 上传题目信息，抽题时上传，暂时不传视频，录制视频之后再更新视频信息
-> * /lessons/create
+> * /lesson/create
 
 > * Input Parameters
 >> * userID:requested
