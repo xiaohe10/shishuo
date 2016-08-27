@@ -70,7 +70,7 @@ if status == "error" means error
 > * Input Parameters
 >> * userID:requested
 >> * token:requested
->> * type:requested type==0 代表师说的录制课程，type==1代表学生的热门视频, type==2 代表磨课的视频专区
+>> * type:optional type==0 代表师说的录制课程，type==1代表学生的热门视频, type==2 代表磨课的视频专区
 >> * pagestart:optional 分页开始，默认为 0，每次刷新10个
 
 > * Successful Return
@@ -170,10 +170,10 @@ if status == "error" means error
 > * Input Parameters
 >> * userID:requested
 >> * token:requested
->> * lessonType1:requested ` 0 代表教师资格证面试/ 1 代表是 教师招聘`
->> * lessonType2:requested `0：说课，1：片段教学，2：试教，3：结构化面试 4：答辩，5:结构化面试，6:试教`
->> * lessonLevel:requested: `学段：0:幼儿园，1：小学，2:初中, 3:高中`
->> * lessonSubject:requested: `学科: 0:语文, 1:数学,2:英语,3:物理,4:化学,5:生物,6:历史,7:地理,8:政治,9:体育,10:美术,11:信息技术,12:音乐,13其他`
+>> * lessonType1:optional ` 0 代表教师资格证面试/ 1 代表是 教师招聘`
+>> * lessonType2:optional `0：说课，1：片段教学，2：试教，3：结构化面试 4：答辩，5:结构化面试，6:试教`
+>> * lessonLevel:optional: `学段：0:幼儿园，1：小学，2:初中, 3:高中`
+>> * lessonSubject:optional: `学科: 0:语文, 1:数学,2:英语,3:物理,4:化学,5:生物,6:历史,7:地理,8:政治,9:体育,10:美术,11:信息技术,12:音乐,13其他`
 
 
 > * Successful Return
