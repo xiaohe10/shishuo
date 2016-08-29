@@ -64,15 +64,15 @@ router.post('/list', function(req, res) {
             res.json({status:'error','errcode':1});
             return;
         }
-        Lesson.find().limit(pagestart*10,10).sort({update:-1}).exec(function(err,lessons){
+        Lesson.find().limit(pagestart*10,10).sort({update:-1}).populate('user').exec(function(err,lessons){
             if (err)  {
                 res.json({status:'error','errcode':2});return;
             }
             else {
                 var lessons_serialize = [];
                 lessons.forEach(function(lesson){
-                    lessons_serialize.push({'lessonID':lesson.id,'videoID':lesson.videoID,'price':lesson.price,updated:lesson.updated,thumbnails:lesson.thumbnails,
-                                            'teacher':{'userID':lesson.user}})
+                    lessons_serialize.push({'lessonID':lesson.id,'videoID':lesson.videoID,'price':lesson.price,updated:lesson.updated,thumbnails:lesson.thumbnails,commentnums:"0",likenums:"0",description:lesson.description,
+                                            'teacher':{'teacherID':lesson.user._id,"avatar":lesson.user.avatar,"nickname":lesson.user.nickname}})
                 });
                 res.json({status:'success','lessons':lessons_serialize});
             }
@@ -94,7 +94,7 @@ router.post('/details', function(req, res) {
             res.json({status:'error','errcode':1});
             return;
         }
-        Lesson.findOne({_id:lessonID},function(err,lesson){
+        Lesson.findOne({_id:lessonID}).populate('user').exec(function(err,lesson){
             if (err)  {
                 res.json({status:'error','errcode':2});return;
             }
@@ -103,9 +103,10 @@ router.post('/details', function(req, res) {
                 return;
             }
             else {
-                res.json({status:'success','lessons':{'lessonID':lesson.id,'videoID':lesson.videoID,'price':lesson.price,updated:lesson.updated,thumbnails:lesson.thumbnails,'teacher':{'userID':lesson.user}}});
+                res.json({'lessonID':lesson.id,'videoID':lesson.videoID,'price':lesson.price,updated:lesson.updated,thumbnails:lesson.thumbnails,commentnums:"0",likenums:"0",description:lesson.description,
+                    'teacher':{'teacherID':lesson.user._id,"avatar":lesson.user.avatar,"nickname":lesson.user.nickname}});
             }
-        })
+        });
     });
 });
 
