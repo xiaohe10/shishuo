@@ -2,7 +2,7 @@
  * Created by t-hexiao on 2016/8/24.
  */
 var mongoose     = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/shishuo')
+mongoose.connect('mongodb://shishuo:hengaigaoke@hengaigaoke.com:27017/shishuo')
 var Schema       = mongoose.Schema;
 var bcrypt = require('bcryptjs');
 var SALT_WORK_FACTOR = 10;
@@ -13,7 +13,8 @@ var UserSchema   = new Schema({
     token: { type: String},
     type:{type:String,default:"student"},
     updated: { type: Date, default: Date.now },
-    avatar:{type:String,default:'/images/avatars/avatar_sample.jpg'}
+    avatar:{type:String,default:'/images/avatars/avatar_sample.jpg'},
+    nickname:{type:String,default:'老师'}
 });
 UserSchema.pre('save', function(next) {
     var user = this;

@@ -7,7 +7,7 @@ var User = require('./user');
 
 var LessonSchema   = new Schema({
     user: {type: Schema.Types.ObjectId, ref: 'User'},
-    description: { type: String},
+    description: { type: String,default:"课程描述"},
     videoID:{type:String,default:"0"},
     price:{ type: Number, min: 0, default: 0},
     updated: { type: Date, default: Date.now },

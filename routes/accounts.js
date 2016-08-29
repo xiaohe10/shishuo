@@ -14,6 +14,9 @@ router.post('/register', function(req, res) {
 router.post('/login',function(req,res){
   var telephone = req.body.telephone;
   var password = req.body.password;
+  if(telephone == "anonymous") {
+    res.json({status:'error','errcode':1});return;
+  }
   // fetch user and test password verification
   User.findOne({ telephone: telephone }, function(err, user) {
     if (err) {
