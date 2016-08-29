@@ -2,6 +2,11 @@
 ## 服务器信息
 **接口 :** http://hengaigaoke.com:8090
 
+**匿名用户：** 
+`userID:"57c46e700d21db303f349c55"`
+`token:"ea8a0d55e98afc5e06740e2f3a3e6a5af02f1d85daf5ede7e992dda00da0e8f7792dafead94174c1a39a057d9d01e34a6df6d47d9289e50ffa3e93420602a362"`
+
+
 
 
 ## 接口说明
