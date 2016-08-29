@@ -2,7 +2,8 @@
  * Created by t-hexiao on 2016/8/24.
  */
 var mongoose     = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/shishuo')
+//mongoose.connect('mongodb://localhost:27017/shishuo')
+mongoose.connect('mongodb://remote:hengaigaoke@localhost/violet');
 var Schema       = mongoose.Schema;
 var bcrypt = require('bcryptjs');
 var SALT_WORK_FACTOR = 10;
