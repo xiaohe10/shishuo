@@ -102,7 +102,7 @@ if status == "error" means error
 >> * lessonID:requested
 
 > * Successful Return
->> * {lessons:{lessonID,thumbnails,likenums,commentnums,price,description,teacher:{teacherID,avatar,nickname}},status}
+>> * {lessons:{lessonID,thumbnails,likenums,commentnums,price,videoID,description,teacher:{teacherID,avatar,nickname}},status}
 >> * thumbnails：课程缩略图，likenums：点赞数，commentnums:评论数，avatar:老师头像,description:课程描述,price:价格
 
 
@@ -113,7 +113,7 @@ if status == "error" means error
 > * example
 
 ```
-{"lessons":{"lessonID":"1001","thumbnails":"/media/lessons/thumbnails/1.jpg","likenums":"2000","commentnums":"10000",price:"5","description":"这是一个非常好的课程，请收听","teacher":{"teacherID":"1001","avatar":"/media/avatars/1.jpg","nickname":"张老师"}},"status":"success"}
+{"lessons":{"lessonID":"1001",videoID:"1002","thumbnails":"/media/lessons/thumbnails/1.jpg","likenums":"2000","commentnums":"10000",price:"5","description":"这是一个非常好的课程，请收听","teacher":{"teacherID":"1001","avatar":"/media/avatars/1.jpg","nickname":"张老师"}},"status":"success"}
 ```
 
 ##评论
