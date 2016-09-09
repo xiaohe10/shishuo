@@ -47,7 +47,7 @@ router.post('/startlive',function(req,res){
             res.json({status:'error','errcode':1});
             return;
         }
-        Lesson.update({_id:lessonID},{liveRoomID:liveRoomID,lessonID:lessonID,liveMeata:liveMeta,videoType:"live"},function(err,numberAffected, rawResponse) {
+        Lesson.update({_id:lessonID},{liveRoomID:liveRoomID,lessonID:lessonID,liveMeta:liveMeta,videoType:"live"},function(err,numberAffected, rawResponse) {
             if (err) {
                 res.json({status: 'error', 'errcode': 2});
                 return;

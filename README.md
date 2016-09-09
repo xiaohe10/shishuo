@@ -49,7 +49,7 @@ if status == "error" means error
 >> * telephone:requested
 >> * password:requested
 >> * invitecode:optional
->> * type:requested
+>> * type:requested （ type: "student"代表学生，"teacher" 代表教师）
 
 > * Successful Return
 >> * {user:{userID},status}
@@ -197,6 +197,35 @@ if status == "error" means error
 ```
 {"lessons":{"lessonID":"1001","question":{"questionID":"1001","questionContent":"请试讲荷塘月色"}}},"status":"success"}
 ```
+
+### 开始直播
+> * /lesson/startlive
+
+> * Input Parameters
+>> * userID:requested
+>> * token:requested
+>> * lessonID:requested
+>> * liveRoomID:requested  liveRoomID 为cc后台记录的视频ID，用来后续访问
+>> * thumbnails:optional 因为截图可能需要实时更新，截图接口后面再单独开接口上传吧
+>> * liveMeta:requested 直播元数据：包括老师用户的登陆账号和密码，学生用户的登陆账号和密码
+>> * price: optional 老师设置的课程价格，可为空
+
+
+> * Successful Return
+>> * {lessons:{lessonID},status}
+
+
+> * Error Return
+>> * errcode = 1: 权限认证错误，请重新登陆
+>> * errcode = 2: 课程号不存在
+>> * errcode = 3: 截图上传失败
+
+> * example
+
+```
+{"lessons":{"lessonID":"1001"},"status":"success"}
+```
+
 
 ###上传课程的视频、价格
 
