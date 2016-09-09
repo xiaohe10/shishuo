@@ -95,7 +95,7 @@ if status == "error" means error
 {"lessons":{"lessonID":"1001","thumbnails":"/media/lessons/thumbnails/1.jpg","likenums":"2000","commentnums":"10000",price:"5","description":"这是一个非常好的课程，请收听","teacher":{"teacherID":"1001","avatar":"/media/avatars/1.jpg","nickname":"张老师"}},"status":"success"}
 ```
 ###获取视频详情
-<del>视频下的评论通过获取评论接口统一获取</del>(直接获取了评论列表）
+(直接获取了评论列表）
 > * /lesson/details
 
 > * Input Parameters
@@ -116,20 +116,47 @@ if status == "error" means error
 > * example
 
 ```
-{"lessons":{"lessonID":"1001",videoID:"1002","thumbnails":"/media/lessons/thumbnails/1.jpg","likenums":"2000","commentnums":"10000","comments": [
+{
+  "status": "success",
+  "lesson": {
+    "lessonID": "57ca1145f418b4796909724f",
+    "price": 0,
+    "updated": "2016-09-02T23:54:45.645Z",
+    "description": "课程描述",
+    "thumbnails": "/images/lesson_thumbnails/sample.jpg",
+    "commentnums": "0",
+    "likenums": "0",
+    "comments": [
       {
         "_id": "57d2c7e0b64d1db00aa8400b",
         "replytoName": "xiaohe",
         "replyto": "57d2493a887881642e9fc237",
         "content": "这是一条评论",
         "type": "text"
+      },
+      {
+        "_id": "57d2cf9ab64d1db00aa8400f",
+        "replytoName": "xiaohe",
+        "replyto": "57d2493a887881642e9fc237",
+        "content": "这是一条评论",
+        "type": "text"
       }
-    ],price:"5","description":"这是一个非常好的课程，请收听","teacher":{"teacherID":"1001","avatar":"/media/avatars/1.jpg","nickname":"张老师"}},"status":"success"}
+    ],
+    "videoType": "record",
+    "liveRoomID": "0",
+    "liveMeta": "{teacherID:1,teacherToken:asdf,studentID:12,studentToken:asdf}",
+    "videoID": "0",
+    "teacher": {
+      "teacherID": "57c46e700d21db303f349c55",
+      "avatar": "/images/avatars/avatar_sample.jpg",
+      "nickname": "老师"
+    }
+  }
+}
 ```
 
 ###给课程评论
-<del>视频下的评论通过获取评论接口统一获取</del>(直接获取了评论列表）
-> * /lesson/details
+> * /lesson/comments/create
 
 > * Input Parameters
 >> * userID:requested
@@ -301,7 +328,7 @@ if status == "error" means error
 ```
 
 ### 给课程评论
-> * /news/comments/create
+> * /lesson/comments/create
 
 > * Input Parameters
 >> * userID:requested
