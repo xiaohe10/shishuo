@@ -4,7 +4,7 @@ var router = express.Router();
 var User = require('../models/user')
 
 router.post('/register', function(req, res) {
-  var user = new User({telephone:req.body.telephone,password:req.body.password});
+  var user = new User({telephone:req.body.telephone,password:req.body.password,type:req.body.type});
   user.save(function(err){
     if (err)  res.json({status:'error','errcode':1});
     else res.json({status:'success',user:{'userID':user.id}});
@@ -36,7 +36,7 @@ router.post('/login',function(req,res){
         user.token = token;
         user.save(function(err){
           if (err)  res.json({status:'error','errcode':0});
-          else res.json({status:'success','user':{'userID':user.id,"token":user.token}});
+          else res.json({status:'success','user':{'userID':user.id,"token":user.token,"type":user.type}});
         })
 
       }else{
