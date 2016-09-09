@@ -95,7 +95,7 @@ if status == "error" means error
 {"lessons":{"lessonID":"1001","thumbnails":"/media/lessons/thumbnails/1.jpg","likenums":"2000","commentnums":"10000",price:"5","description":"这是一个非常好的课程，请收听","teacher":{"teacherID":"1001","avatar":"/media/avatars/1.jpg","nickname":"张老师"}},"status":"success"}
 ```
 ###获取视频详情
-视频下的评论通过获取评论接口统一获取
+<del>视频下的评论通过获取评论接口统一获取</del>(直接获取了评论列表）
 > * /lesson/details
 
 > * Input Parameters
@@ -104,7 +104,7 @@ if status == "error" means error
 >> * lessonID:requested
 
 > * Successful Return
->> * {lesson:{lessonID,thumbnails,likenums,commentnums,price,videoID,videoType,liveRoomID,liveMeta,description,teacher:{teacherID,avatar,nickname}},status}
+>> * {lesson:{lessonID,thumbnails,likenums,commentnums,comments,price,videoID,videoType,liveRoomID,liveMeta,description,teacher:{teacherID,avatar,nickname}},status}
 >> * thumbnails：课程缩略图，likenums：点赞数，commentnums:评论数，avatar:老师头像,description:课程描述,price:价格
 >> * liveRoomID 直播间， videoType:record代表录播，live 代表直播,liveMeta:直播的老师和学生账号等（可以扩展或者都存成一个字符串）
 
@@ -116,11 +116,56 @@ if status == "error" means error
 > * example
 
 ```
-{"lessons":{"lessonID":"1001",videoID:"1002","thumbnails":"/media/lessons/thumbnails/1.jpg","likenums":"2000","commentnums":"10000",price:"5","description":"这是一个非常好的课程，请收听","teacher":{"teacherID":"1001","avatar":"/media/avatars/1.jpg","nickname":"张老师"}},"status":"success"}
+{"lessons":{"lessonID":"1001",videoID:"1002","thumbnails":"/media/lessons/thumbnails/1.jpg","likenums":"2000","commentnums":"10000","comments": [
+      {
+        "_id": "57d2c7e0b64d1db00aa8400b",
+        "replytoName": "xiaohe",
+        "replyto": "57d2493a887881642e9fc237",
+        "content": "这是一条评论",
+        "type": "text"
+      }
+    ],price:"5","description":"这是一个非常好的课程，请收听","teacher":{"teacherID":"1001","avatar":"/media/avatars/1.jpg","nickname":"张老师"}},"status":"success"}
 ```
 
+###给课程评论
+<del>视频下的评论通过获取评论接口统一获取</del>(直接获取了评论列表）
+> * /lesson/details
+
+> * Input Parameters
+>> * userID:requested
+>> * token:requested
+>> * lessonID:requested
+>> * content:requested 评论内容
+>> * type:requested 评论类型 text 代表 文本， sound 代表声音，用 base64 编码在content 表示
+>> * replyto: optional 回复给用户的 userID
+>> * replytoName: optional 回复给用户的userID
+
+> * Successful Return
+>> * {status,commentID,lessonID}
+
+
+> * Error Return
+>> * errcode = 1: 用户不存在
+>> * errcode = 2: 权限认证错误，请重新登陆
+>> * errcode = 3: 评论保存失败
+>> * errcode = 4: lessonID对应的课程不存在
+
+> * example
+
+```
+{
+  "status": "success",
+  "commentID": "57d2c7e0b64d1db00aa8400b",
+  "lessonID": "57ca1145f418b4796909724f"
+}
+```
+
+
+
+
 ##评论
-### 获取评论列表
+### <del>获取评论列表</del>  <font color=red>这个接口现在被弃用了</font>
+ 
 > * /comment/list
 
 > * Input Parameters
@@ -144,7 +189,7 @@ if status == "error" means error
 {"comment":{"commentID":"1001","commentContent":"做的非常好",user:{"userID":"12","nickname":"刘老师"}},"status":"success"}
 ```
 
-### 发表新评论
+### <del>发表新评论</del>  <font color=red>这个接口现在被弃用了</font>
 > * /comment/create
 
 > * Input Parameters
@@ -255,7 +300,66 @@ if status == "error" means error
 {"lessons":{"lessonID":"1001"},"status":"success"}
 ```
 
-###获取标准答案
+### 给课程评论
+> * /news/comments/create
+
+> * Input Parameters
+>> * userID:requested
+>> * token:requested
+>> * lessonID: requested
+>> * content: requested
+>> * type: requested
+>> * replyto: optional
+>> * replytoName:optional
+
+
+> * Successful Return
+>> * {lessonID,newsID,status}
+
+> * Error Return
+>> * errcode = 1: 权限认证错误，请重新登陆
+>> * errcode = 2: 获取答案
+
+> * example
+
+```
+{
+  "status": "success",
+  "lessonID": "57d2cf40b64d1db00aa8400e",
+  "newsID": "57d2ba2afe5081244697a5c0"
+}
+```
+
+### 给课程点赞
+
+> * /lesson/like
+
+> * Input Parameters
+>> * userID:requested
+>> * token:requested
+>> * lessonID: requested
+
+
+> * Successful Return
+>> * {lesson:{lessonID},status}
+
+> * Error Return
+>> * errcode = 1: 权限认证错误，请重新登陆
+>> * errcode = 2: 获取答案
+
+> * example
+
+```
+{
+  "status": "success",
+  "lesson": {
+    "lessonID": "57d2ce18b64d1db00aa8400d"
+  }
+}
+```
+
+
+###获取标准答案  <font color=green>暂时没实现</font>
 
 > * /lesson/getanswers
 
@@ -283,7 +387,8 @@ if status == "error" means error
 ###视频专区，获取视频列表：
 见 热门页面 >获取课程列表:
 
-###直播专区，获取直播列表
+###<del>直播专区，获取直播列表</del>
+<font color="red">(暂时被弃用，直播和课程合并在一起）</font>
 
 > * /live/list
 
@@ -310,8 +415,8 @@ if status == "error" means error
 
 ## 部落
 ###获取部落 新动态
-评论通过专门的评论列表获取
-> * /community/news/list
+
+> * /news/list
 
 > * Input Parameters
 >> * userID:requested
@@ -320,8 +425,8 @@ if status == "error" means error
 
 
 > * Successful Return
->> * {news:{newsID,images,newscontent,likenums,commentnums,user:{userID,avatar,nickname}},likeusers:{userID,nickname},status}
->> * images：动态图片列表，newscontent：动态内容，likenums：点赞数，commentnums:评论数，avatar:老师头像,likeusers:点赞用户
+>> * {newses:{newsID,images,likenums,likeusers:[{userID,nickname}]，commentnums,comments:[{_id,type,content,replytoName,replyto}],updated,user:{userID,avatar,nickname}},status}
+>> * images 可以为空数组，comments中的 replyto 和 replytoName 如果没有回复则不存在该字段
 
 > * Error Return
 >> * errcode = 1: 权限认证错误，请重新登陆
@@ -330,23 +435,56 @@ if status == "error" means error
 > * example
 
 ```
-{"news":{"newsID":"1001","images":{"/image/1.jpg","image/2.jpg"},"likenums":"2000","commentnums":"10000","user":{"userID":"1001","avatar":"/media/avatars/1.jpg","nickname":"张老师"},likeusers:{userID,nickname},"status":"success"}
+{
+  "status": "success",
+  "newses": [
+    {
+      "newsID": "57d2ba2afe5081244697a5c0",
+      "updated": "2016-09-09T13:33:30.270Z",
+      "commentnums": 0,
+      "likenums": 0,
+      "likeusers": [],
+      "images": [
+        "image1",
+        "image2"
+      ],
+      "comments": [
+        {
+          "_id": "57d2bae8ad9f885028699a1d",
+          "content": "这是一条评论",
+          "type": "text"
+        },
+        {
+          "_id": "57d2bb55e9915fdc1ee1a91f",
+          "replytoName": "xiaohe",
+          "replyto": "57d2493a887881642e9fc237",
+          "content": "这是一条评论",
+          "type": "text"
+        }
+      ],
+      "user": {
+        "userID": "57d2493a887881642e9fc237",
+        "avatar": "/images/avatars/avatar_sample.jpg",
+        "nickname": "老师"
+      }
+    }
+  ]
+}
 ```
 
 ###发表一条新动态
 
-> * /community/news/create
+> * /news/create
 
 > * Input Parameters
 >> * userID:requested
 >> * token:requested
->> * newscontent: 动态内容
->> * images:动态图片列表
+>> * content: requested 动态内容
+>> * images:requested 动态图片列表，是一个数组，如果没有图片则不用传或者为空
 
 
 > * Successful Return
->> * {news:{newsID,images,newscontent,likenums,commentnums,user:{userID,avatar,nickname}},likeusers:{userID,nickname},status}
->> * images：动态图片列表，newscontent：动态内容，likenums：点赞数，commentnums:评论数，avatar:老师头像,likeusers:点赞用户
+>> * {news:{newsID},status}
 
 > * Error Return
 >> * errcode = 1: 权限认证错误，请重新登陆
@@ -355,35 +493,132 @@ if status == "error" means error
 > * example
 
 ```
-{"news":{"newsID":"1001","images":{"/image/1.jpg","image/2.jpg"},"likenums":"2000","commentnums":"10000","user":{"userID":"1001","avatar":"/media/avatars/1.jpg","nickname":"张老师"},likeusers:{userID,nickname},"status":"success"}
+{
+  "status": "success",
+  "news": {
+    "newsID": "57d2ce18b64d1db00aa8400d"
+  }
+}
 ```
 
-## 消息
 
-### 获取当前动态
->* /notify/list
+### 给朋友圈点赞
+
+> * /news/like
+
 > * Input Parameters
 >> * userID:requested
 >> * token:requested
+>> * newsID: requested
 
 
 > * Successful Return
->> * {notify:{notifyID,content,type},status}
->> * type: 0: 新的评论， 1: 新的赞， 2: 新的购买
+>> * {news:{newsID},status}
 
 > * Error Return
 >> * errcode = 1: 权限认证错误，请重新登陆
+>> * errcode = 2: 获取答案
 
 > * example
 
 ```
-{"notify":{"notifyID":"1001","content":"有人赞了您的课程荷塘月色","type":"1"},"status":"success"}
+{
+  "status": "success",
+  "news": {
+    "newsID": "57d2ce18b64d1db00aa8400d"
+  }
+}
 ```
 
-##教师端
-###发布课程，见 "上传课程的视频、价格" 接口
 
-###开始直播
+### 给朋友圈评论
+> * /news/comments/create
+
+> * Input Parameters
+>> * userID:requested
+>> * token:requested
+>> * newsID: requested
+>> * content: requested
+>> * type: requested
+>> * replyto: optional
+>> * replytoName:optional
+
+
+> * Successful Return
+>> * {commentID,newsID,status}
+
+> * Error Return
+>> * errcode = 1: 权限认证错误，请重新登陆
+>> * errcode = 2: 获取答案
+
+> * example
+
+```
+{
+  "status": "success",
+  "commentID": "57d2cf40b64d1db00aa8400e",
+  "newsID": "57d2ba2afe5081244697a5c0"
+}
+```
+
+
+##支付课程
+### 支付
+> * /pay/create
+
+> * Input Parameters
+>> * userID:requested
+>> * token:requested
+>> * lessonID: requested
+
+
+> * Successful Return
+>> * {status}
+
+> * Error Return
+>> * errcode = 1: 权限认证错误，请重新登陆
+>> * errcode = 2: 获取答案
+
+> * example
+
+```
+{
+  "status": "success"
+}
+```
+### 查看某个用户是否已经支付某个课程
+> * /pay/create
+
+> * Input Parameters
+>> * userID:requested
+>> * token:requested
+>> * lessonID: requested
+
+
+> * Successful Return
+>> * {status}
+
+> * Error Return
+>> * errcode = 1: 权限认证错误，请重新登陆
+>> * errcode = 2: 获取答案
+>> * errcode = 3：获取状态失败
+>> * errcode = 4: 没有支付过
+
+> * example
+
+```
+{
+  "status": "success"
+}
+```
+
+
+##教师端
+###发布课程，
+见 "上传课程的视频、价格" 接口
+
+###<del>开始直播</del>
+<font color="red">(暂时被弃用，直播和课程合并在一起）</font>
 > * /live/create
 
 > * Input Parameters
@@ -407,3 +642,25 @@ if status == "error" means error
 {"live":{"liveID":"1001},"status":"success"}
 ```
 
+
+## 消息
+
+### 获取当前动态(尚未开放）
+>* /notify/list
+> * Input Parameters
+>> * userID:requested
+>> * token:requested
+
+
+> * Successful Return
+>> * {notify:{notifyID,content,type},status}
+>> * type: 0: 新的评论， 1: 新的赞， 2: 新的购买
+
+> * Error Return
+>> * errcode = 1: 权限认证错误，请重新登陆
+
+> * example
+
+```
+{"notify":{"notifyID":"1001","content":"有人赞了您的课程荷塘月色","type":"1"},"status":"success"}
+```

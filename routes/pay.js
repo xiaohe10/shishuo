@@ -67,7 +67,12 @@ router.post('/paid', function(req, res) {
                 res.json({status:'error','errcode':3});return;
             }else{
                 //already pay
-                res.json({status:'success'});
+                if(!!pay){
+                    res.json({status:'success'});
+                }else{
+                    res.json({status:'error','errcode':4});return;
+                }
+
             }
         })
 

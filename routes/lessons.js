@@ -141,6 +141,26 @@ router.post('/details', function(req, res) {
     });
 });
 
+router.post('/like',function(req,res){
+    userID = req.body.userID;
+    usertoken = req.body.token;
+    lessonID = req.body.lessonID;
+    User.findOne({ _id: userID,token:usertoken }, function(err, user) {
+        if (err) {
+            res.json({status:'error','errcode':2});return;
+        }
+        if(!user){
+            res.json({status:'error','errcode':1});
+            return;
+        }
+        Lesson.update({_id:lessonID},{$push:{likeusers:userID}},function(err,numberAffected, rawResponse) {
+            if (err) {
+                res.json({status: 'error', 'errcode': 2});
+                return;
+            }else res.json({status:'success','lesson':{'lessonID':lessonID}});
+        });
+    });
+})
 router.post('/comments/create',function(req,res){
     userID = req.body.userID;
     usertoken = req.body.token;

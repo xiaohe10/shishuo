@@ -28,7 +28,7 @@ router.post('/create', function(req, res) {
         news.content = content;
         news.save(function(err){
             if (err)  {
-                res.json({status:'error','errcode':2});return;
+                res.json({status:'error','errcode':3});return;
             }
             else res.json({status:'success','news':{'newsID':news._id,}});
         })
