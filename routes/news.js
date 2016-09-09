@@ -7,6 +7,7 @@ var router = express.Router();
 
 var User = require('../models/user')
 var News = require('../models/news')
+var Comment = require('../models/comment')
 
 router.post('/create', function(req, res) {
     userID = req.body.userID;
@@ -48,7 +49,7 @@ router.post('/list', function(req, res) {
             res.json({status:'error','errcode':1});
             return;
         }
-        News.find().limit(pagestart*10,10).sort({update:-1}).populate('user').populate('likeusers','_id nickname').exec(function(err,newses){
+        News.find().limit(pagestart*10,10).sort({update:-1}).populate('user').populate('likeusers','_id nickname').populate('comments','_id type content replyto replytoName').exec(function(err,newses){
             if (err)  {
                 res.json({status:'error','errcode':2});return;
             }
@@ -61,6 +62,7 @@ router.post('/list', function(req, res) {
                         user:{userID:news.user._id,avatar:news.user.avatar,nickname:news.user.nickname}})
                 });
                 res.json({status:'success','newses':news_serialize});
+
             }
         })
     });
@@ -84,6 +86,49 @@ router.post('/like',function(req,res){
                 return;
             }else res.json({status:'success','news':{'news':newsID}});
         });
+    });
+})
+
+router.post('/comments/create',function(req,res){
+    userID = req.body.userID;
+    usertoken = req.body.token;
+    newsID = req.body.newsID;
+
+    content = req.body.content;
+    type = req.body.type;
+
+    User.findOne({ _id: userID,token:usertoken }, function(err, user) {
+        if (err) {
+            res.json({status:'error','errcode':2});return;
+        }
+        if(!user){
+            res.json({status:'error','errcode':1});
+            return;
+        }
+        comment = new Comment();
+        comment.content = content;
+        comment.type = type;
+        if(!!(req.body.replyto)) {
+            comment.replyto = req.body.replyto;
+        }
+        if(!!(req.body.replytoName)) {
+            comment.replytoName = req.body.replytoName;
+        }
+        comment.user = user;
+
+        comment.save(function(err) {
+            if (err) {
+                res.json({status: 'error', 'errcode': 3});
+                return;
+            }
+            News.update({_id:newsID},{$push:{comments:comment._id}},function(err,numberAffected, rawResponse) {
+                if (err) {
+                    res.json({status: 'error', 'errcode': 4});
+                    return;
+                }else res.json({status:'success','commentID':comment._id,'newsID':newsID});
+            });
+        });
+
     });
 })
 

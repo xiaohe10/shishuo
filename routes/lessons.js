@@ -7,6 +7,7 @@ var router = express.Router();
 var User = require('../models/user')
 var Lesson = require('../models/lesson')
 var Question = require('../models/question')
+var Comment = require('../models/comment')
 
 router.post('/create', function(req, res) {
     userID = req.body.userID;
@@ -122,7 +123,7 @@ router.post('/details', function(req, res) {
             res.json({status:'error','errcode':1});
             return;
         }
-        Lesson.findOne({_id:lessonID}).populate('user').exec(function(err,lesson){
+        Lesson.findOne({_id:lessonID}).populate('user').populate('comments','_id type content replyto replytoName').exec(function(err,lesson){
             if (err)  {
                 res.json({status:'error','errcode':2});return;
             }
@@ -132,7 +133,7 @@ router.post('/details', function(req, res) {
             }
             else {
                 res.json({status:'success',lesson:{lessonID:lesson.id,price:lesson.price,updated:lesson.updated,description:lesson.description,
-                    thumbnails:lesson.thumbnails,commentnums:"0",likenums:"0",
+                    thumbnails:lesson.thumbnails,commentnums:"0",likenums:"0",comments:lesson.comments,
                     videoType:lesson.videoType,liveRoomID:lesson.liveRoomID,liveMeta:lesson.liveMeta,videoID:lesson.videoID,
                     teacher:{teacherID:lesson.user._id,avatar:lesson.user.avatar,nickname:lesson.user.nickname}}});
             }
@@ -140,5 +141,47 @@ router.post('/details', function(req, res) {
     });
 });
 
+router.post('/comments/create',function(req,res){
+    userID = req.body.userID;
+    usertoken = req.body.token;
+    lessonID = req.body.lessonID;
+
+    content = req.body.content;
+    type = req.body.type;
+
+    User.findOne({ _id: userID,token:usertoken }, function(err, user) {
+        if (err) {
+            res.json({status:'error','errcode':2});return;
+        }
+        if(!user){
+            res.json({status:'error','errcode':1});
+            return;
+        }
+        comment = new Comment();
+        comment.content = content;
+        comment.type = type;
+        if(!!(req.body.replyto)) {
+            comment.replyto = req.body.replyto;
+        }
+        if(!!(req.body.replytoName)) {
+            comment.replytoName = req.body.replytoName;
+        }
+        comment.user = user;
+
+        comment.save(function(err) {
+            if (err) {
+                res.json({status: 'error', 'errcode': 3});
+                return;
+            }
+            Lesson.update({_id:lessonID},{$push:{comments:comment._id}},function(err,numberAffected, rawResponse) {
+                if (err) {
+                    res.json({status: 'error', 'errcode': 4});
+                    return;
+                }else res.json({status:'success','commentID':comment._id,'lessonID':lessonID});
+            });
+        });
+
+    });
+})
 
 module.exports = router;
