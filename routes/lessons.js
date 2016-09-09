@@ -103,8 +103,8 @@ router.post('/details', function(req, res) {
                 return;
             }
             else {
-                res.json({'lessonID':lesson.id,'videoID':lesson.videoID,'price':lesson.price,updated:lesson.updated,thumbnails:lesson.thumbnails,commentnums:"0",likenums:"0",description:lesson.description,
-                    'teacher':{'teacherID':lesson.user._id,"avatar":lesson.user.avatar,"nickname":lesson.user.nickname}});
+                res.json({status:'success',lesson:{'lessonID':lesson.id,'videoID':lesson.videoID,'price':lesson.price,updated:lesson.updated,thumbnails:lesson.thumbnails,commentnums:"0",likenums:"0",description:lesson.description,
+                    'teacher':{'teacherID':lesson.user._id,"avatar":lesson.user.avatar,"nickname":lesson.user.nickname}}});
             }
         });
     });
