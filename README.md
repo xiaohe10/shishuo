@@ -29,7 +29,8 @@ if status == "error" means error
 >> * password:requested
 
 > * Successful Return
->> * {user:{userID,token},status}
+>> * {user:{userID,token,type},status}
+>> * type: "student"代表学生，"teacher" 代表教师
 
 > * Error Return
 >> * errcode = 1: 账号不存在
@@ -38,7 +39,7 @@ if status == "error" means error
 > * example
 
 ```
-{"user":{"userID":"1001","token":"48133892c5ade1235b69458ebcec8818"},"status":"success"}
+{"user":{"userID":"1001","token":"48133892c5ade1235b69458ebcec8818","type":"student"},"status":"success"}
 ```
 
 ### 用户注册
@@ -48,6 +49,7 @@ if status == "error" means error
 >> * telephone:requested
 >> * password:requested
 >> * invitecode:optional
+>> * type:requested
 
 > * Successful Return
 >> * {user:{userID},status}
@@ -102,8 +104,9 @@ if status == "error" means error
 >> * lessonID:requested
 
 > * Successful Return
->> * {lessons:{lessonID,thumbnails,likenums,commentnums,price,videoID,description,teacher:{teacherID,avatar,nickname}},status}
+>> * {lesson:{lessonID,thumbnails,likenums,commentnums,price,videoID,videoType,liveRoomID,liveMeta,description,teacher:{teacherID,avatar,nickname}},status}
 >> * thumbnails：课程缩略图，likenums：点赞数，commentnums:评论数，avatar:老师头像,description:课程描述,price:价格
+>> * liveRoomID 直播间， videoType:record代表录播，live 代表直播,liveMeta:直播的老师和学生账号等（可以扩展或者都存成一个字符串）
 
 
 > * Error Return
