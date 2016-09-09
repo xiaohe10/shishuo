@@ -20,6 +20,10 @@ var LessonSchema   = new Schema({
     updated: { type: Date, default: Date.now },
     likenums:{type: Number, min: 0, default: 0},
     commentnums:{type:Number,min:0,default:0},
+
+    comments:[{type: Schema.Types.ObjectId, ref: 'Comment'}],
+
+    updated: { type: Date, default: Date.now },
     thumbnails:{type:String,default:'/images/lesson_thumbnails/sample.jpg'},
 
     question:{type:Schema.Types.ObjectId,ref:"Question"}

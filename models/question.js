@@ -12,7 +12,8 @@ var QuestionSchema   = new Schema({
     lessonType2:{ type: String,default:"说课，片段教学"},
     lessonLevel:{type:String,default:"小学"},
     lessonSubject:{type:String,default:"语文"},
-    content: { type: String,default:"问题描述：荷塘月色"}
+    content: { type: String,default:"问题描述：荷塘月色"},
+    updated: { type: Date, default: Date.now }
 });
 
 module.exports = mongoose.model('Question', QuestionSchema);
