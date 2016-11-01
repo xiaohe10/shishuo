@@ -198,7 +198,21 @@ router.post('/comments/create',function(req,res){
                 if (err) {
                     res.json({status: 'error', 'errcode': 4});
                     return;
-                }else res.json({status:'success','commentID':comment._id,'lessonID':lessonID});
+                }else 
+                {
+                    Comment.findOne({_id:comment._id}).populate('user').exec(function(err,comment){
+                    if (err)  {
+                            res.json({status:'error','errcode':2});return;
+                    }
+                    if(!comment){
+                        res.json({status:'error','errcode':2});
+                        return;
+                    }
+                    else {
+                        res.json({status:'success','commentID':comment._id,'commentfrom':comment.user.nickname,'commentUserAvatar':comment.user.avatar,'updated':comment.updated,'lessonID':lessonID});
+                    }
+                    });
+                }
             });
         });
 
