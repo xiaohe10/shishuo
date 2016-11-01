@@ -56,7 +56,7 @@ router.post('/list', function(req, res) {
             else {
                 var news_serialize = [];
                 newses.forEach(function(news){
-                    news_serialize.push({newsID:news._id,updated:news.updated,commentnums:news.commentnums,likenums:news.likenums,
+                    news_serialize.push({newsID:news._id,updated:news.updated,content:news.content,commentnums:news.commentnums,likenums:news.likenums,
                         likeusers:news.likeusers,images:news.images,
                         comments:news.comments,
                         user:{userID:news.user._id,avatar:news.user.avatar,nickname:news.user.nickname}})
@@ -125,7 +125,21 @@ router.post('/comments/create',function(req,res){
                 if (err) {
                     res.json({status: 'error', 'errcode': 4});
                     return;
-                }else res.json({status:'success','commentID':comment._id,'newsID':newsID});
+                }else 
+                {
+                    Comment.findOne({_id:comment._id}).populate('user').exec(function(err,comment){
+                        if (err)  {
+                            res.json({status:'error','errcode':2});return;
+                        }
+                        if(!comment){
+                            res.json({status:'error','errcode':2});
+                            return;
+                        }
+                        else {
+                            res.json({status:'success','commentID':comment._id,'commentfrom':comment.user.nickname,'commentUserAvatar':comment.user.avatar,'updated':comment.updated,'newsID':newsID});
+                        }
+                    });
+                }
             });
         });
 
