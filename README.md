@@ -70,6 +70,32 @@ if status == "error" means error
 {"user":{"userID":"1001"},"status":"success"}
 ```
 
+
+### 用户修改密码
+> * /accounts/changepassword
+
+> * Input Parameters
+>> * telephone:requested
+>> * password:requested
+>> * newpassword:requested
+>> * re_newpassword:requested
+>> * userID:requested
+>> * invitecode:optional
+>> * type:requested （ type: "student"代表学生，"teacher" 代表教师）
+
+> * Successful Return
+>> * {status,user:{userID}}
+
+> * Error Return
+>> * errcode = 1: 此手机号已经注册
+>> * errcode = 2: 密码不正确或两次输入新密码不同
+
+> * example
+
+```
+{"status":"success","user":{"userID":"1001"}}
+```
+
 ## 热门页面
 ###获取课程列表:
 
