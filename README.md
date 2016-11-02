@@ -80,7 +80,6 @@ if status == "error" means error
 >> * newpassword:requested
 >> * re_newpassword:requested
 >> * userID:requested
->> * invitecode:optional
 >> * type:requested （ type: "student"代表学生，"teacher" 代表教师）
 
 > * Successful Return
@@ -95,6 +94,28 @@ if status == "error" means error
 ```
 {"status":"success","user":{"userID":"1001"}}
 ```
+
+### 注销登录
+> * /accounts/logout
+
+> * Input Parameters
+>> * userID:requested
+>> * token:requested
+>> * type:requested （ type: "student"代表学生，"teacher" 代表教师）
+
+> * Successful Return
+>> * {status,user:{userID，token}}
+
+> * Error Return
+>> * errcode = 1: 用户登录信息错误
+>> * errcode = 2: 函数调用异常
+
+> * example
+
+```
+{"status":"success","user":{"userID":"1001","token":"e59cc2dfab213b4cd1d3b562bdc22e56ad26556034539e01742a5c81396af613abd2f7ce75577e724b15e46af0ce6894c4dff0f2ca4c24bf6bd636290d161499"}}
+
+
 
 ## 热门页面
 ###获取课程列表:
