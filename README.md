@@ -114,7 +114,7 @@ if status == "error" means error
 
 ```
 {"status":"success","user":{"userID":"1001","token":"e59cc2dfab213b4cd1d3b562bdc22e56ad26556034539e01742a5c81396af613abd2f7ce75577e724b15e46af0ce6894c4dff0f2ca4c24bf6bd636290d161499"}}
-
+```
 
 
 ## 热门页面
