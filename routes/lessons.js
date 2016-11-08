@@ -12,6 +12,8 @@ var Comment = require('../models/comment')
 router.post('/create', function(req, res) {
     userID = req.body.userID;
     token = req.body.token;
+    lessonlevel = req.body.lessonlevel;
+    lessonsubject = req.body.lessonsubject;
     User.findOne({ _id: userID,token:token }, function(err, user) {
         if (err) {
             res.json({status:'error','errcode':2});return;
@@ -20,6 +22,8 @@ router.post('/create', function(req, res) {
             res.json({status:'error','errcode':1});
             return;
         }
+        // Question.find({lessonLevel:lessonlevel}).count();
+        // console.log(count);
         Question.findOne({},function(err,question){
             lesson = new Lesson();
             lesson.user = user;
@@ -34,6 +38,7 @@ router.post('/create', function(req, res) {
 
     });
 });
+
 router.post('/startlive',function(req,res){
     userID = req.body.userID;
     token = req.body.token;
@@ -91,7 +96,7 @@ router.post('/list', function(req, res) {
             res.json({status:'error','errcode':1});
             return;
         }
-        Lesson.find().limit(pagestart*10,10).sort({update:-1}).populate('user').exec(function(err,lessons){
+        Lesson.find().limit(pagestart*10,10).sort({updated:-1}).populate('user').exec(function(err,lessons){
             if (err)  {
                 res.json({status:'error','errcode':2});return;
             }
