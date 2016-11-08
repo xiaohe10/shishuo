@@ -11,6 +11,7 @@ var lessons = require('./routes/lessons');
 var questions = require('./routes/question');
 var news = require('./routes/news');
 var pay = require('./routes/pay');
+var bill = require('./routes/bill');
 
 var app = express();
 
@@ -32,6 +33,7 @@ app.use('/lesson', lessons);
 app.use('/question',questions);
 app.use('/news',news);
 app.use('/pay',pay);
+app.use('/bill',bill);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

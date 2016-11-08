@@ -1,4 +1,15 @@
 # 师说 API 文档
+
+1108更新说明：
+>* 1. 用户登录时返回添加了用户头像字段 
+>* 2. 增加了用户修改头像接口/accounts/changeavatar 
+>* 3. 数据库新建账单表bill
+>* 4. 后台添加账单创建/bill/create、收入支出记录显示/bill/list接口
+
+1102更新说明：
+>*  添加了/accounts/changepassword修改密码、/accounts/logout注销登录接口 
+
+
 更新说明：
 >* 1. 添加了 部落消息、支付接口 
 >* 2. 课程、部落消息的 点赞和评论接口 
@@ -114,6 +125,98 @@ if status == "error" means error
 
 ```
 {"status":"success","user":{"userID":"1001","token":"e59cc2dfab213b4cd1d3b562bdc22e56ad26556034539e01742a5c81396af613abd2f7ce75577e724b15e46af0ce6894c4dff0f2ca4c24bf6bd636290d161499"}}
+```
+
+### 修改头像
+> * /accounts/changeavatar
+
+> * Input Parameters
+>> * userID:requested
+>> * token:requested
+>> * file.name:requested
+>> * file.path:requested
+>> * type:requested （ type: "student"代表学生，"teacher" 代表教师）
+
+> * Successful Return
+>> * {status,user:{userID，userAvatar}}
+
+> * Error Return
+>> * errcode = 1: 用户登录信息错误
+>> * errcode = 2: 函数调用异常
+
+> * example
+
+```
+{"status":"success","user":{"userID":"1001","userAvatar":"/images/avatars/avatar_sample.jpg"}}
+```
+
+## 账单信息
+
+###创建账单
+
+
+1.购买课程时创建创建账单
+2.自己上传的课程被别人购买时创建账单
+
+
+> * /bill/create
+> 
+> * Input Parameters
+>> * userID:requested
+>> * token:requested
+>> * money:requested
+>> * isout:requested
+>> * description:requested
+
+
+> * Successful Return
+>> * {status,bill:{billID,owner,money,isout,description}}
+
+> * Error Return
+>> * errcode = 1: 用户登录信息错误
+>> * errcode = 2: 函数调用异常
+
+> * example
+
+```
+{"status":"success","bill":{"billID":"1001","owner":"100","money":10,"isout":true,"description":"这是一条账单"}}
+```
+
+###展示账单
+
+> * /bill/list
+> 
+> * Input Parameters
+>> * userID:requested
+>> * token:requested
+>> * pagestart:requested
+
+
+> * Successful Return
+>> * {status,bills:[{billID,money,updated,description,isout,owner:{ownerID,avatar,nickname}}]}
+
+> * Error Return
+>> * errcode = 1: 用户登录信息错误
+>> * errcode = 2: 函数调用异常
+
+> * example
+
+```
+{"status":"success","bills":[
+    {
+      "billID": "1001",
+      "money": 5,
+      "updated": "2016-11-08T07:09:10.216Z",
+      "description": "这是一条新建账单",
+      "isout": true,
+      "owner": {
+        "ownerID": "1001",
+        "avatar": "/images/avatars/a44a3fd0-a258-11e6-818d-3db40fa2e94b.jpg",
+        "nickname": "老师"
+      }
+    },
+	....
+}
 ```
 
 
