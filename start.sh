@@ -1,1 +1,1 @@
-forever start --uid 'shishuo' bin/www
+forever start --append --uid 'shishuo' bin/www

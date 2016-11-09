@@ -107,6 +107,7 @@ router.post('/list', function(req, res) {
                                             thumbnails:lesson.thumbnails,commentnums:"0",likenums:"0",
                                             teacher:{teacherID:lesson.user._id,avatar:lesson.user.avatar,nickname:lesson.user.nickname}})
                 });
+				//console.log(lessons_serialize);
                 res.json({status:'success','lessons':lessons_serialize});
             }
         })
