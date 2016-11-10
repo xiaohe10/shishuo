@@ -1,7 +1,7 @@
 # 师说 API 文档
 
 1109更新说明：
->* 1. 数据库新建账单表announcement
+>* 1. 数据库新建公告表announcement
 >* 2. 后台添加发布课程公告/announcement/create、公告查询显示/announcement/list接口
 
 1108更新说明：
