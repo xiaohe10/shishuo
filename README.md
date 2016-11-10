@@ -1,5 +1,9 @@
 # 师说 API 文档
 
+1109更新说明：
+>* 1. 数据库新建账单表announcement
+>* 2. 后台添加发布课程公告/announcement/create、公告查询显示/announcement/list接口
+
 1108更新说明：
 >* 1. 用户登录时返回添加了用户头像字段 
 >* 2. 增加了用户修改头像接口/accounts/changeavatar 
@@ -216,6 +220,88 @@ if status == "error" means error
       }
     },
 	....
+}
+```
+
+
+## 课程公告
+
+###创建(发布)课程公告
+
+
+> * /announcement/create
+> 
+> * Input Parameters
+>> * userID:requested
+>> * token:requested
+>> * classtimestart:requested(开课时间)
+>> * classtimeend:requested(结课时间)
+>> * classtime:requested(上课时间)
+>> * money:requested
+>> * liveaddress:requested
+>> * limit:requested(限制人数)
+>> * description:requested
+>> * expirydate:requested(报名截止日期)
+>> * classhours:requested(学时数)
+
+
+> * Successful Return
+>> * {status,announcement:{announcementID,classtimestart,classtime}}
+
+> * Error Return
+>> * errcode = 1: 用户登录信息错误
+>> * errcode = 2: 函数调用异常
+
+> * example
+
+```
+{"status":"success","announcement": {"announcementID":"5822c9e584133412f82493da","classtimestart":"2016-10-12T00:00:00.000Z","classtime":"2016-10-12T03:22:00.000Z"
+  }}
+```
+
+###显示课程公告
+
+> * /announcement/list
+> 
+> * Input Parameters
+>> * userID:requested
+>> * token:requested
+>> * pagestart:requested
+
+
+> * Successful Return
+>> * {status,announcements:[{announcementID,classtimestart,classtimeend,classtime,liveaddress,limit,updated,classhours,,expirydate,description,money,user:{userID,avatar,nickname}}]}
+
+> * Error Return
+>> * errcode = 1: 用户登录信息错误
+>> * errcode = 2: 函数调用异常
+
+> * example
+
+```
+{
+  "status": "success",
+  "announcements": [
+    {
+      "announcementID": "5822c9e584133412f82493da",
+      "classtimestart": "2016-10-12T00:00:00.000Z",
+      "classtimeend": "2016-11-22T00:00:00.000Z",
+      "classtime": "2016-10-12T03:22:00.000Z",
+      "liveaddress": "www.zhibodizhi.com",
+      "limit": 80,
+      "updated": "2016-11-09T07:01:57.540Z",
+      "classhours": 12,
+      "expirydate": "2016-10-22T00:00:00.000Z",
+      "description": "这是一条公告",
+      "money": 20,
+      "user": {
+        "userID": "580f259bd424e61ec043beb0",
+        "avatar": "/images/avatars/a44a3fd0-a258-11e6-818d-3db40fa2e94b.jpg",
+        "nickname": "老师"
+      }
+    }
+	...
+  ]
 }
 ```
 
