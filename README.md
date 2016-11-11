@@ -1,5 +1,8 @@
 # 师说 API 文档
 
+1111更新说明：
+>* 1. 部落动态和视频详情的评论部分接口添加返回字段
+
 1109更新说明：
 >* 1. 数据库新建公告表announcement
 >* 2. 后台添加发布课程公告/announcement/create、公告查询显示/announcement/list接口
@@ -410,7 +413,7 @@ if status == "error" means error
 >> * replytoName: optional 回复给用户的userID
 
 > * Successful Return
->> * {status,commentID,lessonID}
+>> * {status,commentID,commentfrom,commentUserAvatar,lessonID}
 
 
 > * Error Return
@@ -424,7 +427,10 @@ if status == "error" means error
 ```
 {
   "status": "success",
-  "commentID": "57d2c7e0b64d1db00aa8400b",
+  "commentID": "582534c798d7b60e00a36cd1",
+  "commentfrom": "老师",
+  "commentUserAvatar": "/images/avatars/a44a3fd0-a258-11e6-818d-3db40fa2e94b.jpg",
+  "updated": "2016-11-11T03:02:31.848Z",
   "lessonID": "57ca1145f418b4796909724f"
 }
 ```
@@ -583,7 +589,7 @@ if status == "error" means error
 
 
 > * Successful Return
->> * {lessonID,newsID,status}
+>> * {status,commentID,commentfrom,commentUserAvatar,lessonID}
 
 > * Error Return
 >> * errcode = 1: 权限认证错误，请重新登陆
@@ -594,8 +600,11 @@ if status == "error" means error
 ```
 {
   "status": "success",
-  "lessonID": "57d2cf40b64d1db00aa8400e",
-  "newsID": "57d2ba2afe5081244697a5c0"
+  "commentID": "582534c798d7b60e00a36cd1",
+  "commentfrom": "老师",
+  "commentUserAvatar": "/images/avatars/a44a3fd0-a258-11e6-818d-3db40fa2e94b.jpg",
+  "updated": "2016-11-11T03:02:31.848Z",
+  "lessonID": "57ca1145f418b4796909724f"
 }
 ```
 
@@ -814,7 +823,7 @@ if status == "error" means error
 
 
 > * Successful Return
->> * {commentID,newsID,status}
+>> * {commentID,newsID,commentfrom,commentUserAvatar,updated,status}
 
 > * Error Return
 >> * errcode = 1: 权限认证错误，请重新登陆
@@ -825,7 +834,10 @@ if status == "error" means error
 ```
 {
   "status": "success",
-  "commentID": "57d2cf40b64d1db00aa8400e",
+  "commentID": "582534c798d7b60e00a36cd1",
+  "commentfrom": "老师",
+  "commentUserAvatar": "/images/avatars/a44a3fd0-a258-11e6-818d-3db40fa2e94b.jpg",
+  "updated": "2016-11-11T03:02:31.848Z",
   "newsID": "57d2ba2afe5081244697a5c0"
 }
 ```
