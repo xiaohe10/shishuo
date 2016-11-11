@@ -8,6 +8,8 @@ var User = require('../models/user')
 var Lesson = require('../models/lesson')
 var Question = require('../models/question')
 var Comment = require('../models/comment')
+var sizeOf = require('image-size');
+var path = require('path');
 
 router.post('/create', function(req, res) {
     userID = req.body.userID;
@@ -32,7 +34,7 @@ router.post('/create', function(req, res) {
                 if (err)  {
                     res.json({status:'error','errcode':2});return;
                 }
-                else res.json({status:'success','lessons':{'lessonID':lesson.id,'question':{'questionID':lesson.question._id,'questionContent':lesson.question.content}}});
+                else res.json({status:'success','lessons':{'lessonID':lesson.id,'question':{'questionID':lesson.question._id,'questionContent':lesson.question.content,'thumbnails':lesson.question.thumbnails,'preparationtime':lesson.question.preparationtime,'answertime':lesson.question.answertime}}});
             })
         });
 
@@ -87,6 +89,7 @@ router.post('/list', function(req, res) {
     usertoken = req.body.token;
     type = req.body.type;
     pagestart = req.body.pagestart;
+
     if(!pagestart) pagestart = 0;
     User.findOne({ _id: userID,token:usertoken }, function(err, user) {
         if (err) {
@@ -103,8 +106,12 @@ router.post('/list', function(req, res) {
             else {
                 var lessons_serialize = [];
                 lessons.forEach(function(lesson){
+                    
+                    var photo = path.join(__dirname,'../public')+lesson.thumbnails;
+                    var dimensions = sizeOf(photo);
+
                     lessons_serialize.push({lessonID:lesson.id,price:lesson.price,updated:lesson.updated,description:lesson.description,
-                                            thumbnails:lesson.thumbnails,commentnums:"0",likenums:"0",
+                                            thumbnails:lesson.thumbnails,thumbnailswidth:dimensions.width,thumbnailsheight:dimensions.height,commentnums:"0",likenums:"0",
                                             teacher:{teacherID:lesson.user._id,avatar:lesson.user.avatar,nickname:lesson.user.nickname}})
                 });
 				//console.log(lessons_serialize);

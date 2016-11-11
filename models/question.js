@@ -13,6 +13,9 @@ var QuestionSchema   = new Schema({
     lessonLevel:{type:String,default:"小学"},
     lessonSubject:{type:String,default:"语文"},
     content: { type: String,default:"问题描述：荷塘月色"},
+    thumbnails:{type:String,default:'/images/question_thumbnails/sample.jpg'},
+    preparationtime:{type:Number,min:0,default:10},
+    answertime:{type:Number,min:0,default:40},
     updated: { type: Date, default: Date.now }
 });
 

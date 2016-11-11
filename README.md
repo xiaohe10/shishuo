@@ -2,6 +2,8 @@
 
 1111更新说明：
 >* 1. 部落动态和视频详情的评论部分接口添加返回字段
+>* 2. 热门list的接口返回时增加缩略图的宽高thumbnailswidth、thumbnailsheight
+>* 3. 数据库question表中增加thumbnails图片、preparationtime备课时间、answertime答题时间字段，抽题接口返回时增加以上新增问题相关字段
 
 1109更新说明：
 >* 1. 数据库新建公告表announcement
@@ -326,7 +328,7 @@ if status == "error" means error
 >> * pagestart:optional 分页开始，默认为 0，每次刷新10个
 
 > * Successful Return
->> * {lessons:{lessonID,thumbnails,likenums,commentnums,price,description,teacher:{teacherID,avatar,nickname}},status}
+>> * {lessons:{lessonID,thumbnails,thumbnailswidth,thumbnailsheight,likenums,commentnums,price,description,teacher:{teacherID,avatar,nickname}},status}
 >> * thumbnails：课程缩略图，likenums：点赞数，commentnums:评论数，avatar:老师头像,description:课程描述,price:价格
 
 
@@ -337,7 +339,7 @@ if status == "error" means error
 > * example
 
 ```
-{"lessons":{"lessonID":"1001","thumbnails":"/media/lessons/thumbnails/1.jpg","likenums":"2000","commentnums":"10000",price:"5","description":"这是一个非常好的课程，请收听","teacher":{"teacherID":"1001","avatar":"/media/avatars/1.jpg","nickname":"张老师"}},"status":"success"}
+{"lessons":{"lessonID":"1001","thumbnails":"/media/lessons/thumbnails/1.jpg","thumbnailswidth":587,"thumbnailsheight":725,"likenums":"2000","commentnums":"10000",price:"5","description":"这是一个非常好的课程，请收听","teacher":{"teacherID":"1001","avatar":"/media/avatars/1.jpg","nickname":"张老师"}},"status":"success"}
 ```
 ###获取视频详情
 (直接获取了评论列表）
@@ -505,7 +507,7 @@ if status == "error" means error
 
 
 > * Successful Return
->> * {lessons:{lessonID,question:{questionID,questionContent}},status}
+>> * {lessons:{lessonID,question:{questionID,questionContent,thumbnails,preparationtime,answertime}},status}
 
 
 > * Error Return
@@ -515,7 +517,7 @@ if status == "error" means error
 > * example
 
 ```
-{"lessons":{"lessonID":"1001","question":{"questionID":"1001","questionContent":"请试讲荷塘月色"}}},"status":"success"}
+{"lessons":{"lessonID":"1001","question":{"questionID":"1001","questionContent":"请试讲荷塘月色","thumbnails": "/images/question_thumbnails/sample.jpg","preparationtime":10,"answertime": 40}}},"status":"success"}
 ```
 
 ### 开始直播
