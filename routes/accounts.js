@@ -11,6 +11,9 @@ var User = require('../models/user')
 
 router.post('/register', function(req, res) {
   var user = new User({telephone:req.body.telephone,password:req.body.password,type:req.body.type});
+  if(user.type == 'teacher'){
+    user.type = '老师';
+  }
   user.save(function(err){
     if (err)  res.json({status:'error','errcode':1});
     else {
@@ -24,9 +27,6 @@ router.post('/login',function(req,res){
 
   var telephone = req.body.telephone;
   var password = req.body.password;
-  if(telephone == "anonymous") {
-    res.json({status:'error','errcode':1});return;
-  }
   // fetch user and test password verification
   User.findOne({ telephone: telephone }, function(err, user) {
     if (err) {

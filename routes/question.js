@@ -9,6 +9,10 @@ var Question = require('../models/question')
 
 router.post('/create', function(req, res) {
     question = new Question();
+    question.lessonLevel = req.body.lessonLevel;
+    question.lessonSubject = req.body.lessonSubject;
+    question.content = req.body.content;
+
     question.save(function(err){
         if (err)  {
             res.json({status:'error','errcode':2});return;

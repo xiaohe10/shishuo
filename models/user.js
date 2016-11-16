@@ -2,8 +2,8 @@
  * Created by t-hexiao on 2016/8/24.
  */
 var mongoose     = require('mongoose');
-//mongoose.connect('mongodb://localhost:27017/shishuo')
-mongoose.connect('mongodb://shishuo:hengaigaoke@hengaigaoke.com:27017/shishuo')
+mongoose.connect('mongodb://localhost:27017/shishuo')
+//mongoose.connect('mongodb://shishuo:hengaigaoke@hengaigaoke.com:27017/shishuo')
 var Schema       = mongoose.Schema;
 var bcrypt = require('bcryptjs');
 var SALT_WORK_FACTOR = 10;
@@ -12,10 +12,10 @@ var UserSchema   = new Schema({
     telephone: {type:String,required:true,index:{unique:true}},
     password: { type: String, required: true },
     token: { type: String},
-    type:{type:String,default:"student"},
+    type:{type:String,default:"student"}, //teacher or student
     updated: { type: Date, default: Date.now },
     avatar:{type:String,default:'/images/avatars/avatar_sample.jpg'},
-    nickname:{type:String,default:'老师'}
+    nickname:{type:String,default:'学生'}
 });
 UserSchema.pre('save', function(next) {
     var user = this;

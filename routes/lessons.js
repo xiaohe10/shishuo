@@ -8,14 +8,19 @@ var User = require('../models/user')
 var Lesson = require('../models/lesson')
 var Question = require('../models/question')
 var Comment = require('../models/comment')
+var Bill = require('../models/bill')
 var sizeOf = require('image-size');
 var path = require('path');
 
-router.post('/create', function(req, res) {
+//抽题
+router.post('/choose', function(req, res) {
     userID = req.body.userID;
     token = req.body.token;
+    lessonType1 = req.body.lessonType1;
+    lessonType2 = req.body.lessonType2;
     lessonlevel = req.body.lessonlevel;
     lessonsubject = req.body.lessonsubject;
+
     User.findOne({ _id: userID,token:token }, function(err, user) {
         if (err) {
             res.json({status:'error','errcode':2});return;
@@ -24,29 +29,43 @@ router.post('/create', function(req, res) {
             res.json({status:'error','errcode':1});
             return;
         }
-        // Question.find({lessonLevel:lessonlevel}).count();
-        // console.log(count);
-        Question.findOne({},function(err,question){
-            lesson = new Lesson();
-            lesson.user = user;
-            lesson.question = question;
-            lesson.save(function(err){
-                if (err)  {
-                    res.json({status:'error','errcode':2});return;
-                }
-                else res.json({status:'success','lessons':{'lessonID':lesson.id,'question':{'questionID':lesson.question._id,'questionContent':lesson.question.content,'thumbnails':lesson.question.thumbnails,'preparationtime':lesson.question.preparationtime,'answertime':lesson.question.answertime}}});
-            })
+        query = {}
+        if(!!lessonType1) query["lessonType1"]= lessonType1
+        if(!!lessonType2) query["lessonType2"]= lessonType2
+        if(!!lessonlevel) query["lessonLevel"]= lessonlevel
+        if(!!lessonsubject) query["lessonSubject"]= lessonsubject
+        Question.find(query,function(err,question){
+            if(err || question.length == 0){
+                console.log(err);
+                res.json({status:'error','errcode':3});return;
+            }
+            //question = question[0];
+            all = question.length;
+            index = Math.floor(Math.random()*all);
+
+            question = question[index];
+            res.json({status:'success','question':{'questionID':question._id,'questionContent':question.content,'thumbnails': question.thumbnails,'preparationtime': question.preparationtime,'answertime':question.answertime}});
+
         });
 
     });
 });
 
-router.post('/startlive',function(req,res){
+router.post('/createlive',function(req,res){
     userID = req.body.userID;
     token = req.body.token;
     liveRoomID = req.body.liveRoomID;
-    lessonID = req.body.lessonID;
-    liveMeta = req.body.liveMeta;
+    teacherCCID = req.body.teacherCCID;
+    teacherCCpassword = req.body.teacherCCpassword;
+    studentCCID = req.body.studentCCID;
+    studentCCpassword = req.body.studentCCpassword;
+    liveTime = req.body.liveTime;
+    price = req.body.price;
+
+    questionID = req.body.questionID;
+    if(!price){
+        price = 0;
+    }
     User.findOne({ _id: userID,token:token },function(err, user) {
         if (err) {
             res.json({status:'error','errcode':2});return;
@@ -55,19 +74,47 @@ router.post('/startlive',function(req,res){
             res.json({status:'error','errcode':1});
             return;
         }
-        Lesson.update({_id:lessonID},{liveRoomID:liveRoomID,lessonID:lessonID,liveMeta:liveMeta,videoType:"live"},function(err,numberAffected, rawResponse) {
-            if (err) {
-                res.json({status: 'error', 'errcode': 2});
+        lesson = new Lesson();
+        lesson.videoType = "live";
+        lesson.user = user;
+        lesson.liveRoomID = liveRoomID;
+        lesson.teacherCCID = teacherCCID;
+        lesson.teacherCCpassword = teacherCCpassword;
+        lesson.studentCCID = studentCCID;
+        lesson.studentCCpassword = studentCCpassword;
+        lesson.liveTime = liveTime;
+        if(!!questionID){
+            lesson.question = questionID;
+        }
+        lesson.price = price;
+        console.log(lesson);
+        lesson.save(function(err,lesson){
+
+            if(err){
+                console.log(err);
+                res.json({status:'error','errcode':3});
                 return;
-            }else res.json({status:'success','lessons':{'lessonID':lessonID}});
-        });
+            }else{
+                res.json({status:'success'});
+                return;
+            }
+        })
     });
 })
 router.post('/uploadvideo', function(req, res) {
     userID = req.body.userID;
     token = req.body.token;
-    lessonID = req.body.lessonID;
+    questionID = req.body.questionID;
     videoID = req.body.videoID;
+    thumbnails = req.body.thumbnails;
+    if(!thumbnails){
+        thumbnails = '/images/lesson_thumbnails/sample.jpg';
+    }
+
+    price = req.body.price;
+    if(!price){
+        price = 0;
+    }
     User.findOne({ _id: userID,token:token },function(err, user) {
         if (err) {
             res.json({status:'error','errcode':2});return;
@@ -76,12 +123,21 @@ router.post('/uploadvideo', function(req, res) {
             res.json({status:'error','errcode':1});
             return;
         }
-        Lesson.update({_id:lessonID},{videoID:videoID,videoType:"record"},function(err,numberAffected, rawResponse) {
+        lesson = new Lesson();
+        lesson.videoType = "record";
+        lesson.videoID = videoID;
+        lesson.thumbnails = thumbnails;
+        lesson.price = price;
+        lesson.user = user;
+        if(!!questionID){
+            lesson.question = questionID;
+        }
+        lesson.save(function(err,lesson){
             if (err) {
-                res.json({status: 'error', 'errcode': 2});
+                res.json({status: 'error', 'errcode': 3});
                 return;
-            }else res.json({status:'success','lessons':{'lessonID':lessonID}});
-        });
+            }else res.json({status:'success'});
+        })
     });
 });
 router.post('/list', function(req, res) {
@@ -110,7 +166,7 @@ router.post('/list', function(req, res) {
                     var photo = path.join(__dirname,'../public')+lesson.thumbnails;
                     var dimensions = sizeOf(photo);
 
-                    lessons_serialize.push({lessonID:lesson.id,price:lesson.price,updated:lesson.updated,description:lesson.description,
+                    lessons_serialize.push({lessonID:lesson.id,price:lesson.price,updated:lesson.updated,description:lesson.description,videoType:lesson.videoType,
                                             thumbnails:lesson.thumbnails,thumbnailswidth:dimensions.width,thumbnailsheight:dimensions.height,commentnums:"0",likenums:"0",
                                             teacher:{teacherID:lesson.user._id,avatar:lesson.user.avatar,nickname:lesson.user.nickname}})
                 });
@@ -126,8 +182,7 @@ router.post('/details', function(req, res) {
     userID = req.body.userID;
     usertoken = req.body.token;
     lessonID = req.body.lessonID
-    pagestart = req.body.pagestart;
-    if(!pagestart) pagestart = 0;
+
     User.findOne({ _id: userID,token:usertoken }, function(err, user) {
         if (err) {
             res.json({status:'error','errcode':2});return;
@@ -143,13 +198,36 @@ router.post('/details', function(req, res) {
             if(!lesson){
                 res.json({status:'error','errcode':2});
                 return;
+            }else{
+                Bill.findOne({lesson:lessonID,student:userID},function(err,pay){
+                    var paystate = "unpaid"; // 0
+                    if(!err && !!pay) {
+                        paystate = "paid";
+                    }
+                    if(lesson.price == 0){
+                        paystate = "free";
+                    }
+                    liveInfo = ""
+                    if(paystate == "paid" || paystate == "free"){
+                        liveInfo = {liveRoomID:lesson.liveRoomID,
+                            teacherCCID:lesson.teacherCCID,
+                            teacherCCpassword:lesson.teacherCCpassword,
+                            studentCCID:lesson.studentCCID,
+                            studentCCpassword:lesson.studentCCpassword,
+                            liveTime:lesson.liveTime
+                        };
+                    }
+
+                    //如果已经支付过或者视频是免费的,那么返回直播密码
+                    res.json({status:'success',lesson:{lessonID:lesson.id,price:lesson.price,updated:lesson.updated,description:lesson.description,
+                        thumbnails:lesson.thumbnails,commentnums:"0",likenums:"0",comments:lesson.comments,
+                        videoType:lesson.videoType,videoID:lesson.videoID,
+                        teacher:{teacherID:lesson.user._id,avatar:lesson.user.avatar,nickname:lesson.user.nickname
+                        },paystate:paystate,liveInfo:liveInfo }});
+                })
             }
-            else {
-                res.json({status:'success',lesson:{lessonID:lesson.id,price:lesson.price,updated:lesson.updated,description:lesson.description,
-                    thumbnails:lesson.thumbnails,commentnums:"0",likenums:"0",comments:lesson.comments,
-                    videoType:lesson.videoType,liveRoomID:lesson.liveRoomID,liveMeta:lesson.liveMeta,videoID:lesson.videoID,
-                    teacher:{teacherID:lesson.user._id,avatar:lesson.user.avatar,nickname:lesson.user.nickname}}});
-            }
+
+
         });
     });
 });

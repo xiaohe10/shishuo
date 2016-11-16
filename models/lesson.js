@@ -13,8 +13,14 @@ var LessonSchema   = new Schema({
 
     videoType:{type:String,default:"record"}, // record 录播，live 直播，livefinished 直播已经结束
     videoID:{type:String,default:"0"},
+
+    //如果是直播，那么记录 liveRoomID
     liveRoomID:{type:String,default:"0"},
-    liveMeta:{type:String,default:"{teacherID:1,teacherToken:asdf,studentID:12,studentToken:asdf}"},
+    liveTime:{ type: String, default: "" },
+    teacherCCID:{type:String,default:"0"},
+    teacherCCpassword:{type:String,default:"0"},
+    studentCCID:{type:String,default:"0"},
+    studentCCpassword:{type:String,default:"0"},
 
     price:{ type: Number, min: 0, default: 0},
     updated: { type: Date, default: Date.now },

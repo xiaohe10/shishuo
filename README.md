@@ -1,21 +1,28 @@
 # 师说 API 文档
+11.16更新说明:
+>* 修改了账单的接口，请按照新接口，通过bill/create 支付，bill/list 查询历史账单
+>* 抽题不再同时创建题目，使用新接口 lesson/choose ，原 lesson/create 接口作废
+>* 创建新的录播课程使用 lesson/uploadvideo ，需要把抽到的题目 questionID 发给后台（可以缺省）
+>* 创建直播课程，使用 lesson/createlive，需要 把抽到的题目 questionID 发给后台（可以缺省），需要把cc房间号、老师直播的userID和password、学生看录播的userID和password传给后台，还需要上传直播的预计时间
+>* 课程详情 lesson/details，如果paystate == 'paid' 或者 'free' 那么返回直播房间号和用户名密码等信息（在liveInfo中），否则 liveInfo为空
+>* 课程列表 lesson/list 里面增加了课程类型（录播或者直播）
 
-1111更新说明：
+11.11更新说明：
 >* 1. 部落动态和视频详情的评论部分接口添加返回字段
 >* 2. 热门list的接口返回时增加缩略图的宽高thumbnailswidth、thumbnailsheight
 >* 3. 数据库question表中增加thumbnails图片、preparationtime备课时间、answertime答题时间字段，抽题接口返回时增加以上新增问题相关字段
 
-1109更新说明：
+11.09更新说明：
 >* 1. 数据库新建公告表announcement
 >* 2. 后台添加发布课程公告/announcement/create、公告查询显示/announcement/list接口
 
-1108更新说明：
+11.08更新说明：
 >* 1. 用户登录时返回添加了用户头像字段 
 >* 2. 增加了用户修改头像接口/accounts/changeavatar 
 >* 3. 数据库新建账单表bill
 >* 4. 后台添加账单创建/bill/create、收入支出记录显示/bill/list接口
 
-1102更新说明：
+11.02更新说明：
 >*  添加了/accounts/changepassword修改密码、/accounts/logout注销登录接口 
 
 
@@ -174,8 +181,7 @@ if status == "error" means error
 >> * userID:requested
 >> * token:requested
 >> * money:requested
->> * isout:requested
->> * description:requested
+>> * lessonID:requested
 
 
 > * Successful Return
@@ -188,10 +194,10 @@ if status == "error" means error
 > * example
 
 ```
-{"status":"success","bill":{"billID":"1001","owner":"100","money":10,"isout":true,"description":"这是一条账单"}}
+{"status":"success"}
 ```
 
-###展示账单
+###账单列表
 
 > * /bill/list
 > 
@@ -202,7 +208,7 @@ if status == "error" means error
 
 
 > * Successful Return
->> * {status,bills:[{billID,money,updated,description,isout,owner:{ownerID,avatar,nickname}}]}
+>> * {status,bills:[{billID,money,updated,description,isout]}
 
 > * Error Return
 >> * errcode = 1: 用户登录信息错误
@@ -211,20 +217,31 @@ if status == "error" means error
 > * example
 
 ```
-{"status":"success","bills":[
+{
+  "status": "success",
+  "bills": [
     {
-      "billID": "1001",
+      "billID": "582bb938e8f2761e8597a8ef",
       "money": 5,
-      "updated": "2016-11-08T07:09:10.216Z",
-      "description": "这是一条新建账单",
-      "isout": true,
-      "owner": {
-        "ownerID": "1001",
-        "avatar": "/images/avatars/a44a3fd0-a258-11e6-818d-3db40fa2e94b.jpg",
-        "nickname": "老师"
-      }
+      "updated": "2016-11-16T01:41:12.233Z",
+      "description": "您购买了 老师 的课程:课程描述",
+      "isout": true
     },
-	....
+    {
+      "billID": "582bb0227f91281c6d98af20",
+      "money": 5,
+      "updated": "2016-11-16T01:02:26.189Z",
+      "description": "您购买了 老师 的课程:课程描述",
+      "isout": true
+    },
+    {
+      "billID": "582bafa27f91281c6d98af1f",
+      "money": 5,
+      "updated": "2016-11-16T01:00:18.284Z",
+      "description": "您购买了 老师 的课程:课程描述",
+      "isout": true
+    }
+  ]
 }
 ```
 
@@ -328,7 +345,7 @@ if status == "error" means error
 >> * pagestart:optional 分页开始，默认为 0，每次刷新10个
 
 > * Successful Return
->> * {lessons:{lessonID,thumbnails,thumbnailswidth,thumbnailsheight,likenums,commentnums,price,description,teacher:{teacherID,avatar,nickname}},status}
+>> * {lessons:{lessonID,thumbnails,thumbnailswidth,thumbnailsheight,likenums,commentnums,price,description,videoType,teacher:{teacherID,avatar,nickname}},status}
 >> * thumbnails：课程缩略图，likenums：点赞数，commentnums:评论数，avatar:老师头像,description:课程描述,price:价格
 
 
@@ -339,7 +356,45 @@ if status == "error" means error
 > * example
 
 ```
-{"lessons":{"lessonID":"1001","thumbnails":"/media/lessons/thumbnails/1.jpg","thumbnailswidth":587,"thumbnailsheight":725,"likenums":"2000","commentnums":"10000",price:"5","description":"这是一个非常好的课程，请收听","teacher":{"teacherID":"1001","avatar":"/media/avatars/1.jpg","nickname":"张老师"}},"status":"success"}
+{
+  "status": "success",
+  "lessons": [
+    {
+      "lessonID": "582bcb4b7a033322282d618f",
+      "price": 0,
+      "updated": "2016-11-16T02:58:19.019Z",
+      "description": "课程描述",
+      "videoType": "live",
+      "thumbnails": "/images/lesson_thumbnails/sample.jpg",
+      "thumbnailswidth": 587,
+      "thumbnailsheight": 725,
+      "commentnums": "0",
+      "likenums": "0",
+      "teacher": {
+        "teacherID": "582baf6d7f91281c6d98af1e",
+        "avatar": "/images/avatars/avatar_sample.jpg",
+        "nickname": "老师"
+      }
+    },
+    {
+      "lessonID": "582bc91394de2f21bf362f87",
+      "price": 0,
+      "updated": "2016-11-16T02:48:51.205Z",
+      "description": "课程描述",
+      "videoType": "record",
+      "thumbnails": "/images/lesson_thumbnails/sample.jpg",
+      "thumbnailswidth": 587,
+      "thumbnailsheight": 725,
+      "commentnums": "0",
+      "likenums": "0",
+      "teacher": {
+        "teacherID": "582bada68e36e61c1be44f47",
+        "avatar": "/images/avatars/avatar_sample.jpg",
+        "nickname": "老师"
+      }
+    }
+  ]
+}
 ```
 ###获取视频详情
 (直接获取了评论列表）
@@ -351,9 +406,11 @@ if status == "error" means error
 >> * lessonID:requested
 
 > * Successful Return
->> * {lesson:{lessonID,thumbnails,likenums,commentnums,comments,price,videoID,videoType,liveRoomID,liveMeta,description,teacher:{teacherID,avatar,nickname}},status}
+>> * {lesson:{lessonID,thumbnails,likenums,commentnums,comments,price,videoID,videoType,description,teacher:{teacherID,avatar,nickname},paystate,liveInfo},status}
 >> * thumbnails：课程缩略图，likenums：点赞数，commentnums:评论数，avatar:老师头像,description:课程描述,price:价格
->> * liveRoomID 直播间， videoType:record代表录播，live 代表直播,liveMeta:直播的老师和学生账号等（可以扩展或者都存成一个字符串）
+>> *  videoType:record代表录播，live 代表直播
+>> * paystate: paid 已经支付过，unpaid 未支付，free 本课程免费
+>> * liveInfo：直播房间号、直播的账号和密码，如果未支付状态，那么liveInfo为空
 
 
 > * Error Return
@@ -371,8 +428,8 @@ if status == "error" means error
     "updated": "2016-09-02T23:54:45.645Z",
     "description": "课程描述",
     "thumbnails": "/images/lesson_thumbnails/sample.jpg",
-    "commentnums": "0",
-    "likenums": "0",
+    "commentnums": "2",
+    "likenums": "5",
     "comments": [
       {
         "_id": "57d2c7e0b64d1db00aa8400b",
@@ -390,9 +447,16 @@ if status == "error" means error
       }
     ],
     "videoType": "record",
-    "liveRoomID": "0",
-    "liveMeta": "{teacherID:1,teacherToken:asdf,studentID:12,studentToken:asdf}",
     "videoID": "0",
+    "paystate": "paid",
+    "liveInfo": {
+      "liveRoomID": "0",
+      "teacherCCID": "0",
+      "teacherCCpassword": "0",
+      "studentCCID": "0",
+      "studentCCpassword": "0"
+      "liveTime":"2016-10-20 20:00:00"
+    }
     "teacher": {
       "teacherID": "57c46e700d21db303f349c55",
       "avatar": "/images/avatars/avatar_sample.jpg",
@@ -493,9 +557,12 @@ if status == "error" means error
 
 
 ##练习
-###新建题目，并进行抽题
-上传题目信息，抽题时上传，暂时不传视频，录制视频之后再更新视频信息
-> * /lesson/create
+### 抽题，不创建题目（这样更合理）
+<del>新建题目，并进行抽题</del>
+
+从相应类别下的题目中随机抽取一题
+> * /lesson/choose
+> * <del>/lesson/create</del>
 
 > * Input Parameters
 >> * userID:requested
@@ -507,7 +574,7 @@ if status == "error" means error
 
 
 > * Successful Return
->> * {lessons:{lessonID,question:{questionID,questionContent,thumbnails,preparationtime,answertime}},status}
+>> * {question:{questionID,questionContent,thumbnails,preparationtime,answertime},status}
 
 
 > * Error Return
@@ -517,64 +584,78 @@ if status == "error" means error
 > * example
 
 ```
-{"lessons":{"lessonID":"1001","question":{"questionID":"1001","questionContent":"请试讲荷塘月色","thumbnails": "/images/question_thumbnails/sample.jpg","preparationtime":10,"answertime": 40}}},"status":"success"}
+{
+  "status": "success",
+  "question": {
+    "questionID": "582baf1e7f91281c6d98af1c",
+    "questionContent": "乌鸦有几只",
+    "thumbnails": "/images/question_thumbnails/sample.jpg",
+    "preparationtime": 10,
+    "answertime": 40
+  }
+}
 ```
 
-### 开始直播
-> * /lesson/startlive
+### 创建直播间
+> * /lesson/createlive
 
 > * Input Parameters
 >> * userID:requested
 >> * token:requested
->> * lessonID:requested
 >> * liveRoomID:requested  liveRoomID 为cc后台记录的视频ID，用来后续访问
->> * thumbnails:optional 因为截图可能需要实时更新，截图接口后面再单独开接口上传吧
->> * liveMeta:requested 直播元数据：包括老师用户的登陆账号和密码，学生用户的登陆账号和密码
->> * price: optional 老师设置的课程价格，可为空
+>> * teacherCCID: requested cc 直播的老师账号 
+>> * teacherCCpassword: requested  cc直播密码
+>> * studentCCID: requested  cc 直播的老师账号
+>> * studentCCpassword: requested  cc直播密码
+>> * liveTime:requested 直播时间 ,string 格式，前段自定义，比如：2016-10-20 20:00:00
+>> * price: optional 老师设置的课程价格，默认为0
 
 
 > * Successful Return
->> * {lessons:{lessonID},status}
+>> * {status}
 
 
 > * Error Return
 >> * errcode = 1: 权限认证错误，请重新登陆
->> * errcode = 2: 课程号不存在
->> * errcode = 3: 截图上传失败
+>> * errcode = 2: 参数错误
+>> * errcode = 3: 保存失败
+
 
 > * example
 
 ```
-{"lessons":{"lessonID":"1001"},"status":"success"}
+{"status":"success"}
 ```
 
 
-###上传课程的视频、价格
+###上传录播的视频
 
 > * /lesson/uploadvideo
 
 > * Input Parameters
 >> * userID:requested
 >> * token:requested
->> * lessonID:requested
 >> * videoID:requested  videoID 为cc后台记录的视频ID，用来后续访问
->> * thumbnails:requested 生成截图传给后台
+>> * thumbnails: optional 生成截图传给后台
 >> * price: optional 老师设置的课程价格，可为空
 
 
 > * Successful Return
->> * {lessons:{lessonID},status}
+>> * {status}
 
 
 > * Error Return
 >> * errcode = 1: 权限认证错误，请重新登陆
 >> * errcode = 2: 课程号不存在
->> * errcode = 3: 截图上传失败
+>> * errcode = 3: 保存失败
+>> * errcode = 4: 保存失败
 
 > * example
 
 ```
-{"lessons":{"lessonID":"1001"},"status":"success"}
+{
+	"status":"success"
+}
 ```
 
 ### 给课程评论
