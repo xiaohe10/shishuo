@@ -2,11 +2,8 @@
  * Created by t-hexiao on 2016/8/24.
  */
 var mongoose     = require('mongoose');
-<<<<<<< Updated upstream
-// mongoose.connect('mongodb://localhost:27017/shishuo')
-=======
+
 //mongoose.connect('mongodb://localhost:27017/shishuo')
->>>>>>> Stashed changes
 mongoose.connect('mongodb://shishuo:hengaigaoke@hengaigaoke.com:27017/shishuo')
 var Schema       = mongoose.Schema;
 var bcrypt = require('bcryptjs');
