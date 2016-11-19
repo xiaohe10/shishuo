@@ -22,6 +22,7 @@ ccLive.createLiveRoom = function(teacherpass,studentpass,roomname,roomdesc,callb
     };
 
     queryhash = createHashedQueryString(queryMap);
+	console.log(queryhash)
     URL_livecreate += "?"+queryhash
 
     request({url:URL_livecreate}, function(err, response, body) {

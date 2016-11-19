@@ -87,6 +87,7 @@ router.post('/createlive',function(req,res){
         roomname = description;
         roomdesc = "userID:"+user.telephone;
         ccLive.createLiveRoom(teacherpass,studentpass,roomname,roomdesc,function(roominfo){
+			console.log(roominfo);
             roominfo = JSON.parse(roominfo);
             if(roominfo.result!="OK"){
                 res.json({status:'error','errcode':3});
