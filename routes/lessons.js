@@ -219,8 +219,11 @@ router.post('/details', function(req, res) {
                     if(lesson.price == 0){
                         paystate = "free";
                     }
+                    if(lesson.user._id == userID){
+                        paystate = "owner";
+                    }
                     liveInfo = ""
-                    if(paystate == "paid" || paystate == "free"){
+                    if(paystate == "paid" || paystate == "free" || paystate == "owner"){
                         liveInfo = {liveRoomID:lesson.liveRoomID,
                             teacherCCpassword:lesson.teacherCCpassword,
                             studentCCpassword:lesson.studentCCpassword,
@@ -228,7 +231,7 @@ router.post('/details', function(req, res) {
                         };
                     }
 
-                    //如果已经支付过或者视频是免费的,那么返回直播密码
+                    //如果已经支付过或者视频是免费的,那么返回直播密码，或者用户为课程发布者
                     res.json({status:'success',lesson:{lessonID:lesson.id,price:lesson.price,updated:lesson.updated,description:lesson.description,
                         thumbnails:lesson.thumbnails,commentnums:"0",likenums:"0",comments:lesson.comments,
                         videoType:lesson.videoType,videoID:lesson.videoID,
