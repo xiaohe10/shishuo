@@ -117,7 +117,7 @@ router.post('/createlive',function(req,res){
                 lesson.question = questionID;
             }
             lesson.price = price;
-            console.log(lesson);
+            //console.log(lesson);
             lesson.save(function(err,lesson){
 
                 if(err){
