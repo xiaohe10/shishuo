@@ -1,7 +1,8 @@
 # 师说 API 文档
 11.19更新说明：
->* 创建直播间：教师需要指定价格(price)和直播间名称（description)，返回直播间名称和教师密码
->* 在课程详情里，如果用户有权限观看，会返回直播间ID、教师密码和学生密码，学生采用密码模式观看直播
+>* 创建直播间 /lesson/createlive：教师需要指定价格(price)和直播间名称（description)等参数，返回直播间名称和教师密码
+>* 在课程详情/lesson/details 里获取直播信息，如果用户有权限观看，会返回直播间ID、教师密码和学生密码，学生采用密码模式观看直播。为方便调试，密码都是 shishuo,即使未支付也可以测试直播和观看
+
 
 11.16更新说明:
 >* 修改了账单的接口，请按照新接口，通过bill/create 支付，bill/list 查询历史账单
@@ -30,7 +31,7 @@
 >*  添加了/accounts/changepassword修改密码、/accounts/logout注销登录接口 
 
 
-更新说明：
+10.30 更新说明：
 >* 1. 添加了 部落消息、支付接口 
 >* 2. 课程、部落消息的 点赞和评论接口 
 >* 3. 老师和学生通过注册区分，登陆我在后台返回用户类型 
@@ -413,8 +414,9 @@ if status == "error" means error
 >> * {lesson:{lessonID,thumbnails,likenums,commentnums,comments,price,videoID,videoType,description,teacher:{teacherID,avatar,nickname},paystate,liveInfo},status}
 >> * thumbnails：课程缩略图，likenums：点赞数，commentnums:评论数，avatar:老师头像,description:课程描述,price:价格
 >> *  videoType:record代表录播，live 代表直播
->> * paystate: paid 已经支付过，unpaid 未支付，free 本课程免费
->> * liveInfo：直播房间号、老师播放密码和学生观看密码，如果未支付状态，那么liveInfo为空
+>> * paystate: paid 已经支付过，unpaid 未支付
+>> * liveInfo：直播房间号、开始日期等信息
+>> * livePassword：老师和学生的密码如果未支付状态，那么livePassword为空（为方便调试，密码都是shishuo ,即使没有支付接口都为空，客户端这边也能先调试）
 
 
 > * Error Return
@@ -427,42 +429,35 @@ if status == "error" means error
 {
   "status": "success",
   "lesson": {
-    "lessonID": "57ca1145f418b4796909724f",
-    "price": 0,
-    "updated": "2016-09-02T23:54:45.645Z",
-    "description": "课程描述",
+    "lessonID": "58302ca4663be359fb439ecd",
+    "price": 10,
+    "updated": "2016-11-19T10:42:44.800Z",
+    "description": "全国大学生英语竞赛",
     "thumbnails": "/images/lesson_thumbnails/sample.jpg",
-    "commentnums": "2",
-    "likenums": "5",
-    "comments": [
-      {
-        "_id": "57d2c7e0b64d1db00aa8400b",
-        "replytoName": "xiaohe",
-        "replyto": "57d2493a887881642e9fc237",
-        "content": "这是一条评论",
-        "type": "text"
-      },
-      {
-        "_id": "57d2cf9ab64d1db00aa8400f",
-        "replytoName": "xiaohe",
-        "replyto": "57d2493a887881642e9fc237",
-        "content": "这是一条评论",
-        "type": "text"
-      }
-    ],
-    "videoType": "record",
-    "videoID": "0",
-    "paystate": "paid",
-    "liveInfo": {
-      "liveRoomID": "0",
-      "teacherCCpassword": "0",
-      "studentCCpassword": "0"
-      "liveTime":"2016-10-20 20:00:00"
-    }
+    "commentnums": "0",
+    "likenums": "0",
+    "comments": [],
+    "videoType": "live",
     "teacher": {
-      "teacherID": "57c46e700d21db303f349c55",
+      "teacherID": "582baf6d7f91281c6d98af1e",
       "avatar": "/images/avatars/avatar_sample.jpg",
       "nickname": "老师"
+    },
+    "paystate": "owner",
+    "videoID": "0",
+    "liveInfo": {
+      "liveRoomID": "5BE6541A22FED0B19C33DC5901307461",
+      "startdate": "2016-11-19T00:00:00.000Z",
+      "enddate": "2016-11-20T00:00:00.000Z",
+      "classstarttime": "20:00:00",
+      "classendtime": "21:00:00",
+      "enrolldeadline": "2016-11-17T00:00:00.000Z",
+      "classhours": 2,
+      "studentslimit": 100
+    },
+    "livePassword": {
+      "teacherCCpassword": "shishuo",
+      "studentCCpassword": "shishuo"
     }
   }
 }
@@ -602,25 +597,24 @@ if status == "error" means error
 > * /lesson/createlive
 
 > * Input Parameters
->> * userID:requested
->> * token:requested
 
->> * liveTime:requested 直播时间 ,string 格式，前段自定义，比如：2016-10-20 20:00:00
->> * price: optional 老师设置的课程价格，默认为0
->> * description: requested 直播间描述
+```
+{
+	userID:582baf6d7f91281c6d98af1e,
+	token:466d86fb189a71590c32c210aad927eb33fc9927ed98031d02c3338733bc618939c16a75430c1214a25ef65eabf976ded587e2b854d93e576bcb74b6f522652e,
+	price:10,
+	startdate:2016-11-19,        //开始日期
+	enddate:2016-11-20,         //结束日期
+	classstarttime:20:00:00,    //课程开始时间
+	classendtime:21:00:00,      //课程结束时间
+	enrolldeadline:2016-11-17, //报名截止日期
+	classhours:2,              //课时
+	studentslimit:100,         //学生限制数量
+	description:"全国大学生英语竞赛",
+}
+```
 
-
-> * Successful Return
->> * {status}
-
-
-> * Error Return
->> * errcode = 1: 权限认证错误，请重新登陆
->> * errcode = 2: 参数错误
->> * errcode = 3: 保存失败
-
-
-> * example
+> * successful return
 
 ```
 {
@@ -630,6 +624,13 @@ if status == "error" means error
   "teacherpass": "shishuo"
 }
 ```
+> * Error Return
+> 
+>> * errcode = 1: 权限认证错误，请重新登陆
+>> * errcode = 2: 没有此用户
+>> * errcode = 3: 创建直播间错误
+>> * errcode = 4: 课程保存错误
+
 
 
 ###上传录播的视频

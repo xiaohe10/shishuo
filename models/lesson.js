@@ -12,14 +12,26 @@ var LessonSchema   = new Schema({
     tabs:{type:String,default:"popular,moke"},
 
     videoType:{type:String,default:"record"}, // record 录播，live 直播，livefinished 直播已经结束
+
     videoID:{type:String,default:"0"},
 
-    //如果是直播，那么记录 liveRoomID
+    //如果是直播，那么记录 liveRoomID等信息
     liveRoomID:{type:String,default:"0"},
     teacherCCpassword:{type:String,default:"0"},
     studentCCpassword:{type:String,default:"0"},
 
-    liveTime:{ type: String, default: "" },
+
+    startdate:{ type: Date,default:null},
+    enddate:{type: Date,default:null},
+    classstarttime :{ type: String,default:""},
+    classendtime :{ type: String,default:""},
+
+    enrolldeadline :{ type: Date,default:null},
+
+    classhours:{type:Number,min:0,default:0},
+    studentslimit :{type:Number,min:0,default:0},
+    //直播相关的信息结束
+
 
     price:{ type: Number, min: 0, default: 0},
     updated: { type: Date, default: Date.now },
