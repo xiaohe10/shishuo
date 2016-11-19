@@ -16,11 +16,10 @@ var LessonSchema   = new Schema({
 
     //如果是直播，那么记录 liveRoomID
     liveRoomID:{type:String,default:"0"},
-    liveTime:{ type: String, default: "" },
-    teacherCCID:{type:String,default:"0"},
     teacherCCpassword:{type:String,default:"0"},
-    studentCCID:{type:String,default:"0"},
     studentCCpassword:{type:String,default:"0"},
+
+    liveTime:{ type: String, default: "" },
 
     price:{ type: Number, min: 0, default: 0},
     updated: { type: Date, default: Date.now },

@@ -1,4 +1,8 @@
 # 师说 API 文档
+11.19更新说明：
+>* 创建直播间：教师需要指定价格(price)和直播间名称（description)，返回直播间名称和教师密码
+>* 在课程详情里，如果用户有权限观看，会返回直播间ID、教师密码和学生密码，学生采用密码模式观看直播
+
 11.16更新说明:
 >* 修改了账单的接口，请按照新接口，通过bill/create 支付，bill/list 查询历史账单
 >* 抽题不再同时创建题目，使用新接口 lesson/choose ，原 lesson/create 接口作废
@@ -410,7 +414,7 @@ if status == "error" means error
 >> * thumbnails：课程缩略图，likenums：点赞数，commentnums:评论数，avatar:老师头像,description:课程描述,price:价格
 >> *  videoType:record代表录播，live 代表直播
 >> * paystate: paid 已经支付过，unpaid 未支付，free 本课程免费
->> * liveInfo：直播房间号、直播的账号和密码，如果未支付状态，那么liveInfo为空
+>> * liveInfo：直播房间号、老师播放密码和学生观看密码，如果未支付状态，那么liveInfo为空
 
 
 > * Error Return
@@ -451,9 +455,7 @@ if status == "error" means error
     "paystate": "paid",
     "liveInfo": {
       "liveRoomID": "0",
-      "teacherCCID": "0",
       "teacherCCpassword": "0",
-      "studentCCID": "0",
       "studentCCpassword": "0"
       "liveTime":"2016-10-20 20:00:00"
     }
@@ -602,13 +604,10 @@ if status == "error" means error
 > * Input Parameters
 >> * userID:requested
 >> * token:requested
->> * liveRoomID:requested  liveRoomID 为cc后台记录的视频ID，用来后续访问
->> * teacherCCID: requested cc 直播的老师账号 
->> * teacherCCpassword: requested  cc直播密码
->> * studentCCID: requested  cc 直播的老师账号
->> * studentCCpassword: requested  cc直播密码
+
 >> * liveTime:requested 直播时间 ,string 格式，前段自定义，比如：2016-10-20 20:00:00
 >> * price: optional 老师设置的课程价格，默认为0
+>> * description: requested 直播间描述
 
 
 > * Successful Return
@@ -624,7 +623,12 @@ if status == "error" means error
 > * example
 
 ```
-{"status":"success"}
+{
+  "status": "success",
+  "lessonid": "582ff0e853792f5049670fe6",
+  "liveroomid": "3F1FB53711E5B9159C33DC5901307461",
+  "teacherpass": "shishuo"
+}
 ```
 
 

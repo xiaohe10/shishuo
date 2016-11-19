@@ -12,6 +12,9 @@ var Bill = require('../models/bill')
 var sizeOf = require('image-size');
 var path = require('path');
 
+var ccLive = require('./cclivesdk')
+
+
 //抽题
 router.post('/choose', function(req, res) {
     userID = req.body.userID;
@@ -54,12 +57,8 @@ router.post('/choose', function(req, res) {
 router.post('/createlive',function(req,res){
     userID = req.body.userID;
     token = req.body.token;
-    liveRoomID = req.body.liveRoomID;
-    teacherCCID = req.body.teacherCCID;
-    teacherCCpassword = req.body.teacherCCpassword;
-    studentCCID = req.body.studentCCID;
-    studentCCpassword = req.body.studentCCpassword;
     liveTime = req.body.liveTime;
+    description = req.body.description;
     price = req.body.price;
 
     questionID = req.body.questionID;
@@ -74,30 +73,43 @@ router.post('/createlive',function(req,res){
             res.json({status:'error','errcode':1});
             return;
         }
-        lesson = new Lesson();
-        lesson.videoType = "live";
-        lesson.user = user;
-        lesson.liveRoomID = liveRoomID;
-        lesson.teacherCCID = teacherCCID;
-        lesson.teacherCCpassword = teacherCCpassword;
-        lesson.studentCCID = studentCCID;
-        lesson.studentCCpassword = studentCCpassword;
-        lesson.liveTime = liveTime;
-        if(!!questionID){
-            lesson.question = questionID;
-        }
-        lesson.price = price;
-        console.log(lesson);
-        lesson.save(function(err,lesson){
-
-            if(err){
-                console.log(err);
+        teacherpass = "shishuo";
+        studentpass = "shishuo";
+        roomname = description;
+        roomdesc = "userID:"+user.telephone;
+        ccLive.createLiveRoom(teacherpass,studentpass,roomname,roomdesc,function(roominfo){
+            roominfo = JSON.parse(roominfo);
+            if(roominfo.result!="OK"){
                 res.json({status:'error','errcode':3});
                 return;
-            }else{
-                res.json({status:'success'});
-                return;
             }
+            roomid = roominfo.room.id;
+
+            lesson = new Lesson();
+            lesson.videoType = "live";
+            lesson.user = user;
+            lesson.liveRoomID = roomid;
+            lesson.teacherCCpassword = teacherpass;
+            lesson.studentCCpassword = studentpass;
+            lesson.description = description;
+
+            lesson.liveTime = liveTime;
+            if(!!questionID){
+                lesson.question = questionID;
+            }
+            lesson.price = price;
+            console.log(lesson);
+            lesson.save(function(err,lesson){
+
+                if(err){
+                    console.log(err);
+                    res.json({status:'error','errcode':3});
+                    return;
+                }else{
+                    res.json({status:'success',lessonid:lesson._id,liveroomid:roomid,teacherpass:teacherpass});
+                    return;
+                }
+            })
         })
     });
 })
@@ -210,9 +222,7 @@ router.post('/details', function(req, res) {
                     liveInfo = ""
                     if(paystate == "paid" || paystate == "free"){
                         liveInfo = {liveRoomID:lesson.liveRoomID,
-                            teacherCCID:lesson.teacherCCID,
                             teacherCCpassword:lesson.teacherCCpassword,
-                            studentCCID:lesson.studentCCID,
                             studentCCpassword:lesson.studentCCpassword,
                             liveTime:lesson.liveTime
                         };
