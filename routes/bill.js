@@ -85,7 +85,7 @@ router.post('/list', function(req, res) {
                         isout = false;
                         description = bill.description_teacher;
                     }
-                    bills_serialize.push({billID:bill._id,money:bill.money,updated:bill.updated,description:description,
+                    bills_serialize.push({billID:bill._id,money:bill.money,updated:bill.updated,status:bill.status,description:description,
                                             isout:isout})
                 });
                 res.json({status:'success','bills':bills_serialize});
