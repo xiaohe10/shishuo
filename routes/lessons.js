@@ -57,9 +57,18 @@ router.post('/choose', function(req, res) {
 router.post('/createlive',function(req,res){
     userID = req.body.userID;
     token = req.body.token;
-    liveTime = req.body.liveTime;
     description = req.body.description;
     price = req.body.price;
+
+    startdate = req.body.startdate;
+    enddate = req.body.enddate;
+    classstarttime = req.body.classstarttime;
+    classendtime = req.body.classendtime;
+
+    enrolldeadline = req.body.enrolldeadline;
+
+    classhours = req.body.classhours;
+    studentslimit = req.body.studentslimit;
 
     questionID = req.body.questionID;
     if(!price){
@@ -93,17 +102,27 @@ router.post('/createlive',function(req,res){
             lesson.studentCCpassword = studentpass;
             lesson.description = description;
 
-            lesson.liveTime = liveTime;
+            lesson.startdate = startdate;
+            lesson.enddate = enddate;
+            lesson.classstarttime = classstarttime;
+            lesson.classendtime = classendtime;
+
+            lesson.enrolldeadline = enrolldeadline;
+            lesson.classhours = classhours;
+            lesson.studentslimit = studentslimit;
+
+
+
             if(!!questionID){
                 lesson.question = questionID;
             }
             lesson.price = price;
-            console.log(lesson);
+            //console.log(lesson);
             lesson.save(function(err,lesson){
 
                 if(err){
                     console.log(err);
-                    res.json({status:'error','errcode':3});
+                    res.json({status:'error','errcode':4});
                     return;
                 }else{
                     res.json({status:'success',lessonid:lesson._id,liveroomid:roomid,teacherpass:teacherpass});
@@ -216,24 +235,38 @@ router.post('/details', function(req, res) {
                     if(!err && bill.status==true) {
                         paystate = "paid";
                     }
-                    if(lesson.price == 0){
-                        paystate = "free";
-                    }
-                    liveInfo = ""
-                    if(paystate == "paid" || paystate == "free"){
-                        liveInfo = {liveRoomID:lesson.liveRoomID,
-                            teacherCCpassword:lesson.teacherCCpassword,
-                            studentCCpassword:lesson.studentCCpassword,
-                            liveTime:lesson.liveTime
-                        };
+                    if(lesson.user._id == userID){
+                        paystate = "owner";
                     }
 
-                    //如果已经支付过或者视频是免费的,那么返回直播密码
-                    res.json({status:'success',lesson:{lessonID:lesson.id,price:lesson.price,updated:lesson.updated,description:lesson.description,
-                        thumbnails:lesson.thumbnails,commentnums:"0",likenums:"0",comments:lesson.comments,
-                        videoType:lesson.videoType,videoID:lesson.videoID,
-                        teacher:{teacherID:lesson.user._id,avatar:lesson.user.avatar,nickname:lesson.user.nickname
-                        },paystate:paystate,liveInfo:liveInfo }});
+                    liveInfo = {
+                        liveRoomID: lesson.liveRoomID,
+                        startdate: lesson.startdate,
+                        enddate: lesson.enddate,
+                        classstarttime: lesson.classstarttime,
+                        classendtime: lesson.classendtime,
+
+                        enrolldeadline: lesson.enrolldeadline,
+
+                        classhours: lesson.classhours,
+                        studentslimit: lesson.studentslimit
+                    }
+                    recordvideoID = ""
+                    livePassword = ""
+                    if(paystate == "paid" || paystate == "owner"){
+                        recordvideoID = lesson.videoID
+                        livePassword = {
+                            teacherCCpassword: lesson.teacherCCpassword,
+                            studentCCpassword: lesson.studentCCpassword
+                        }
+
+                    }
+
+                        res.json({status:'success',lesson:{lessonID:lesson.id,price:lesson.price,updated:lesson.updated,description:lesson.description,
+                            thumbnails:lesson.thumbnails,commentnums:"0",likenums:"0",comments:lesson.comments,
+                            videoType:lesson.videoType,
+                            teacher:{teacherID:lesson.user._id,avatar:lesson.user.avatar,nickname:lesson.user.nickname
+                            },paystate:paystate,videoID:recordvideoID ,liveInfo:liveInfo,livePassword:livePassword}});
                 })
             }
 

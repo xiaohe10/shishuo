@@ -8,7 +8,7 @@ var Announcement = require('../models/announcement')
 router.post('/create', function(req, res) {
 	userID = req.body.userID;
     usertoken = req.body.token;
-    classtimestart = req.body.classtimestart;
+    clasststart = req.body.classtimestart;
     classtimeend = req.body.classtimeend;
     classtime = req.body.classtime;
     liveaddress = req.body.liveaddress;

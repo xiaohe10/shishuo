@@ -12,8 +12,8 @@ var ccLive = CCLive.prototype;
 
 ccLiveuserID = "372FAB00A0958D2F"
 ccLiveAPIKey = "ucW1LbUbg3KfTWJtioNr4fhAb8UjnFVE"
-URL_livecreate = 'http://api.csslcloud.net/api/room/create'
-URL_livesearch = 'http://api.csslcloud.net/api/room/search'
+URL_livecreate_base = 'http://api.csslcloud.net/api/room/create'
+URL_livesearch_base = 'http://api.csslcloud.net/api/room/search'
 ccLive.createLiveRoom = function(teacherpass,studentpass,roomname,roomdesc,callback){
     queryMap = { userid:ccLiveuserID,name:roomname,desc:roomdesc,
         templatetype:1,authtype:1,
@@ -22,10 +22,11 @@ ccLive.createLiveRoom = function(teacherpass,studentpass,roomname,roomdesc,callb
     };
 
     queryhash = createHashedQueryString(queryMap);
-    URL_livecreate += "?"+queryhash
+    url = URL_livecreate_base+"?"+queryhash
 
-    request({url:URL_livecreate}, function(err, response, body) {
+    request({url:url}, function(err, response, body) {
         if(err) { console.log(err); return; }
+
         callback(body);
 
     });
@@ -33,9 +34,8 @@ ccLive.createLiveRoom = function(teacherpass,studentpass,roomname,roomdesc,callb
 ccLive.searchLiveRoom = function(roomid,cb){
     queryMap = { userid:ccLiveuserID,roomid:roomid}
     queryhash = createHashedQueryString(queryMap);
-    URL_livesearch += "?"+queryhash
-    console.log(URL_livesearch)
-    request({url:URL_livesearch}, function(err, response, body) {
+    url = URL_livesearch_base+"?"+queryhash
+    request({url:url}, function(err, response, body) {
         if(err) { console.log(err); return; }
         cb(body);
 
@@ -77,9 +77,12 @@ function createHashedQueryString(queryMap) {
     //拼接
     str = format("{0}&time={1}&salt={2}",querystr, time, ccLiveAPIKey)
 
+
     //MD5加密
     hash = getmd5(str);
     hash = hash.toLowerCase();
+
+
 
 
     thqs = format("{0}&time={1}&hash={2}",querystr, time, hash)
