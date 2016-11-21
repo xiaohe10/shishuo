@@ -211,9 +211,9 @@ router.post('/details', function(req, res) {
                 res.json({status:'error','errcode':2});
                 return;
             }else{
-                Bill.findOne({lesson:lessonID,student:userID},function(err,pay){
+                Bill.findOne({lesson:lessonID,student:userID},function(err,bill){
                     var paystate = "unpaid"; // 0
-                    if(!err && !!pay) {
+                    if(!err && bill.status==true) {
                         paystate = "paid";
                     }
                     if(lesson.price == 0){
