@@ -10,9 +10,18 @@ var uuid = require('node-uuid');
 var User = require('../models/user')
 
 router.post('/register', function(req, res) {
-  var user = new User({telephone:req.body.telephone,password:req.body.password,type:req.body.type});
-  if(user.type == 'teacher'){
-    user.type = '老师';
+  var user = new User({telephone:req.body.telephone,password:req.body.password});
+  if(req.body.type == 'teacher'){
+    user.type = 'teacher';
+  }
+  if(req.body.sex == 'female'){
+    user.sex = 'female';
+  }
+  if(!!req.body.level){
+    user.level = req.body.level;
+  }
+  if(!!req.body.subject){
+    user.type = req.body.subject;
   }
   user.save(function(err){
     if (err)  res.json({status:'error','errcode':1});
@@ -46,7 +55,7 @@ router.post('/login',function(req,res){
         user.token = token;
         user.save(function(err){
           if (err)  res.json({status:'error','errcode':0});
-          else res.json({status:'success','user':{'userID':user.id,"token":user.token,"avatar":user.avatar,"type":user.type}});
+          else res.json({status:'success','user':{'userID':user.id,"token":user.token,"avatar":user.avatar,"username":user.nickname,"description":user.description,"type":user.type}});
         })
       }else{
         res.json({status:'error','errcode':2});
@@ -167,6 +176,54 @@ router.post('/changeavatar',multipartMiddleware,function (req, res){
           });
         }
     })
+  });
+});
+
+//个人信息获取接口
+router.post('/getinfo', function (req, res){
+  userID = req.body.userID;
+  token = req.body.token;
+  User.findOne({ _id: userID,token:token }, function(err, user) {
+    if (err) {
+      res.json({status:'error','errcode':2});return;
+    }
+    if(!user){
+      res.json({status:'error','errcode':1});
+      return;
+    }
+    else{
+      res.json({status:'success',user:{'userID':userID,'userAvatar':user.avatar,'username':user.nickname,'description':user.description,'type':user.type,
+                                        'level':user.level,'subject':user.subject,'school':user.school,'style':user.style,'sex':user.sex}});
+    }
+  });
+});
+
+//用户修改个人信息接口
+router.post('/changeinfo',function (req, res){
+  userID = req.body.userID;
+  token = req.body.token;
+  description = req.body.description;
+  username = req.body.username;
+  school = req.body.school;
+  subject = req.body.subject;
+  level = req.body.level;
+  sex = req.body.sex;
+  style = req.body.style;
+  User.findOne({ _id: userID,token:token }, function(err, user) {
+    if (err) {
+      res.json({status:'error','errcode':2});return;
+    }
+    if(!user){
+      res.json({status:'error','errcode':1});
+      return;
+    }
+    User.update({_id:userID},{description:description,nickname:username,school:school,subject:subject,level:level,sex:sex,style:style},function(err,numberAffected, rawResponse) {
+    if (err) {
+        res.json({status:'error','errcode': 2});
+        return;
+      }else {
+        res.json({status:'success',user:{'userID':userID}});}
+    });
   });
 });
 
