@@ -4,7 +4,7 @@
 >* 数据库表格中user表添加字段description（个人简介）、school（对应学校）、subject（学科）、level（学段）、sex（性别）、style（授课风格）
 >* 登陆成功接口/accounts/login返回增加description(用户简介)和nickname(用户名称)
 >* 注册两个了账号 供测试使用（教师 18812345678 123456）（学生 17712345678 123456 ）
->>* 添加个人信息获取接口/accounts/getinfo,个人信息修改接口/accounts/changeinfo
+>* 添加个人信息获取接口/accounts/getinfo,个人信息修改接口/accounts/changeinfo
 
 
 11.21更新说明：
