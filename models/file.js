@@ -1,12 +1,14 @@
 /**
- * Created by t-hexiao on 2016/9/9.
+ * Created by TonyJ on 2016/11/21.
+ *新建filesvia表格，测试题库文件传入
  */
 
 var mongoose     = require('mongoose');
+// mongoose.createConnection('mongodb://shishuo:hengaigaoke@hengaigaoke.com:27017/shishuo')
 var Schema       = mongoose.Schema;
 var User = require('./user');
 
-var QuestionSchema   = new Schema({
+var FileSchema   = new Schema({
     user: {type: Schema.Types.ObjectId, ref: 'User'},
     lessonType1:{ type: String,default:"教室资格证面试,教室招聘"},
     lessonType2:{ type: String,default:"说课，片段教学"},
@@ -20,6 +22,6 @@ var QuestionSchema   = new Schema({
     updated: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('Question', QuestionSchema);
+module.exports = mongoose.model('File', FileSchema);
 
 

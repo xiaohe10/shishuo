@@ -68,8 +68,8 @@ router.post('/list', function(req, res) {
         if (err) {
             res.json({status:'error','errcode':2});return;
         }
-        if(!user){
-            res.json({status:'error','errcode':1});
+            if(!user){
+                res.json({status:'error','errcode':1});
             return;
         }
         Bill.find({$or:[{"teacher":userID},{"student":userID}]}).limit(pagestart*10,10).sort({updated:-1}).exec(function(err,bills){
