@@ -1,4 +1,16 @@
 # 师说 API 文档
+
+11.22更新说明：
+>* 数据库表格中user表添加字段description（个人简介）、school（对应学校）、subject（学科）、level（学段）、sex（性别）、style（授课风格）
+>* 登陆成功接口/accounts/login返回增加description(用户简介)和nickname(用户名称)
+>* 注册两个了账号 供测试使用（教师 18812345678 123456）（学生 17712345678 123456 ）
+>* 添加个人信息获取接口/accounts/getinfo,个人信息修改接口/accounts/changeinfo
+
+
+11.21更新说明：
+>* 创建订单 /bill/create接口现增加返回创建账单bill的ID，用来当做发送给第三方支付平台的唯一订单号，方便支付结果反馈给服务器端时查询对应订单，更改本地支付业务逻辑
+>* 本地完成第三方支付平台Beecloud的webhook回调函数，其中APP ID和APP Secret需要在Beecloud平台申请完成后，告诉后台，固定保存在服务器端
+
 11.19更新说明：
 >* 创建直播间 /lesson/createlive：教师需要指定价格(price)和直播间名称（description)等参数，返回直播间名称和教师密码
 >* 在课程详情/lesson/details 里获取直播信息，如果用户有权限观看，会返回直播间ID、教师密码和学生密码，学生采用密码模式观看直播。为方便调试，密码都是 shishuo,即使未支付也可以测试直播和观看
@@ -77,7 +89,17 @@ if status == "error" means error
 > * example
 
 ```
-{"user":{"userID":"1001","token":"48133892c5ade1235b69458ebcec8818","type":"student"},"status":"success"}
+{
+  "status": "success",
+  "user": {
+    "userID": "58340eb2a33d6b1c28e68b67",
+    "token": "f625b68b20845aeb1715397994b5a24fe1cc775ded515eee180c76ce374962d3d043474f1075d4405d2a5b23e22c6fd5e09411cc38cbaab7cfcba00e2720973e",
+    "avatar": "/images/avatars/avatar_sample.jpg",
+    "username": "学生",
+    "description": "这是个人简介",
+    "type": "teacher"
+  }
+}
 ```
 
 ### 用户注册
@@ -169,6 +191,72 @@ if status == "error" means error
 
 ```
 {"status":"success","user":{"userID":"1001","userAvatar":"/images/avatars/avatar_sample.jpg"}}
+```
+
+### 获取个人信息
+> * /accounts/getinfo
+
+> * Input Parameters
+>> * userID:requested
+>> * token:requested
+
+> * Successful Return
+>> * {status,user:{userID，userAvatar，username，description,type,level,subject,school,style,sex}}
+
+> * Error Return
+>> * errcode = 1: 用户登录信息错误
+>> * errcode = 2: 函数调用异常
+
+> * example
+
+```
+{
+  "status": "success",
+  "user": {
+    "userID": "58340eb2a33d6b1c28e68b67",
+    "userAvatar": "/images/avatars/avatar_sample.jpg",
+    "username": "学生",
+    "description": "这是个人简介",
+    "type": "teacher",
+    "level": "小学",
+    "subject": "语文",
+    "school": "XXXX学校",
+    "style": "这里是授课风格介绍",
+    "sex": "male"
+  }
+}
+```
+
+### 修改个人信息
+> * /accounts/changeinfo
+
+> * Input Parameters
+>> * userID:requested
+>> * token:requested
+>> * description:requested
+>> * username:requested
+>> * school:requested
+>> * subject:requested
+>> * level:requested
+>> * sex:requested
+>> * style:requested
+
+> * Successful Return
+>> * {status,user:{userID}}
+
+> * Error Return
+>> * errcode = 1: 用户登录信息错误
+>> * errcode = 2: 函数调用异常
+
+> * example
+
+```
+{
+  "status": "success",
+  "user": {
+    "userID": "58340eb2a33d6b1c28e68b67"
+  }
+}
 ```
 
 ## 账单信息

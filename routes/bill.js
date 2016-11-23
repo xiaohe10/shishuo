@@ -5,6 +5,8 @@ var router = express.Router();
 var User = require('../models/user')
 var Bill = require('../models/bill')
 var Lesson = require('../models/lesson')
+var format = require('string-format')
+var crypto = require('crypto');
 if (!String.prototype.format) {
     String.prototype.format = function() {
         var args = arguments;
@@ -36,6 +38,7 @@ router.post('/create', function(req, res) {
                 res.json({status:'error','errcode':3});
                 return;
             }
+            console.log(lesson);
             bill = new Bill();
             bill.money = money;
             bill.lesson = lesson;
@@ -47,7 +50,7 @@ router.post('/create', function(req, res) {
                 if(err){
                     res.json({status:'error','errcode':4});return;
                 }
-                res.json({status:'success'});
+                res.json({status:'success','billID':bill._id});
             })
         })
     });
@@ -65,8 +68,8 @@ router.post('/list', function(req, res) {
         if (err) {
             res.json({status:'error','errcode':2});return;
         }
-        if(!user){
-            res.json({status:'error','errcode':1});
+            if(!user){
+                res.json({status:'error','errcode':1});
             return;
         }
         Bill.find({$or:[{"teacher":userID},{"student":userID}]}).limit(pagestart*10,10).sort({updated:-1}).exec(function(err,bills){
@@ -82,7 +85,7 @@ router.post('/list', function(req, res) {
                         isout = false;
                         description = bill.description_teacher;
                     }
-                    bills_serialize.push({billID:bill._id,money:bill.money,updated:bill.updated,description:description,
+                    bills_serialize.push({billID:bill._id,money:bill.money,updated:bill.updated,status:bill.status,description:description,
                                             isout:isout})
                 });
                 res.json({status:'success','bills':bills_serialize});
@@ -120,4 +123,52 @@ router.post('/paid', function(req, res) {
 
     });
 });
+
+//webhook回调接口
+router.post('/webhook', function(req, res) {
+	var App_ID = 'c5d1cba1-5e3f-4ba0-941d-9b0a371fe719';//后续根据平台申请的更改
+	var App_Secret = '39a7a518-9ac8-4a9e-87bc-7885f33cf18c';//后续根据平台申请的更改
+	timestamp = req.body.timestamp; //1426817510111
+	sign = req.body.sign;
+	transaction_fee = req.body.transaction_fee;
+	transaction_id = req.body.transaction_id;
+	transaction_type = req.body.transaction_type;
+	// channel_type = req.body.channel_type;
+
+	var signstr = getmd5(App_ID+App_Secret+timestamp);
+	console.log(signstr);
+	console.log(sign);
+	console.log(transaction_type);
+	if(signstr!=sign){
+		console.log("A");
+	}
+	if(signstr!=sign || transaction_type!="PAY"){
+		res.json({status:'error','errcode':2});
+		return;
+	}
+	Bill.findOne({_id:transaction_id},function(err,bill){
+		if(err){
+			return;
+		}
+		if(bill.status == true || transaction_fee != bill.money){
+			return;
+		}
+		else{
+			Bill.update({_id:bill._id},{status:true},function(err,numberAffected, rawResponse) {
+                if (err) {
+                  return;
+                }else{
+                	res.send("success");
+                }
+            });
+		}
+	});
+});
+
+function getmd5(str) {
+    var md5sum = crypto.createHash('md5');
+    md5sum.update(str);
+    str = md5sum.digest('hex');
+    return str;
+};
 module.exports = router;

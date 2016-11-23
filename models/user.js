@@ -3,7 +3,7 @@
  */
 var mongoose     = require('mongoose');
 
-//mongoose.connect('mongodb://localhost:27017/shishuo')
+// mongoose.connect('mongodb://localhost:27017/shishuo')
 mongoose.connect('mongodb://shishuo:hengaigaoke@hengaigaoke.com:27017/shishuo')
 var Schema       = mongoose.Schema;
 var bcrypt = require('bcryptjs');
@@ -13,8 +13,14 @@ var UserSchema   = new Schema({
     telephone: {type:String,required:true,index:{unique:true}},
     password: { type: String, required: true },
     token: { type: String},
+    sex:{type:String,default:"male"},
+    subject:{type:String,default:"语文"},
+    level:{type:String,default:"小学"},
+    school:{type:String,default:"XXXX学校"},
     type:{type:String,default:"student"}, //teacher or student
     updated: { type: Date, default: Date.now },
+    description:{type:String,default:"这是个人简介"},
+    style:{type:String,default:"这里是授课风格介绍"},
     avatar:{type:String,default:'/images/avatars/avatar_sample.jpg'},
     nickname:{type:String,default:'学生'}
 });
