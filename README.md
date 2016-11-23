@@ -1,5 +1,9 @@
 # 师说 API 文档
 
+11.23更新说明：
+>* 添加用户反馈内容接口/suggestion/create,用户反馈内容以一条suggestion记录的形式存储到数据库中
+>* 添加app上我的视频对应后台接口/accounts/myvideo，返回当前登录用户自己录制上传的视频，供用户自己查看
+
 11.22更新说明：
 >* 数据库表格中user表添加字段description（个人简介）、school（对应学校）、subject（学科）、level（学段）、sex（性别）、style（授课风格）
 >* 登陆成功接口/accounts/login返回增加description(用户简介)和nickname(用户名称)
@@ -258,6 +262,73 @@ if status == "error" means error
   }
 }
 ```
+
+### 我的视频接口
+> * /accounts/myvideo
+
+> * Input Parameters
+>> * userID:requested
+>> * token:requested
+>> * pagestart:requested
+
+
+> * Successful Return
+>> * {status,user:[{lessonID,price,updated,description,videotype,thumbnails}...]}
+
+> * Error Return
+>> * errcode = 1: 用户登录信息错误
+>> * errcode = 2: 函数调用异常
+
+> * example
+
+```
+{
+  "status": "success",
+  "lessons": [
+    {
+      "lessonID": "57dc17f35e1d1e85426a47e6",
+      "price": 0,
+      "updated": "2016-09-16T16:04:03.725Z",
+      "description": "课程描述",
+      "videoType": "record",
+      "thumbnails": "/images/lesson_thumbnails/sample.jpg"
+    }
+	...
+  ]
+}
+```
+
+## 用户反馈接口
+
+###发送反馈信息
+
+> * /suggestion/create
+> 
+> * Input Parameters
+>> * userID:requested
+>> * token:requested
+>> * content:requested
+
+
+
+> * Successful Return
+>> * {status,suggestion:{suggestionID}}
+
+> * Error Return
+>> * errcode = 1: 用户登录信息错误
+>> * errcode = 2: 函数调用异常
+
+> * example
+
+```
+{
+  "status": "success",
+  "suggestion": {
+    "suggestionID": "58353e647050a215682fd2b9"
+  }
+}
+```
+
 
 ## 账单信息
 

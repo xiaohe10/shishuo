@@ -34,7 +34,6 @@ var LessonSchema   = new Schema({
 
 
     price:{ type: Number, min: 0, default: 0},
-    updated: { type: Date, default: Date.now },
     likenums:{type: Number, min: 0, default: 0},
     likeusers:[{type: Schema.Types.ObjectId, ref: 'User'}],
 
