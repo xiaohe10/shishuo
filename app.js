@@ -13,6 +13,7 @@ var news = require('./routes/news');
 var pay = require('./routes/pay');
 var bill = require('./routes/bill');
 var announcement = require('./routes/announcement');
+var suggestion = require('./routes/suggestion');
 
 var app = express();
 
@@ -36,6 +37,7 @@ app.use('/news',news);
 app.use('/pay',pay);
 app.use('/bill',bill);
 app.use('/announcement',announcement);
+app.use('/suggestion',suggestion);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

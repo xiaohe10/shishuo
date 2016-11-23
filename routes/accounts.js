@@ -8,6 +8,7 @@ var fs = require('fs');
 var path = require('path');
 var uuid = require('node-uuid');
 var User = require('../models/user')
+var Lesson = require('../models/lesson')
 
 router.post('/register', function(req, res) {
   var user = new User({telephone:req.body.telephone,password:req.body.password});
@@ -227,4 +228,39 @@ router.post('/changeinfo',function (req, res){
   });
 });
 
+
+//我的视频获取接口
+router.post('/myvideo', function (req, res){
+  userID = req.body.userID;
+  token = req.body.token;
+  pagestart = req.body.pagestart;
+
+  if(!pagestart) pagestart = 0;
+  User.findOne({ _id: userID,token:token }, function(err, person) {
+      if (err) {
+          res.json({status:'error','errcode':2});return;
+      }
+      if(!person){
+          res.json({status:'error','errcode':1});
+          return;
+      }
+      console.log(person);
+      Lesson.find({user:person}).limit(pagestart*10,10).sort({updated:-1}).populate('user').exec(function(err,lessons){
+          if (err)  {
+              res.json({status:'error','errcode':2});return;
+          }
+          else {
+              var lessons_serialize = [];
+              lessons.forEach(function(lesson){
+                  // if(lesson.user._id == userID){
+                  //     console.log(lesson.user._id);
+                      lessons_serialize.push({lessonID:lesson.id,price:lesson.price,updated:lesson.updated,description:lesson.description,videoType:lesson.videoType,
+                        thumbnails:lesson.thumbnails})
+                    // }
+            });
+            res.json({status:'success','lessons':lessons_serialize});
+        }
+      })
+  });
+});
 module.exports = router;
