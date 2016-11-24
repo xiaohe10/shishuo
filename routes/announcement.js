@@ -8,7 +8,7 @@ var Announcement = require('../models/announcement')
 router.post('/create', function(req, res) {
 	userID = req.body.userID;
     usertoken = req.body.token;
-    clasststart = req.body.classtimestart;
+    classtimestart = req.body.classtimestart;
     classtimeend = req.body.classtimeend;
     classtime = req.body.classtime;
     liveaddress = req.body.liveaddress;
@@ -72,7 +72,7 @@ router.post('/list', function(req, res) {
             res.json({status:'error','errcode':1});
             return;
         }
-        Announcement.find({user:userID}).limit(pagestart*10,10).sort({updated:-1}).populate('user').exec(function(err,announcements){
+        Announcement.find().limit(pagestart*10,10).sort({updated:-1}).populate('user').exec(function(err,announcements){
             if (err)  {
                 res.json({status:'error','errcode':2});return;
             }

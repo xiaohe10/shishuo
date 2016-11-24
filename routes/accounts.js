@@ -9,6 +9,7 @@ var path = require('path');
 var uuid = require('node-uuid');
 var User = require('../models/user')
 var Lesson = require('../models/lesson')
+var Bill = require('../models/bill')
 
 router.post('/register', function(req, res) {
   var user = new User({telephone:req.body.telephone,password:req.body.password});
@@ -263,4 +264,55 @@ router.post('/myvideo', function (req, res){
       })
   });
 });
+
+//我要上课，我要听课接口
+router.post('/mylessons', function (req, res){
+  userID = req.body.userID;
+  token = req.body.token;
+  type = req.body.type;
+  pagestart = req.body.pagestart;
+
+  if(!pagestart) pagestart = 0;
+
+  User.findOne({ _id: userID,token:token }, function(err, person) {
+      if (err) {
+          res.json({status:'error','errcode':2});return;
+      }
+      if(!person){
+          res.json({status:'error','errcode':1});
+          return;
+      }
+      if(type == 'student'){
+          Bill.find({student:person._id}).limit(pagestart*10,10).sort({updated:-1}).populate('lesson').exec(function(err,bills){
+              if (err)  {
+                  res.json({status:'error','errcode':2});return;
+              }
+              else {
+                  var lessons_serialize = [];
+                  bills.forEach(function(bill){
+                          lessons_serialize.push({lessonID:bill.lesson.id,price:bill.lesson.price,updated:bill.lesson.updated,description:bill.lesson.description,
+                            videoType:bill.lesson.videoType,thumbnails:bill.lesson.thumbnails,status:bill.status})
+                });
+                res.json({status:'success','lessons':lessons_serialize});
+            }
+          })
+      }
+      else{
+          Lesson.find({user:person}).limit(pagestart*10,10).sort({updated:-1}).populate('lesson').exec(function(err,lessons){
+              if (err)  {
+                  res.json({status:'error','errcode':2});return;
+              }
+              else {
+                  var lessons_serialize = [];
+                  lessons.forEach(function(lesson){
+                          lessons_serialize.push({lessonID:lesson.id,price:lesson.price,updated:lesson.updated,description:lesson.description,
+                            videoType:lesson.videoType,thumbnails:lesson.thumbnails})
+                });
+                res.json({status:'success','lessons':lessons_serialize});
+            }
+          })
+      }
+  });
+});
+
 module.exports = router;
