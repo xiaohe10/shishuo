@@ -37,6 +37,7 @@ router.post('/choose', function(req, res) {
         if(!!lessonType2) query["lessonType2"]= lessonType2
         if(!!lessonlevel) query["lessonLevel"]= lessonlevel
         if(!!lessonsubject) query["lessonSubject"]= lessonsubject
+        query = {}
         Question.find(query,function(err,question){
             if(err || question.length == 0){
                 console.log(err);
@@ -233,7 +234,10 @@ router.post('/details', function(req, res) {
             }else{
                 Bill.findOne({lesson:lessonID,student:userID},function(err,bill){
                     var paystate = "unpaid"; // 0
-                    if(!err && bill.status==true) {
+                    if(!err && bill && bill.status==true) {
+                        paystate = "paid";
+                    }
+                    if(lesson.price == 0){
                         paystate = "paid";
                     }
                     if(lesson.user._id == userID){
