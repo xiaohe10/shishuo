@@ -23,6 +23,8 @@ app.set('view engine', 'ejs');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+
+
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -31,13 +33,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/accounts', users);
-app.use('/lesson', lessons);
+
+app.use('/lesson',lessons);
 app.use('/question',questions);
 app.use('/news',news);
 app.use('/pay',pay);
 app.use('/bill',bill);
 app.use('/announcement',announcement);
 app.use('/suggestion',suggestion);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

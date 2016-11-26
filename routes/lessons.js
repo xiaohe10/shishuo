@@ -13,7 +13,7 @@ var sizeOf = require('image-size');
 var path = require('path');
 
 var ccLive = require('./cclivesdk')
-
+upload = require('./utils/upload').upload;
 
 //抽题
 router.post('/choose', function(req, res) {
@@ -134,15 +134,16 @@ router.post('/createlive',function(req,res){
         })
     });
 })
-router.post('/uploadvideo', function(req, res) {
+router.post('/uploadvideo', upload.single('thumbnails'), function(req, res) {
+// console.log(res);
     userID = req.body.userID;
     token = req.body.token;
     questionID = req.body.questionID;
     videoID = req.body.videoID;
-    thumbnails = req.body.thumbnails;
-    if(!thumbnails){
-        thumbnails = '/images/lesson_thumbnails/sample.jpg';
-    }
+    thumbnails = req.file.filename;
+    // console.log(userID);
+    // console.log(token);
+
 
     price = req.body.price;
     if(!price){
@@ -171,6 +172,7 @@ router.post('/uploadvideo', function(req, res) {
                 return;
             }else res.json({status:'success'});
         })
+
     });
 });
 router.post('/list', function(req, res) {
@@ -195,8 +197,10 @@ router.post('/list', function(req, res) {
             else {
                 var lessons_serialize = [];
                 lessons.forEach(function(lesson){
-                    
-                    var photo = path.join(__dirname,'../public')+lesson.thumbnails;
+                    if(lesson.thumbnails=='/images/lesson_thumbnails/sample.jpg'){
+                        lesson.thumbnails = 'sample.jpg'
+                    }
+                    var photo = path.join(__dirname,'../public/images/lesson_thumbnails/')+lesson.thumbnails;
                     var dimensions = sizeOf(photo);
 
                     lessons_serialize.push({lessonID:lesson.id,price:lesson.price,updated:lesson.updated,description:lesson.description,videoType:lesson.videoType,
