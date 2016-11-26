@@ -38,7 +38,7 @@ router.post('/create', function(req, res) {
                 res.json({status:'error','errcode':3});
                 return;
             }
-            console.log(lesson);
+            // console.log(lesson);
             bill = new Bill();
             bill.money = money;
             bill.lesson = lesson;

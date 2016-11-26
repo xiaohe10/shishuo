@@ -1,5 +1,10 @@
 # 师说 API 文档
 
+11.24更新说明：
+>* 增加我要上课/我要听课接口，接口为/accounts/mylessons，接口针对当前用户身份做出不同操作，
+>* 对于学生是我要听课，后台查询所有该学生购买过的课程（这里指创建过订单的，但有可能支付未完成），返回这些课程的相关信息和支付情况
+>* 对于老师是我要上课，后台查询所有对应user为该老师的课程，返回这些课程的相关信息
+
 11.23更新说明：
 >* 添加用户反馈内容接口/suggestion/create,用户反馈内容以一条suggestion记录的形式存储到数据库中
 >* 添加app上我的视频对应后台接口/accounts/myvideo，返回当前登录用户自己录制上传的视频，供用户自己查看
@@ -273,7 +278,7 @@ if status == "error" means error
 
 
 > * Successful Return
->> * {status,user:[{lessonID,price,updated,description,videotype,thumbnails}...]}
+>> * {status,lessons:[{lessonID,price,updated,description,videotype,thumbnails}...]}
 
 > * Error Return
 >> * errcode = 1: 用户登录信息错误
@@ -282,6 +287,64 @@ if status == "error" means error
 > * example
 
 ```
+{
+  "status": "success",
+  "lessons": [
+    {
+      "lessonID": "57dc17f35e1d1e85426a47e6",
+      "price": 0,
+      "updated": "2016-09-16T16:04:03.725Z",
+      "description": "课程描述",
+      "videoType": "record",
+      "thumbnails": "/images/lesson_thumbnails/sample.jpg"
+    }
+	...
+  ]
+}
+```
+
+### 我要上课/我要听课接口
+> * /accounts/mylessons
+
+> * Input Parameters
+>> * userID:requested
+>> * token:requested
+>> * type:requested
+>> * pagestart:requested
+
+
+> * Successful Return
+>> * student:
+>> * {status,lessons:[{lessonID,price,updated,description,videotype,thumbnails,status}...]}
+>> * teacher:
+>> * {status,lessons:[{lessonID,price,updated,description,videotype,thumbnails}...]}
+
+> * Error Return
+>> * errcode = 1: 用户登录信息错误
+>> * errcode = 2: 函数调用异常
+
+> * example
+
+```
+student：
+{
+  "status": "success",
+  "lessons": [
+    {
+      "lessonID": "57ca8d01f418b47969097259",
+      "price": 0,
+      "updated": "2016-09-03T08:42:41.128Z",
+      "description": "课程描述",
+      "videoType": "record",
+      "thumbnails": "/images/lesson_thumbnails/sample.jpg",
+      "status": false
+    }
+	...
+  ]
+}
+```
+```
+teacher：
 {
   "status": "success",
   "lessons": [
