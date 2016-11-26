@@ -195,7 +195,7 @@ router.post('/getinfo', function (req, res){
     }
     else{
       res.json({status:'success',user:{'userID':userID,'userAvatar':user.avatar,'username':user.nickname,'description':user.description,'type':user.type,
-                                        'level':user.level,'subject':user.subject,'school':user.school,'style':user.style,'sex':user.sex}});
+                                        'level':user.level,'subject':user.subject,'school':user.school,'style':user.style,'sex':user.sex,'education':user.education}});
     }
   });
 });
@@ -211,6 +211,7 @@ router.post('/changeinfo',function (req, res){
   level = req.body.level;
   sex = req.body.sex;
   style = req.body.style;
+    education = req.body.education;
   User.findOne({ _id: userID,token:token }, function(err, user) {
     if (err) {
       res.json({status:'error','errcode':2});return;
@@ -219,7 +220,7 @@ router.post('/changeinfo',function (req, res){
       res.json({status:'error','errcode':1});
       return;
     }
-    User.update({_id:userID},{description:description,nickname:username,school:school,subject:subject,level:level,sex:sex,style:style},function(err,numberAffected, rawResponse) {
+    User.update({_id:userID},{description:description,nickname:username,school:school,subject:subject,level:level,sex:sex,style:style,education:education},function(err,numberAffected, rawResponse) {
     if (err) {
         res.json({status:'error','errcode': 2});
         return;

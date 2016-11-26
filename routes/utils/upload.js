@@ -15,6 +15,8 @@ var storage = multer.diskStorage({
             cb(null, 'public/images/lesson_thumbnails');
         }else if(file.fieldname == 'avatar'){
             cb(null,'public/images/avatars')
+        }else if(file.fieldname == 'newsimages'){
+            cb(null,'public/images/newsimages')
         }
     },
     filename: function (req, file, cb) {

@@ -8,11 +8,16 @@ var router = express.Router();
 var User = require('../models/user')
 var News = require('../models/news')
 var Comment = require('../models/comment')
+var upload = require('./utils/upload').upload;
 
-router.post('/create', function(req, res) {
+router.post('/create', upload.array('newsimages',12),function(req, res) {
     userID = req.body.userID;
     token = req.body.token;
-    images = req.body.images;
+    savedimages = []
+    req.files.forEach(function(e){
+        savedimages.push(e.filename);
+    })
+    images = savedimages;
     content = req.body.content;
     User.findOne({ _id: userID,token:token }, function(err, user) {
         if (err) {
@@ -49,7 +54,7 @@ router.post('/list', function(req, res) {
             res.json({status:'error','errcode':1});
             return;
         }
-        News.find().limit(pagestart*10,10).sort({update:-1}).populate('user').populate('likeusers','_id nickname').populate('comments','_id type content replyto replytoName').exec(function(err,newses){
+        News.find().limit(pagestart*10,10).sort({updated:-1}).populate('user').populate('likeusers','_id nickname').populate('comments','_id user username type content replyto replytoName').exec(function(err,newses){
             if (err)  {
                 res.json({status:'error','errcode':2});return;
             }
@@ -115,6 +120,7 @@ router.post('/comments/create',function(req,res){
             comment.replytoName = req.body.replytoName;
         }
         comment.user = user;
+        comment.username = user.nickname;
 
         comment.save(function(err) {
             if (err) {

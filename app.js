@@ -16,7 +16,10 @@ var announcement = require('./routes/announcement');
 var suggestion = require('./routes/suggestion');
 
 var app = express();
+var bodyParser = require('body-parser');
 
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb'}));
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -41,6 +44,7 @@ app.use('/pay',pay);
 app.use('/bill',bill);
 app.use('/announcement',announcement);
 app.use('/suggestion',suggestion);
+
 
 
 // catch 404 and forward to error handler

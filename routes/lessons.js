@@ -228,7 +228,7 @@ router.post('/details', function(req, res) {
             res.json({status:'error','errcode':1});
             return;
         }
-        Lesson.findOne({_id:lessonID}).populate('user').populate('comments','_id type content replyto replytoName').exec(function(err,lesson){
+        Lesson.findOne({_id:lessonID}).populate('user').populate('comments','_id user username type content replyto replytoName').exec(function(err,lesson){
             if (err)  {
                 res.json({status:'error','errcode':2});return;
             }
@@ -330,6 +330,7 @@ router.post('/comments/create',function(req,res){
             comment.replytoName = req.body.replytoName;
         }
         comment.user = user;
+        comment.username = user.nickname;
 
         comment.save(function(err) {
             if (err) {

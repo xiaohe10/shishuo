@@ -22,7 +22,9 @@ var UserSchema   = new Schema({
     description:{type:String,default:"这是个人简介"},
     style:{type:String,default:"这里是授课风格介绍"},
     avatar:{type:String,default:'/images/avatars/avatar_sample.jpg'},
-    nickname:{type:String,default:'学生'}
+    nickname:{type:String,default:'学生'},
+
+    education:{type:String,default:'高中'},//初中，高中，中专，大专，本科，硕士，博士，博士后，其他
 });
 UserSchema.pre('save', function(next) {
     var user = this;

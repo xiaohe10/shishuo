@@ -1,4 +1,10 @@
 # 师说 API 文档
+11.26更新说明：
+
+>* 更改了 抽题 /lesson/choose 和 /lesson/uploadvideo的bug
+>* getinfo 和 setinfo增加了 教育信息：education，直接填写相应的汉字：初中，高中，中专，大专，本科，硕士，博士，博士后，其他
+>* news/create bug修改，可以上传照片列表了，news/list 部落动态列表返回评论的昵称
+
 
 11.24更新说明：
 >* 增加我要上课/我要听课接口，接口为/accounts/mylessons，接口针对当前用户身份做出不同操作，
@@ -210,7 +216,7 @@ if status == "error" means error
 >> * token:requested
 
 > * Successful Return
->> * {status,user:{userID，userAvatar，username，description,type,level,subject,school,style,sex}}
+>> * {status,user:{userID，userAvatar，username，description,type,level,subject,school,style,sex,education}}
 
 > * Error Return
 >> * errcode = 1: 用户登录信息错误
@@ -231,7 +237,8 @@ if status == "error" means error
     "subject": "语文",
     "school": "XXXX学校",
     "style": "这里是授课风格介绍",
-    "sex": "male"
+    "sex": "male",
+    "education":"高中"
   }
 }
 ```
@@ -249,6 +256,7 @@ if status == "error" means error
 >> * level:requested
 >> * sex:requested
 >> * style:requested
+>> * education:requested //初中，高中，中专，大专，本科，硕士，博士，博士后，其他
 
 > * Successful Return
 >> * {status,user:{userID}}
@@ -1027,37 +1035,64 @@ teacher：
   "status": "success",
   "newses": [
     {
-      "newsID": "57d2ba2afe5081244697a5c0",
-      "updated": "2016-09-09T13:33:30.270Z",
+      "newsID": "583938ca67a9c3f4ef34fb21",
+      "updated": "2016-11-26T07:24:58.666Z",
+      "content": "这是一个新鲜事",
       "commentnums": 0,
       "likenums": 0,
       "likeusers": [],
       "images": [
-        "image1",
-        "image2"
+        "3fd16501df2fbe45d9171a68623f0b991480145098643.jpeg",
+        "5eb271409dfe9f828f449b96edbc63af1480145098649.png"
+      ],
+      "comments": [],
+      "user": {
+        "userID": "582bada68e36e61c1be44f47",
+        "avatar": "/images/avatars/avatar_sample.jpg",
+        "nickname": "老师"
+      }
+    },
+    {
+      "newsID": "58393759d5a82cf488cc1a83",
+      "updated": "2016-11-26T07:18:49.353Z",
+      "content": "这是一个新鲜事",
+      "commentnums": 0,
+      "likenums": 0,
+      "likeusers": [],
+      "images": [
+        "9d004fc84b635ff5448952f0b6e4910f1480144729335.jpeg"
       ],
       "comments": [
         {
-          "_id": "57d2bae8ad9f885028699a1d",
+          "_id": "58392bd688185fef44586d35",
+          "user": "582bada68e36e61c1be44f47",
           "content": "这是一条评论",
-          "type": "text"
+          "type": "text",
+          "username": "用户"
         },
         {
-          "_id": "57d2bb55e9915fdc1ee1a91f",
-          "replytoName": "xiaohe",
-          "replyto": "57d2493a887881642e9fc237",
+          "_id": "58392da1ecbc17f138f863d8",
+          "user": "582bada68e36e61c1be44f47",
           "content": "这是一条评论",
-          "type": "text"
+          "type": "text",
+          "username": "老师"
+        },
+        {
+          "_id": "583933b306f6ecf2bd1b655b",
+          "user": "582bada68e36e61c1be44f47",
+          "content": "这是一条评论",
+          "type": "text",
+          "username": "老师"
         }
       ],
       "user": {
-        "userID": "57d2493a887881642e9fc237",
+        "userID": "582bada68e36e61c1be44f47",
         "avatar": "/images/avatars/avatar_sample.jpg",
         "nickname": "老师"
       }
     }
-  ]
-}
+   ]
+ }
 ```
 
 ###发表一条新动态
@@ -1067,8 +1102,8 @@ teacher：
 > * Input Parameters
 >> * userID:requested
 >> * token:requested
->> * content: requested 动态内容
->> * images:requested 动态图片列表，是一个数组，如果没有图片则不用传或者为空
+>> * content: optional 文本内容
+>> * images:requested 动态图片列表，是一个文件数组，如果没有图片则不用传或者为空
 
 
 > * Successful Return
