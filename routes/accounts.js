@@ -292,7 +292,7 @@ router.post('/mylessons', function (req, res){
                   var lessons_serialize = [];
                   bills.forEach(function(bill){
                           lessons_serialize.push({lessonID:bill.lesson.id,price:bill.lesson.price,updated:bill.lesson.updated,description:bill.lesson.description,
-                            videoType:bill.lesson.videoType,thumbnails:bill.lesson.thumbnails,status:bill.status})
+                            videoType:bill.lesson.videoType,thumbnails:bill.lesson.thumbnails,status:bill.status,liveroom:bill.lesson.liveRoomID})
                 });
                 res.json({status:'success','lessons':lessons_serialize});
             }
@@ -307,7 +307,7 @@ router.post('/mylessons', function (req, res){
                   var lessons_serialize = [];
                   lessons.forEach(function(lesson){
                           lessons_serialize.push({lessonID:lesson.id,price:lesson.price,updated:lesson.updated,description:lesson.description,
-                            videoType:lesson.videoType,thumbnails:lesson.thumbnails})
+                            videoType:lesson.videoType,thumbnails:lesson.thumbnails,liveroom:lesson.liveRoomID})
                 });
                 res.json({status:'success','lessons':lessons_serialize});
             }
