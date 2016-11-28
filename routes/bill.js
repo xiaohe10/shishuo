@@ -126,8 +126,8 @@ router.post('/paid', function(req, res) {
 
 //webhook回调接口
 router.post('/webhook', function(req, res) {
-	var App_ID = 'c5d1cba1-5e3f-4ba0-941d-9b0a371fe719';//后续根据平台申请的更改
-	var App_Secret = '39a7a518-9ac8-4a9e-87bc-7885f33cf18c';//后续根据平台申请的更改
+	var App_ID = '04250155-4651-42d1-917d-2f793f720806';//后续根据平台申请的更改
+	var App_Secret = '811671b6-34d6-4db5-b020-484dcc8bf844';//后续根据平台申请的更改
 	timestamp = req.body.timestamp; //1426817510111
 	sign = req.body.sign;
 	transaction_fee = req.body.transaction_fee;
