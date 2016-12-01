@@ -1021,7 +1021,7 @@ teacher：
 
 
 > * Successful Return
->> * {newses:{newsID,images,likenums,likeusers:[{userID,nickname}]，commentnums,comments:[{_id,type,content,replytoName,replyto}],updated,user:{userID,avatar,nickname}},status}
+>> * {newses:{newsID,images,likenums,likeusers:[{userID,nickname}]，commentnums,comments:[{_id,user,username,type,content,replytoName,replyto}],updated,user:{userID,avatar,nickname}},status}
 >> * images 可以为空数组，comments中的 replyto 和 replytoName 如果没有回复则不存在该字段
 
 > * Error Return
