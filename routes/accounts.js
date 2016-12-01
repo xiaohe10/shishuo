@@ -57,7 +57,7 @@ router.post('/login',function(req,res){
         user.token = token;
         user.save(function(err){
           if (err)  res.json({status:'error','errcode':0});
-          else res.json({status:'success','user':{'userID':user.id,"token":user.token,"avatar":user.avatar,"username":user.nickname,"description":user.description,"type":user.type}});
+          else res.json({status:'success','user':{'userID':user.id,"token":user.token,"avatar":user.avatar,"nickname":user.nickname,"description":user.description,"type":user.type}});
         })
       }else{
         res.json({status:'error','errcode':2});
@@ -194,7 +194,7 @@ router.post('/getinfo', function (req, res){
       return;
     }
     else{
-      res.json({status:'success',user:{'userID':userID,'userAvatar':user.avatar,'username':user.nickname,'description':user.description,'type':user.type,
+      res.json({status:'success',user:{'userID':userID,'userAvatar':user.avatar,'nickname':user.nickname,'description':user.description,'type':user.type,
                                         'level':user.level,'subject':user.subject,'school':user.school,'style':user.style,'sex':user.sex,'education':user.education}});
     }
   });
