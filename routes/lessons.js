@@ -200,7 +200,10 @@ router.post('/list', function(req, res) {
                     if(lesson.thumbnails=='/images/lesson_thumbnails/sample.jpg'){
                         lesson.thumbnails = 'sample.jpg'
                     }
+					
                     var photo = path.join(__dirname,'../public/images/lesson_thumbnails/')+lesson.thumbnails;
+
+					lesson.thumbnails = '/images/lesson_thumbnails/'+lesson.thumbnails;
                     var dimensions = sizeOf(photo);
 
                     lessons_serialize.push({lessonID:lesson.id,price:lesson.price,updated:lesson.updated,description:lesson.description,videoType:lesson.videoType,
@@ -271,6 +274,7 @@ router.post('/details', function(req, res) {
 
                     }
 
+					lesson.thumbnails = '/images/lesson_thumbnails/'+lesson.thumbnails;
                         res.json({status:'success',lesson:{lessonID:lesson.id,price:lesson.price,updated:lesson.updated,description:lesson.description,
                             thumbnails:lesson.thumbnails,commentnums:"0",likenums:"0",comments:lesson.comments,
                             videoType:lesson.videoType,
