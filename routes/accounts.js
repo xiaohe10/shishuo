@@ -57,7 +57,7 @@ router.post('/login',function(req,res){
         user.token = token;
         user.save(function(err){
           if (err)  res.json({status:'error','errcode':0});
-          else res.json({status:'success','user':{'userID':user.id,"token":user.token,"avatar":user.avatar,"username":user.nickname,"description":user.description,"type":user.type}});
+          else res.json({status:'success','user':{'userID':user.id,"token":user.token,"avatar":user.avatar,"nickname":user.nickname,"description":user.description,"type":user.type}});
         })
       }else{
         res.json({status:'error','errcode':2});
