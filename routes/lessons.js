@@ -241,6 +241,7 @@ router.post('/details', function(req, res) {
             }else{
                 Bill.findOne({lesson:lessonID,student:userID},function(err,bill){
                     var paystate = "unpaid"; // 0
+<<<<<<< HEAD
                     //console.log(bill._id);
 					//console.log(bill.status);
 					if(err){
@@ -261,6 +262,12 @@ router.post('/details', function(req, res) {
 						console.log(bill._id);
 						console.log(bill.status);
 						console.log("paid------"+paystate);
+=======
+                    console.log(bill.status);
+                    if(!err && bill && bill.status==true) {
+                        console.log(paystate);
+                        paystate = "paid";
+>>>>>>> 1310ecf96639509dd1f6a370082949b1746d0df0
                     }
                     if(lesson.price == 0){
                         paystate = "paid";
@@ -268,7 +275,11 @@ router.post('/details', function(req, res) {
                     if(lesson.user._id == userID){
                         paystate = "owner";
                     }
+<<<<<<< HEAD
 					console.log("zhong-----"+paystate);
+=======
+                    console.log(paystate);
+>>>>>>> 1310ecf96639509dd1f6a370082949b1746d0df0
                     liveInfo = {
                         liveRoomID: lesson.liveRoomID,
                         startdate: lesson.startdate,

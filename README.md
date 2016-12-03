@@ -1,4 +1,8 @@
 # 师说 API 文档
+
+12.3更新说明：
+>* bill/create接口 调用时根据当前userID和lessonID判断是否已生成过订单，已生成的话会返回报错errcode：5和订单支付状态，避免重复订单
+
 11.26更新说明：
 
 >* 更改了 抽题 /lesson/choose 和 /lesson/uploadvideo的bug
@@ -1021,7 +1025,7 @@ teacher：
 
 
 > * Successful Return
->> * {newses:{newsID,images,likenums,likeusers:[{userID,nickname}]，commentnums,comments:[{_id,type,content,replytoName,replyto}],updated,user:{userID,avatar,nickname}},status}
+>> * {newses:{newsID,images,likenums,likeusers:[{userID,nickname}]，commentnums,comments:[{_id,user,username,type,content,replytoName,replyto}],updated,user:{userID,avatar,nickname}},status}
 >> * images 可以为空数组，comments中的 replyto 和 replytoName 如果没有回复则不存在该字段
 
 > * Error Return
