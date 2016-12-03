@@ -139,25 +139,36 @@ router.post('/webhook', function(req, res) {
 	console.log(signstr);
 	console.log(sign);
 	console.log(transaction_type);
+	console.log(transaction_id);
+	console.log(transaction_fee);
 	if(signstr!=sign){
 		console.log("A");
 	}
 	if(signstr!=sign || transaction_type!="PAY"){
 		res.json({status:'error','errcode':2});
+		console.log("B");
 		return;
 	}
 	Bill.findOne({_id:transaction_id},function(err,bill){
 		if(err){
+			console.log("C");
 			return;
 		}
-		if(bill.status == true || transaction_fee != bill.money){
-			return;
+		//if(bill.status == true || transaction_fee != bill.money){
+		//	console.log("D");
+		//	return;
+		//}
+	    if(bill.status == true){
+		   console.log("D");
+		   return;
 		}
 		else{
 			Bill.update({_id:bill._id},{status:true},function(err,numberAffected, rawResponse) {
                 if (err) {
+					console.log("E");
                   return;
                 }else{
+					console.log("F");
                 	res.send("success");
                 }
             });

@@ -241,8 +241,26 @@ router.post('/details', function(req, res) {
             }else{
                 Bill.findOne({lesson:lessonID,student:userID},function(err,bill){
                     var paystate = "unpaid"; // 0
-                    if(!err && bill && bill.status==true) {
-                        paystate = "paid";
+                    //console.log(bill._id);
+					//console.log(bill.status);
+					if(err){
+						console.log("err");
+					}
+					if(!bill){
+						console.log("no bill");
+					}
+					if(bill){
+						console.log(bill._id);
+						console.log(bill.status);
+					}
+					if(!err && bill && bill.status==true) {
+					  console.log(bill._id);
+					}
+					if(!err && bill && bill.status==true) {
+						paystate = "paid";
+						console.log(bill._id);
+						console.log(bill.status);
+						console.log("paid------"+paystate);
                     }
                     if(lesson.price == 0){
                         paystate = "paid";
@@ -250,7 +268,7 @@ router.post('/details', function(req, res) {
                     if(lesson.user._id == userID){
                         paystate = "owner";
                     }
-
+					console.log("zhong-----"+paystate);
                     liveInfo = {
                         liveRoomID: lesson.liveRoomID,
                         startdate: lesson.startdate,
@@ -275,7 +293,8 @@ router.post('/details', function(req, res) {
                     }
 
 					lesson.thumbnails = '/images/lesson_thumbnails/'+lesson.thumbnails;
-                        res.json({status:'success',lesson:{lessonID:lesson.id,price:lesson.price,updated:lesson.updated,description:lesson.description,
+                    console.log("final-----"+paystate);    
+					res.json({status:'success',lesson:{lessonID:lesson.id,price:lesson.price,updated:lesson.updated,description:lesson.description,
                             thumbnails:lesson.thumbnails,commentnums:"0",likenums:"0",comments:lesson.comments,
                             videoType:lesson.videoType,
                             teacher:{teacherID:lesson.user._id,avatar:lesson.user.avatar,nickname:lesson.user.nickname
