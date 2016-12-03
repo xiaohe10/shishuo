@@ -33,26 +33,37 @@ router.post('/create', function(req, res) {
     		res.json({status:'error','errcode':1});
     		return;
     	}
-    	Lesson.findOne({_id:lessonID}).populate('user').exec(function(err,lesson){
-            if(err){
-                res.json({status:'error','errcode':3});
-                return;
-            }
-            // console.log(lesson);
-            bill = new Bill();
-            bill.money = money;
-            bill.lesson = lesson;
-            bill.student = user;
-            bill.teacher = lesson.user;
-            bill.description_student = "您购买了 {0} 的课程:{1}".format(lesson.user.nickname,lesson.description);
-            bill.description_teacher = "{0} 购买了您的课程:{1}".format(user.nickname,lesson.description);
-            bill.save(function(err){
-                if(err){
-                    res.json({status:'error','errcode':4});return;
-                }
-                res.json({status:'success','billID':bill._id});
-            })
-        })
+    	Bill.findOne({lesson:lessonID,student:userID},function(err,bill){
+    		if(err){
+    			res.json({status:'error','errcode':2});return;
+    		}
+    		if(bill){
+    			res.json({status:'error','errcode':5,'billstatus':bill.status});return;
+    		}
+    		if(!bill){
+	    		Lesson.findOne({_id:lessonID}).populate('user').exec(function(err,lesson){
+		            if(err){
+		                res.json({status:'error','errcode':3});
+		                return;
+		            }
+		            // console.log(lesson);
+		            bill = new Bill();
+		            bill.money = money;
+		            bill.lesson = lesson;
+		            bill.student = user;
+		            bill.teacher = lesson.user;
+		            bill.description_student = "您购买了 {0} 的课程:{1}".format(lesson.user.nickname,lesson.description);
+		            bill.description_teacher = "{0} 购买了您的课程:{1}".format(user.nickname,lesson.description);
+		            bill.save(function(err){
+		                if(err){
+		                    res.json({status:'error','errcode':4});return;
+		                }
+		                res.json({status:'success','billID':bill._id});
+		            })
+		        })
+    		}
+    	})
+
     });
     
 
@@ -139,25 +150,32 @@ router.post('/webhook', function(req, res) {
 	console.log(signstr);
 	console.log(sign);
 	console.log(transaction_type);
+	console.log(transaction_id);
+	console.log(transaction_fee);
 	if(signstr!=sign){
 		console.log("A");
 	}
 	if(signstr!=sign || transaction_type!="PAY"){
 		res.json({status:'error','errcode':2});
+		console.log("B");
 		return;
 	}
 	Bill.findOne({_id:transaction_id},function(err,bill){
 		if(err){
+			console.log("C");
 			return;
 		}
 		if(bill.status == true || transaction_fee != bill.money){
+			console.log("D");
 			return;
 		}
 		else{
 			Bill.update({_id:bill._id},{status:true},function(err,numberAffected, rawResponse) {
                 if (err) {
+                	console.log("E");
                   return;
                 }else{
+                	console.log("F");
                 	res.send("success");
                 }
             });

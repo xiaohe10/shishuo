@@ -238,7 +238,9 @@ router.post('/details', function(req, res) {
             }else{
                 Bill.findOne({lesson:lessonID,student:userID},function(err,bill){
                     var paystate = "unpaid"; // 0
+                    console.log(bill.status);
                     if(!err && bill && bill.status==true) {
+                        console.log(paystate);
                         paystate = "paid";
                     }
                     if(lesson.price == 0){
@@ -247,7 +249,7 @@ router.post('/details', function(req, res) {
                     if(lesson.user._id == userID){
                         paystate = "owner";
                     }
-
+                    console.log(paystate);
                     liveInfo = {
                         liveRoomID: lesson.liveRoomID,
                         startdate: lesson.startdate,
