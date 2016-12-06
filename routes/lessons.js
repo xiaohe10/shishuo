@@ -135,7 +135,9 @@ router.post('/createlive',function(req,res){
     });
 })
 router.post('/uploadvideo', upload.single('thumbnails'), function(req, res) {
-// console.log(res);
+    // console.log(req);
+    // console.log(req.files);
+    // console.log(req.body);
     userID = req.body.userID;
     token = req.body.token;
     questionID = req.body.questionID;
@@ -238,10 +240,11 @@ router.post('/details', function(req, res) {
             }else{
                 Bill.findOne({lesson:lessonID,student:userID},function(err,bill){
                     var paystate = "unpaid"; // 0
-                    console.log(bill.status);
                     if(!err && bill && bill.status==true) {
-                        console.log(paystate);
                         paystate = "paid";
+                        console.log(paystate);
+                        console.log(bill._id);
+                        console.log(bill.status);
                     }
                     if(lesson.price == 0){
                         paystate = "paid";
