@@ -249,7 +249,7 @@ router.post('/myvideo', function (req, res){
           res.json({status:'error','errcode':1});
           return;
       }
-      console.log(person);
+      // console.log(person);
       Lesson.find({user:person}).limit(pagestart*10,10).sort({updated:-1}).populate('user').exec(function(err,lessons){
           if (err)  {
               res.json({status:'error','errcode':2});return;
@@ -259,7 +259,7 @@ router.post('/myvideo', function (req, res){
               lessons.forEach(function(lesson){
                   // if(lesson.user._id == userID){
                   //     console.log(lesson.user._id);
-                      lessons_serialize.push({lessonID:lesson.id,price:lesson.price,updated:lesson.updated,description:lesson.description,videoType:lesson.videoType,
+                      lessons_serialize.push({lessonID:lesson.id,price:lesson.price,updated:lesson.updated,description:lesson.description,videoType:lesson.videoType,videoID:lesson.videoID,
                         thumbnails:lesson.thumbnails})
                     // }
             });
@@ -294,8 +294,15 @@ router.post('/mylessons', function (req, res){
               else {
                   var lessons_serialize = [];
                   bills.forEach(function(bill){
+                          livePassword = ""
+                          if(bill.status == true){
+                              livePassword = {
+                                  teacherCCpassword: bill.lesson.teacherCCpassword,
+                                  studentCCpassword: bill.lesson.studentCCpassword
+                              }
+                          }
                           lessons_serialize.push({lessonID:bill.lesson.id,price:bill.lesson.price,updated:bill.lesson.updated,description:bill.lesson.description,
-                            videoType:bill.lesson.videoType,thumbnails:bill.lesson.thumbnails,status:bill.status,liveroom:bill.lesson.liveRoomID})
+                            videoType:bill.lesson.videoType,videoID:bill.lesson.videoID,thumbnails:bill.lesson.thumbnails,status:bill.status,liveroom:bill.lesson.liveRoomID,livePassword:livePassword})
                 });
                 res.json({status:'success','lessons':lessons_serialize});
             }
@@ -309,8 +316,12 @@ router.post('/mylessons', function (req, res){
               else {
                   var lessons_serialize = [];
                   lessons.forEach(function(lesson){
+                          livePassword = {
+                              teacherCCpassword: lesson.teacherCCpassword,
+                              studentCCpassword: lesson.studentCCpassword
+                          }
                           lessons_serialize.push({lessonID:lesson.id,price:lesson.price,updated:lesson.updated,description:lesson.description,
-                            videoType:lesson.videoType,thumbnails:lesson.thumbnails,liveroom:lesson.liveRoomID})
+                            videoType:lesson.videoType,videoID:lesson.videoID,thumbnails:lesson.thumbnails,liveroom:lesson.liveRoomID,livePassword:livePassword})
                 });
                 res.json({status:'success','lessons':lessons_serialize});
             }

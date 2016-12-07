@@ -211,9 +211,22 @@ router.post('/list', function(req, res) {
 					lesson.thumbnails = '/images/lesson_thumbnails/'+lesson.thumbnails;
                     var dimensions = sizeOf(photo);
 
+                    liveInfo = {
+                        liveRoomID: lesson.liveRoomID,
+                        startdate: lesson.startdate,
+                        enddate: lesson.enddate,
+                        classstarttime: lesson.classstarttime,
+                        classendtime: lesson.classendtime,
+
+                        enrolldeadline: lesson.enrolldeadline,
+
+                        classhours: lesson.classhours,
+                        studentslimit: lesson.studentslimit
+                    }
+
                     lessons_serialize.push({lessonID:lesson.id,price:lesson.price,updated:lesson.updated,description:lesson.description,videoType:lesson.videoType,
                                             thumbnails:lesson.thumbnails,thumbnailswidth:dimensions.width,thumbnailsheight:dimensions.height,commentnums:"0",likenums:"0",
-                                            teacher:{teacherID:lesson.user._id,avatar:lesson.user.avatar,nickname:lesson.user.nickname}})
+                                            liveInfo:liveInfo,teacher:{teacherID:lesson.user._id,avatar:lesson.user.avatar,nickname:lesson.user.nickname}})
                 });
 				//console.log(lessons_serialize);
                 res.json({status:'success','lessons':lessons_serialize});
