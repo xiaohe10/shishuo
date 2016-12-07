@@ -424,7 +424,7 @@ teacher：
 
 
 > * Successful Return
->> * {status,bill:{billID,owner,money,isout,description}}
+>> * {status,billID}
 
 > * Error Return
 >> * errcode = 1: 用户登录信息错误
@@ -433,7 +433,7 @@ teacher：
 > * example
 
 ```
-{"status":"success"}
+{"status":"success"，'billID':'00'}
 ```
 
 ###账单列表

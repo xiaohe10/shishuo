@@ -138,6 +138,9 @@ router.post('/uploadvideo', upload.single('thumbnails'), function(req, res) {
     console.log(req.file);
 	console.log("--------");
 	console.log(req.body);
+    // console.log(req);
+    // console.log(req.files);
+    // console.log(req.body);
     userID = req.body.userID;
     token = req.body.token;
     questionID = req.body.questionID;
@@ -265,8 +268,10 @@ router.post('/details', function(req, res) {
 						console.log("paid------"+paystate);
 					}
                     if(!err && bill && bill.status==true) {
-                        console.log(paystate);
                         paystate = "paid";
+                        console.log(paystate);
+                        console.log(bill._id);
+                        console.log(bill.status);
                     }
                     if(lesson.price == 0){
                         paystate = "paid";
