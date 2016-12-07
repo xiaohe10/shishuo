@@ -38,6 +38,9 @@ router.post('/login',function(req,res){
 
   var telephone = req.body.telephone;
   var password = req.body.password;
+  console.log(telephone);
+  console.log(password);
+  console.log(req.body);
   // fetch user and test password verification
   User.findOne({ telephone: telephone }, function(err, user) {
     if (err) {

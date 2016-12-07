@@ -135,7 +135,9 @@ router.post('/createlive',function(req,res){
     });
 })
 router.post('/uploadvideo', upload.single('thumbnails'), function(req, res) {
-// console.log(res);
+    console.log(req.file);
+	console.log("--------");
+	console.log(req.body);
     userID = req.body.userID;
     token = req.body.token;
     questionID = req.body.questionID;
@@ -222,7 +224,7 @@ router.post('/details', function(req, res) {
     userID = req.body.userID;
     usertoken = req.body.token;
     lessonID = req.body.lessonID
-
+    console.log(req.body); 
     User.findOne({ _id: userID,token:usertoken }, function(err, user) {
         if (err) {
             res.json({status:'error','errcode':2});return;
@@ -241,14 +243,13 @@ router.post('/details', function(req, res) {
             }else{
                 Bill.findOne({lesson:lessonID,student:userID},function(err,bill){
                     var paystate = "unpaid"; // 0
-<<<<<<< HEAD
                     //console.log(bill._id);
 					//console.log(bill.status);
 					if(err){
-						console.log("err");
+						//console.log("err");
 					}
 					if(!bill){
-						console.log("no bill");
+						//console.log("no bill");
 					}
 					if(bill){
 						console.log(bill._id);
@@ -262,12 +263,10 @@ router.post('/details', function(req, res) {
 						console.log(bill._id);
 						console.log(bill.status);
 						console.log("paid------"+paystate);
-=======
-                    console.log(bill.status);
+					}
                     if(!err && bill && bill.status==true) {
                         console.log(paystate);
                         paystate = "paid";
->>>>>>> 1310ecf96639509dd1f6a370082949b1746d0df0
                     }
                     if(lesson.price == 0){
                         paystate = "paid";
@@ -275,11 +274,8 @@ router.post('/details', function(req, res) {
                     if(lesson.user._id == userID){
                         paystate = "owner";
                     }
-<<<<<<< HEAD
 					console.log("zhong-----"+paystate);
-=======
                     console.log(paystate);
->>>>>>> 1310ecf96639509dd1f6a370082949b1746d0df0
                     liveInfo = {
                         liveRoomID: lesson.liveRoomID,
                         startdate: lesson.startdate,
