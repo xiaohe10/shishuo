@@ -1,5 +1,9 @@
 # 师说 API 文档
 
+12.9更新说明：
+>* lesson/list接口 现在根据传入type值不同显示不同类别的课程，具体内容见下方接口说明
+
+
 12.7更新说明：
 >* lesson/list接口返回增加liveInfo
 >* accounts/myvideo接口返回增加videoID
@@ -594,7 +598,7 @@ teacher：
 > * Input Parameters
 >> * userID:requested
 >> * token:requested
->> * type:optional type==0 代表师说的录制课程，type==1代表学生的热门视频, type==2 代表磨课的视频专区
+>> * type:optional type==0 对应“热门名师”的免费视频课程，type==1代表“热门考生”的学生发布视频, type==2 代表“磨课视频课程”的教师发布录播视频，type==3代表“磨课直播课程”的教师发布直播课程（此接口不传type参数则显示所有课程，type传入空值与type==0是一种情况）
 >> * pagestart:optional 分页开始，默认为 0，每次刷新10个
 
 > * Successful Return
