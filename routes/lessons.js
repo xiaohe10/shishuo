@@ -235,6 +235,9 @@ router.post('/list', function(req, res) {
     type = req.body.type;
     pagestart = req.body.pagestart;
 
+    if(!!type && type!=0 && type != 1 && type != 2 && type != 3){
+        res.json({status:'error','errcode':0});return;
+    }
     if(!pagestart) pagestart = 0;
     User.findOne({ _id: userID,token:usertoken }, function(err, user) {
         if (err) {
@@ -251,6 +254,23 @@ router.post('/list', function(req, res) {
             else {
                 var lessons_serialize = [];
                 lessons.forEach(function(lesson){
+                    if(type == 0){
+                        if(lesson.videoType != "record" || lesson.user.type != "teacher" || lesson.price != 0){
+                            return;
+                        }
+                    }else if(type == 1){
+                        if(lesson.videoType != "record" || lesson.user.type != "student" || lesson.price != 0){
+                            return;
+                        }
+                    }else if(type == 2){
+                        if(lesson.videoType != "record" || lesson.user.type != "teacher"){
+                            return;
+                        }
+                    }else if(type == 3){
+                        if(lesson.videoType != "live" || lesson.user.type != "teacher"){
+                            return;
+                        }
+                    }
                     if(lesson.thumbnails=='/images/lesson_thumbnails/sample.jpg'){
                         lesson.thumbnails = 'sample.jpg'
                     }
@@ -274,61 +294,7 @@ router.post('/list', function(req, res) {
                                             thumbnails:lesson.thumbnails,thumbnailswidth:dimensions.width,thumbnailsheight:dimensions.height,commentnums:"0",likenums:"0",
                                             liveInfo:liveInfo,teacher:{teacherID:lesson.user._id,avatar:lesson.user.avatar,nickname:lesson.user.nickname}})
                 });
-                console.log(lessons_serialize.length);
-                res.json({status:'success','lessons':lessons_serialize});
-            }
-        })
-    });
-});
-
-router.post('/list/record', function(req, res) {
-    userID = req.body.userID;
-    usertoken = req.body.token;
-    type = req.body.type;
-    pagestart = req.body.pagestart;
-
-    if(!pagestart) pagestart = 0;
-    User.findOne({ _id: userID,token:usertoken }, function(err, user) {
-        if (err) {
-            res.json({status:'error','errcode':2});return;
-        }
-        if(!user){
-            res.json({status:'error','errcode':1});
-            return;
-        }
-        Lesson.find().limit(pagestart*10,10).sort({updated:-1}).populate('user').exec(function(err,lessons){
-            if (err)  {
-                res.json({status:'error','errcode':2});return;
-            }
-            else {
-                var lessons_serialize = [];
-                lessons.forEach(function(lesson){
-                    if(lesson.videoType == "record"){
-                        if(lesson.thumbnails=='/images/lesson_thumbnails/sample.jpg'){
-                            lesson.thumbnails = 'sample.jpg'
-                        }
-                        var photo = path.join(__dirname,'../public/images/lesson_thumbnails/')+lesson.thumbnails;
-                        var dimensions = sizeOf(photo);
-
-                        liveInfo = {
-                            liveRoomID: lesson.liveRoomID,
-                            startdate: lesson.startdate,
-                            enddate: lesson.enddate,
-                            classstarttime: lesson.classstarttime,
-                            classendtime: lesson.classendtime,
-
-                            enrolldeadline: lesson.enrolldeadline,
-
-                            classhours: lesson.classhours,
-                            studentslimit: lesson.studentslimit
-                        }
-
-                        lessons_serialize.push({lessonID:lesson.id,price:lesson.price,updated:lesson.updated,description:lesson.description,videoType:lesson.videoType,
-                                                thumbnails:lesson.thumbnails,thumbnailswidth:dimensions.width,thumbnailsheight:dimensions.height,commentnums:"0",likenums:"0",
-                                                liveInfo:liveInfo,teacher:{teacherID:lesson.user._id,avatar:lesson.user.avatar,nickname:lesson.user.nickname}})
-                    }
-                });
-                console.log(lessons_serialize.length);
+                // console.log(lessons_serialize.length);
                 res.json({status:'success','lessons':lessons_serialize});
             }
         })
