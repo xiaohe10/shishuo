@@ -1,5 +1,12 @@
 # 师说 API 文档
 
+12.7更新说明：
+>* lesson/list接口返回增加liveInfo
+>* accounts/myvideo接口返回增加videoID
+>* accounts/mylessons接口返回增加videoID、livePassword
+>* 最新修改的接口需求于返回字段说明的更新，与运行的后台程序保持一致
+
+
 12.3更新说明：
 >* bill/create接口 调用时根据当前userID和lessonID判断是否已生成过订单，已生成的话会返回报错errcode：5和订单支付状态，避免重复订单
 
@@ -98,7 +105,7 @@ if status == "error" means error
 >> * password:requested
 
 > * Successful Return
->> * {user:{userID,token,type},status}
+>> * {user:{userID,token,avatar,nickname,description,type},status}
 >> * type: "student"代表学生，"teacher" 代表教师
 
 > * Error Return
@@ -111,12 +118,12 @@ if status == "error" means error
 {
   "status": "success",
   "user": {
-    "userID": "58340eb2a33d6b1c28e68b67",
-    "token": "f625b68b20845aeb1715397994b5a24fe1cc775ded515eee180c76ce374962d3d043474f1075d4405d2a5b23e22c6fd5e09411cc38cbaab7cfcba00e2720973e",
+    "userID": "58184fe203775a8f0fd1b096",
+    "token": "0f33f7ea745a0535329455301cc4ee41e782037f00e7ac81de10a89c6ef736661dc1b26f3a2132d2397fec1010fda4bcfbba279adff52654dc05c1979a86b3b5",
     "avatar": "/images/avatars/avatar_sample.jpg",
-    "username": "学生",
+    "nickname": "老师",
     "description": "这是个人简介",
-    "type": "teacher"
+    "type": "student"
   }
 }
 ```
@@ -128,6 +135,9 @@ if status == "error" means error
 >> * telephone:requested
 >> * password:requested
 >> * invitecode:optional
+>> * sex:optional("female"代表女性，默认"male"为男)
+>> * level:optional
+>> * subject:optional
 >> * type:requested （ type: "student"代表学生，"teacher" 代表教师）
 
 > * Successful Return
@@ -290,7 +300,7 @@ if status == "error" means error
 
 
 > * Successful Return
->> * {status,lessons:[{lessonID,price,updated,description,videotype,thumbnails}...]}
+>> * {status,lessons:[{lessonID,price,updated,description,videoType,videoID,thumbnails}...]}
 
 > * Error Return
 >> * errcode = 1: 用户登录信息错误
@@ -303,13 +313,14 @@ if status == "error" means error
   "status": "success",
   "lessons": [
     {
-      "lessonID": "57dc17f35e1d1e85426a47e6",
+      "lessonID": "58462cbc1849195616f1283a",
       "price": 0,
-      "updated": "2016-09-16T16:04:03.725Z",
+      "updated": "2016-12-06T03:13:00.944Z",
       "description": "课程描述",
       "videoType": "record",
-      "thumbnails": "/images/lesson_thumbnails/sample.jpg"
-    }
+      "videoID": "F7845E75DEBC6D3E9C33DC5901307461",
+      "thumbnails": "1ab929556253136862a10ebcf5719f9f1480993980751.jpg"
+    },
 	...
   ]
 }
@@ -327,9 +338,10 @@ if status == "error" means error
 
 > * Successful Return
 >> * student:
->> * {status,lessons:[{lessonID,price,updated,description,videotype,thumbnails,status}...]}
+>> * {status,lessons:[{lessonID,price,updated,description,videoType,videoID,thumbnails,status,liveroom,livePassword}...]}
 >> * teacher:
->> * {status,lessons:[{lessonID,price,updated,description,videotype,thumbnails}...]}
+>> * {status,lessons:[{lessonID,price,updated,description,videoType,videoID,thumbnails,liveroom,livePassword:{teacherCCpassword,studentCCpassword}}...]}
+>> * livePassword：老师和学生的密码如果未支付状态，那么livePassword为空（为方便调试，密码都是shishuo ,即使没有支付接口都为空，客户端这边也能先调试）
 
 > * Error Return
 >> * errcode = 1: 用户登录信息错误
@@ -343,13 +355,19 @@ student：
   "status": "success",
   "lessons": [
     {
-      "lessonID": "57ca8d01f418b47969097259",
-      "price": 0,
-      "updated": "2016-09-03T08:42:41.128Z",
-      "description": "课程描述",
-      "videoType": "record",
+      "lessonID": "584241cc812603d314ec08d0",
+      "price": 1,
+      "updated": "2016-12-03T03:53:48.438Z",
+      "description": "的点点滴滴",
+      "videoType": "live",
+      "videoID": "0",
       "thumbnails": "/images/lesson_thumbnails/sample.jpg",
-      "status": false
+      "status": true,
+      "liveroom": "D97E93E203AF42A19C33DC5901307461",
+      "livePassword": {
+        "teacherCCpassword": "shishuo",
+        "studentCCpassword": "shishuo"
+      }
     }
 	...
   ]
@@ -361,12 +379,18 @@ teacher：
   "status": "success",
   "lessons": [
     {
-      "lessonID": "57dc17f35e1d1e85426a47e6",
-      "price": 0,
-      "updated": "2016-09-16T16:04:03.725Z",
-      "description": "课程描述",
-      "videoType": "record",
-      "thumbnails": "/images/lesson_thumbnails/sample.jpg"
+      "lessonID": "584241cc812603d314ec08d0",
+      "price": 1,
+      "updated": "2016-12-03T03:53:48.438Z",
+      "description": "的点点滴滴",
+      "videoType": "live",
+      "videoID": "0",
+      "thumbnails": "/images/lesson_thumbnails/sample.jpg",
+      "liveroom": "D97E93E203AF42A19C33DC5901307461",
+      "livePassword": {
+        "teacherCCpassword": "shishuo",
+        "studentCCpassword": "shishuo"
+      }
     }
 	...
   ]
@@ -447,7 +471,7 @@ teacher：
 
 
 > * Successful Return
->> * {status,bills:[{billID,money,updated,description,isout]}
+>> * {status,bills:[{billID,money,updated,status,description,isout]}
 
 > * Error Return
 >> * errcode = 1: 用户登录信息错误
@@ -463,23 +487,11 @@ teacher：
       "billID": "582bb938e8f2761e8597a8ef",
       "money": 5,
       "updated": "2016-11-16T01:41:12.233Z",
+	  "status":true,
       "description": "您购买了 老师 的课程:课程描述",
       "isout": true
     },
-    {
-      "billID": "582bb0227f91281c6d98af20",
-      "money": 5,
-      "updated": "2016-11-16T01:02:26.189Z",
-      "description": "您购买了 老师 的课程:课程描述",
-      "isout": true
-    },
-    {
-      "billID": "582bafa27f91281c6d98af1f",
-      "money": 5,
-      "updated": "2016-11-16T01:00:18.284Z",
-      "description": "您购买了 老师 的课程:课程描述",
-      "isout": true
-    }
+	...
   ]
 }
 ```
@@ -487,7 +499,7 @@ teacher：
 
 ## 课程公告
 
-###创建(发布)课程公告
+### <del>创建(发布)课程公告</del>  <font color=red>这个接口现在被弃用了</font>
 
 
 > * /announcement/create
@@ -520,7 +532,9 @@ teacher：
   }}
 ```
 
-###显示课程公告
+
+### <del>显示课程公告</del>  <font color=red>这个接口现在被弃用了</font>
+
 
 > * /announcement/list
 > 
@@ -584,8 +598,11 @@ teacher：
 >> * pagestart:optional 分页开始，默认为 0，每次刷新10个
 
 > * Successful Return
->> * {lessons:{lessonID,thumbnails,thumbnailswidth,thumbnailsheight,likenums,commentnums,price,description,videoType,teacher:{teacherID,avatar,nickname}},status}
+>> * {lessons:{lessonID,price,updated,description,videoType,thumbnails,thumbnailswidth,thumbnailsheight,commentnums,likenums,liveInfo:{liveRoomID,startdate,enddate,classstarttime,classendtime,enrolldeadline,classhours,studentslimit},teacher:{teacherID,avatar,nickname}},status}
 >> * thumbnails：课程缩略图，likenums：点赞数，commentnums:评论数，avatar:老师头像,description:课程描述,price:价格
+>> *  videoType:record代表录播，live 代表直播
+>> * liveInfo：直播房间号、开始日期等信息
+
 
 
 > * Error Return
@@ -599,39 +616,33 @@ teacher：
   "status": "success",
   "lessons": [
     {
-      "lessonID": "582bcb4b7a033322282d618f",
-      "price": 0,
-      "updated": "2016-11-16T02:58:19.019Z",
-      "description": "课程描述",
+      "lessonID": "584241cc812603d314ec08d0",
+      "price": 1,
+      "updated": "2016-12-03T03:53:48.438Z",
+      "description": "的点点滴滴",
       "videoType": "live",
-      "thumbnails": "/images/lesson_thumbnails/sample.jpg",
+      "thumbnails": "sample.jpg",
       "thumbnailswidth": 587,
       "thumbnailsheight": 725,
       "commentnums": "0",
       "likenums": "0",
+      "liveInfo": {
+        "liveRoomID": "D97E93E203AF42A19C33DC5901307461",
+        "startdate": "2016-12-03T00:00:00.000Z",
+        "enddate": "2016-12-03T00:00:00.000Z",
+        "classstarttime": "11:53:30",
+        "classendtime": "12:53:00",
+        "enrolldeadline": "2016-12-04T00:00:00.000Z",
+        "classhours": 100,
+        "studentslimit": 100
+      },
       "teacher": {
-        "teacherID": "582baf6d7f91281c6d98af1e",
-        "avatar": "/images/avatars/avatar_sample.jpg",
-        "nickname": "老师"
+        "teacherID": "58340105a33d6b1c28e68b66",
+        "avatar": "/images/avatars/95791d20-b2eb-11e6-b6af-1d3916fb4a28.jpeg",
+        "nickname": "ybb"
       }
     },
-    {
-      "lessonID": "582bc91394de2f21bf362f87",
-      "price": 0,
-      "updated": "2016-11-16T02:48:51.205Z",
-      "description": "课程描述",
-      "videoType": "record",
-      "thumbnails": "/images/lesson_thumbnails/sample.jpg",
-      "thumbnailswidth": 587,
-      "thumbnailsheight": 725,
-      "commentnums": "0",
-      "likenums": "0",
-      "teacher": {
-        "teacherID": "582bada68e36e61c1be44f47",
-        "avatar": "/images/avatars/avatar_sample.jpg",
-        "nickname": "老师"
-      }
-    }
+	...
   ]
 }
 ```
@@ -645,7 +656,7 @@ teacher：
 >> * lessonID:requested
 
 > * Successful Return
->> * {lesson:{lessonID,thumbnails,likenums,commentnums,comments,price,videoID,videoType,description,teacher:{teacherID,avatar,nickname},paystate,liveInfo},status}
+>> * {lesson:{lessonID,price,updated,description,thumbnails,commentnums,likenums,comments,videoType,teacher:{teacherID,avatar,nickname},paystate,videoID,liveInfo:{liveRoomID,startdate,enddate,classstarttime,classendtime,enrolldeadline,classhours,studentslimit},livePassword:{teacherCCpassword,studentCCpassword}},status}
 >> * thumbnails：课程缩略图，likenums：点赞数，commentnums:评论数，avatar:老师头像,description:课程描述,price:价格
 >> *  videoType:record代表录播，live 代表直播
 >> * paystate: paid 已经支付过，unpaid 未支付
