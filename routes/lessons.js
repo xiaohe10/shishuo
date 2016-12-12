@@ -274,14 +274,14 @@ router.post('/list', function(req, res) {
                             return;
                         }
                     }
-                    if(lesson.thumbnails=='/images/lesson_thumbnails/sample.jpg'){
-                        lesson.thumbnails = 'sample.jpg'
-                    }
+                    //if(lesson.thumbnails=='/images/lesson_thumbnails/sample.jpg'){
+                        //lesson.thumbnails = 'sample.jpg'
+                    //}
 					
-                    var photo = path.join(__dirname,'../public/images/lesson_thumbnails/')+lesson.thumbnails;
+                    //var photo = path.join(__dirname,'../public/images/lesson_thumbnails/')+lesson.thumbnails;
 
-					lesson.thumbnails = '/images/lesson_thumbnails/'+lesson.thumbnails;
-                    var dimensions = sizeOf(photo);
+					//lesson.thumbnails = '/images/lesson_thumbnails/'+lesson.thumbnails;
+                    //var dimensions = sizeOf(photo);
 
                     liveInfo = {
                         liveRoomID: lesson.liveRoomID,
@@ -297,8 +297,8 @@ router.post('/list', function(req, res) {
                     }
 
                     lessons_serialize.push({lessonID:lesson.id,price:lesson.price,updated:lesson.updated,description:lesson.description,videoType:lesson.videoType,
-                                            thumbnails:lesson.thumbnails,thumbnailswidth:dimensions.width,thumbnailsheight:dimensions.height,commentnums:"0",likenums:"0",
-                                            liveInfo:liveInfo,teacher:{teacherID:lesson.user._id,avatar:lesson.user.avatar,nickname:lesson.user.nickname}})
+                                            thumbnails:lesson.thumbnails,commentnums:"0",likenums:"0",
+                                            liveInfo:liveInfo,teacher:{teacherID:lesson.user._id,avatar:lesson.user.avatar,nickname:lesson.user.nickname,teacherType:lesson.user.type}})
                 });
                 // console.log(lessons_serialize.length);
                 res.json({status:'success','lessons':lessons_serialize});
