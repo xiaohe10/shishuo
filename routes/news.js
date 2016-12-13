@@ -29,26 +29,30 @@ router.post('/create',multipartMiddleware,function(req, res) {
             res.json({status:'error','errcode':1});
             return;
         }
-        req.files.newsimages.forEach(function(e){
-            var filestr = uuid.v1();
-            var fileext = e.name.split('.');
-            var fileExt = fileext[fileext.length-1];
-            var filename = filestr+"."+fileExt;
-            var location = path.join(__dirname,'../public')+"/images/newsimages/"+filename;
-            var readStream = fs.createReadStream(e.path)
-            var writeStream = fs.createWriteStream(location);
-            var imagelocation = "/images/newsimages/"+filename;
-            readStream.pipe(writeStream);
-            readStream.on('end',function(err){
-                if(err){
-                  res.json({status:'error','errcode':2});
-                  return;
-                } else {
-                  fs.unlinkSync(e.path);
-                }
+        if(!!req.files && !!req.files.newsimages && req.files.newsimages.length>0){
+            req.files.newsimages.forEach(function(e){
+                console.log(e.name);
+                console.log(e.path);
+                var filestr = uuid.v1();
+                var fileext = e.name.split('.');
+                var fileExt = fileext[fileext.length-1];
+                var filename = filestr+"."+fileExt;
+                var location = path.join(__dirname,'../public')+"/images/newsimages/"+filename;
+                var readStream = fs.createReadStream(e.path)
+                var writeStream = fs.createWriteStream(location);
+                var imagelocation = "/images/newsimages/"+filename;
+                readStream.pipe(writeStream);
+                readStream.on('end',function(err){
+                    if(err){
+                      res.json({status:'error','errcode':2});
+                      return;
+                    } else {
+                      fs.unlinkSync(e.path);
+                    }
+                })
+                savedimages.push(imagelocation);
             })
-            savedimages.push(imagelocation);
-        })
+        }
         news = new News();
         news.user = user;
         news.images = savedimages;
