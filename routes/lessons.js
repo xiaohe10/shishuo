@@ -274,13 +274,13 @@ router.post('/list', function(req, res) {
                             return;
                         }
                     }
-                    //if(lesson.thumbnails=='/images/lesson_thumbnails/sample.jpg'){
-                        //lesson.thumbnails = 'sample.jpg'
-                    //}
+                    if(lesson.thumbnails=='/images/lesson_thumbnails/sample.jpg'){
+                        lesson.thumbnails = 'sample.jpg'
+                    }
 					
                     //var photo = path.join(__dirname,'../public/images/lesson_thumbnails/')+lesson.thumbnails;
 
-					//lesson.thumbnails = '/images/lesson_thumbnails/'+lesson.thumbnails;
+					if(lesson.thumbnails.length < 60){lesson.thumbnails = '/images/lesson_thumbnails/'+lesson.thumbnails;}
                     //var dimensions = sizeOf(photo);
 
                     liveInfo = {
