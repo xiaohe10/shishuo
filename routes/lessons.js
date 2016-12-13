@@ -16,6 +16,10 @@ var ccLive = require('./cclivesdk')
 upload = require('./utils/upload').upload;
 //****************
 var ccRecord = require('./ccrecordsdk')
+var uuid = require('node-uuid');
+var fs = require('fs');
+var multipart = require('connect-multiparty');
+var multipartMiddleware = multipart();
 //*****************
 router.post('/abc', function(req, res) {
     userID = req.body.userID;
@@ -29,34 +33,36 @@ router.post('/abc', function(req, res) {
             res.json({status:'error','errcode':1});
             return;
         }
-        ccRecord.getRecordVideos("","","","","json",function(videosinfo){
+        ccRecord.getRecordVideos("","","","6","json",function(videosinfo){
             console.log(videosinfo);
             videosinfo = JSON.parse(videosinfo);
             console.log(videosinfo.videos.video.length);
             // console.log(data.videos);
             videosinfo.videos.video.forEach(function(video){
-                // console.log(video.id);
-                // Lesson.findOne({videoID:video.id},function(err,lesson1){
-                //     if(err){console.log("ERR");return;}
-                //     if(!lesson1){
-                //         console.log("lesson not found , create");
-                //         lesson = new Lesson();
-                //         lesson.videoID = video.id;
-                //         lesson.user = user;
+                console.log(video.id);
+                Lesson.findOne({videoID:video.id},function(err,lesson1){
+                    if(err){console.log("ERR");return;}
+                    if(!lesson1){
+                        console.log("lesson not found , create");
+                        lesson = new Lesson();
+                        lesson.videoID = video.id;
+                        lesson.description = video.desp;
+                        lesson.thumbnails = video.image;
+                        lesson.user = user;
 
-                //         lesson.save(function(err,lesson){
-                //             if(err){
-                //                 console.log(err);
-                //                 return;
-                //             }else{
-                //                 console.log("create success");
-                //             }
-                //         })
-                //     }
-                //     if(lesson1){
-                //         console.log("lesson exists");
-                //     }
-                // });
+                        lesson.save(function(err,lesson){
+                            if(err){
+                                console.log(err);
+                                return;
+                            }else{
+                                console.log("create success");
+                            }
+                        })
+                    }
+                    if(lesson1){
+                        console.log("lesson exists");
+                    }
+                });
             });
             res.json({status:'success'});
         });
@@ -198,8 +204,6 @@ router.post('/uploadvideo', upload.single('thumbnails'), function(req, res) {
     questionID = req.body.questionID;
     videoID = req.body.videoID;
     thumbnails = req.file.filename;
-    // console.log(userID);
-    // console.log(token);
 
 
     price = req.body.price;
@@ -274,8 +278,12 @@ router.post('/list', function(req, res) {
                             return;
                         }
                     }
-                    if(lesson.thumbnails=='/images/lesson_thumbnails/sample.jpg'){
-                        lesson.thumbnails = 'sample.jpg'
+
+                   if(lesson.thumbnails=='/images/lesson_thumbnails/sample.jpg'){
+                       lesson.thumbnails = 'sample.jpg'
+                    }
+                    if(lesson.thumbnails.length < 60){
+                        lesson.thumbnails = '/images/lesson_thumbnails/'+lesson.thumbnails;
                     }
 					
                     //var photo = path.join(__dirname,'../public/images/lesson_thumbnails/')+lesson.thumbnails;
@@ -297,7 +305,7 @@ router.post('/list', function(req, res) {
                     }
 
                     lessons_serialize.push({lessonID:lesson.id,price:lesson.price,updated:lesson.updated,description:lesson.description,videoType:lesson.videoType,
-                                            thumbnails:lesson.thumbnails,commentnums:"0",likenums:"0",
+                                            thumbnails:lesson.thumbnails,commentnums:lesson.comments.length,likenums:lesson.likeusers.length,
                                             liveInfo:liveInfo,teacher:{teacherID:lesson.user._id,avatar:lesson.user.avatar,nickname:lesson.user.nickname,teacherType:lesson.user.type}})
                 });
                 // console.log(lessons_serialize.length);
@@ -388,10 +396,10 @@ router.post('/details', function(req, res) {
 
                     }
 
-					lesson.thumbnails = '/images/lesson_thumbnails/'+lesson.thumbnails;
                     console.log("final-----"+paystate);    
-					res.json({status:'success',lesson:{lessonID:lesson.id,price:lesson.price,updated:lesson.updated,description:lesson.description,
-                            thumbnails:lesson.thumbnails,commentnums:"0",likenums:"0",comments:lesson.comments,
+			
+                        res.json({status:'success',lesson:{lessonID:lesson.id,price:lesson.price,updated:lesson.updated,description:lesson.description,
+                            thumbnails:lesson.thumbnails,commentnums:lesson.comments.length,likenums:lesson.likeusers.length,comments:lesson.comments,
                             videoType:lesson.videoType,
                             teacher:{teacherID:lesson.user._id,avatar:lesson.user.avatar,nickname:lesson.user.nickname
                             },paystate:paystate,videoID:recordvideoID ,liveInfo:liveInfo,livePassword:livePassword}});
