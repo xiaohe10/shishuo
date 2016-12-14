@@ -249,7 +249,6 @@ router.post('/myvideo', function (req, res){
           res.json({status:'error','errcode':1});
           return;
       }
-      // console.log(person);
       Lesson.find({user:person}).limit(pagestart*10,10).sort({updated:-1}).populate('user').exec(function(err,lessons){
           if (err)  {
               res.json({status:'error','errcode':2});return;
@@ -257,11 +256,12 @@ router.post('/myvideo', function (req, res){
           else {
               var lessons_serialize = [];
               lessons.forEach(function(lesson){
-                  // if(lesson.user._id == userID){
-                  //     console.log(lesson.user._id);
+                      if(lesson.thumbnails=='/images/lesson_thumbnails/sample.jpg'){
+                         lesson.thumbnails = 'sample.jpg'
+                      }
+                      lesson.thumbnails = '/images/lesson_thumbnails/'+lesson.thumbnails;
                       lessons_serialize.push({lessonID:lesson.id,price:lesson.price,updated:lesson.updated,description:lesson.description,videoType:lesson.videoType,videoID:lesson.videoID,
-                        thumbnails:lesson.thumbnails})
-                    // }
+                        thumbnails:lesson.thumbnails,commentnums:lesson.comments.length,likenums:lesson.likeusers.length})
             });
             res.json({status:'success','lessons':lessons_serialize});
         }
