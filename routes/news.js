@@ -19,6 +19,16 @@ router.post('/create',multipartMiddleware,function(req, res) {
     userID = req.body.userID;
     token = req.body.token;
     savedimages = [];
+    if(!!req.files){
+        if(!!req.files.newsimages){
+            console.log(req.files.newsimages);
+        }
+        else{
+            console.log("---no newsimages");
+        }
+    }else{
+        console.log("---no files");
+    }
 
     content = req.body.content;
     User.findOne({ _id: userID,token:token }, function(err, user) {
@@ -29,10 +39,35 @@ router.post('/create',multipartMiddleware,function(req, res) {
             res.json({status:'error','errcode':1});
             return;
         }
+        if(!!req.files && !!req.files.newsimages && !req.files.newsimages.length){
+            console.log("One Picture");
+            console.log(req.files.newsimages);
+
+            console.log(req.files.newsimages.name);
+            console.log(req.files.newsimages.path);
+            var filestr = uuid.v1();
+            var fileext = req.files.newsimages.name.split('.');
+            var fileExt = fileext[fileext.length-1];
+            var filename = filestr+"."+fileExt;
+            var location = path.join(__dirname,'../public')+"/images/newsimages/"+filename;
+            var readStream = fs.createReadStream(req.files.newsimages.path)
+            var writeStream = fs.createWriteStream(location);
+            var imagelocation = "/images/newsimages/"+filename;
+            readStream.pipe(writeStream);
+            readStream.on('end',function(err){
+                if(err){
+                  res.json({status:'error','errcode':2});
+                  return;
+                } else {
+                  fs.unlinkSync(req.files.newsimages.path);
+                }
+            })
+            savedimages.push(imagelocation);        
+        }
         if(!!req.files && !!req.files.newsimages && req.files.newsimages.length>0){
             req.files.newsimages.forEach(function(e){
                 console.log("----------foreach");
-				console.log(e.name);
+                console.log(e.name);
                 console.log(e.path);
                 var filestr = uuid.v1();
                 var fileext = e.name.split('.');

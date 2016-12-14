@@ -1,5 +1,11 @@
 # 师说 API 文档
 
+12.13更新说明：
+>* lesson/list、lesson/details、news/list接口返回的likenums、commentnums现在不会一直为“0”，返回真实数据
+>* CC后台上传的录播视频已全部关联到我们的服务端，挂在CC上的视频返回的thumbnail直接使用CC接口返回的，需要直接获取图片，我们后台原本返回的还需要拼接url
+>* lesson/list接口不再返回课程图片的宽高
+>* news/create接口现在支持多张图片上传，对应图片文件的fieldname应为newsimages，多张图片构成数组供后台解析
+
 12.9更新说明：
 >* lesson/list接口 现在根据传入type值不同显示不同类别的课程，具体内容见下方接口说明
 
@@ -602,7 +608,7 @@ teacher：
 >> * pagestart:optional 分页开始，默认为 0，每次刷新10个
 
 > * Successful Return
->> * {lessons:{lessonID,price,updated,description,videoType,thumbnails,thumbnailswidth,thumbnailsheight,commentnums,likenums,liveInfo:{liveRoomID,startdate,enddate,classstarttime,classendtime,enrolldeadline,classhours,studentslimit},teacher:{teacherID,avatar,nickname}},status}
+>> * {lessons:{lessonID,price,updated,description,videoType,thumbnails,commentnums,likenums,liveInfo:{liveRoomID,startdate,enddate,classstarttime,classendtime,enrolldeadline,classhours,studentslimit},teacher:{teacherID,avatar,nickname,teacherType}},status}
 >> * thumbnails：课程缩略图，likenums：点赞数，commentnums:评论数，avatar:老师头像,description:课程描述,price:价格
 >> *  videoType:record代表录播，live 代表直播
 >> * liveInfo：直播房间号、开始日期等信息
