@@ -19,6 +19,8 @@ router.post('/create',multipartMiddleware,function(req, res) {
     userID = req.body.userID;
     token = req.body.token;
     savedimages = [];
+	console.log("--------req");
+	console.log(req);
     if(!!req.files){
         if(!!req.files.newsimages){
             console.log(req.files.newsimages);
