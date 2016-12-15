@@ -172,17 +172,17 @@ if status == "error" means error
 > * /accounts/changepassword
 
 > * Input Parameters
->> * telephone:requested
 >> * password:requested
 >> * newpassword:requested
 >> * re_newpassword:requested
 >> * userID:requested
->> * type:requested （ type: "student"代表学生，"teacher" 代表教师）
+>> * token:requested
 
 > * Successful Return
 >> * {status,user:{userID}}
 
 > * Error Return
+>> * errcode = 0: 免登陆体验账号，不提供修改密码服务
 >> * errcode = 1: 此手机号已经注册
 >> * errcode = 2: 密码不正确或两次输入新密码不同
 
@@ -224,7 +224,7 @@ if status == "error" means error
 >> * type:requested （ type: "student"代表学生，"teacher" 代表教师）
 
 > * Successful Return
->> * {status,user:{userID，userAvatar}}
+>> * {status,user:{userID，avatar}}
 
 > * Error Return
 >> * errcode = 1: 用户登录信息错误
@@ -233,7 +233,7 @@ if status == "error" means error
 > * example
 
 ```
-{"status":"success","user":{"userID":"1001","userAvatar":"/images/avatars/avatar_sample.jpg"}}
+{"status":"success","user":{"userID":"1001","avatar":"/images/avatars/avatar_sample.jpg"}}
 ```
 
 ### 获取个人信息
@@ -244,7 +244,7 @@ if status == "error" means error
 >> * token:requested
 
 > * Successful Return
->> * {status,user:{userID，userAvatar，username，description,type,level,subject,school,style,sex,education}}
+>> * {status,user:{userID，avatar，nickname，description,type,level,subject,school,style,sex,education}}
 
 > * Error Return
 >> * errcode = 1: 用户登录信息错误
@@ -257,8 +257,8 @@ if status == "error" means error
   "status": "success",
   "user": {
     "userID": "58340eb2a33d6b1c28e68b67",
-    "userAvatar": "/images/avatars/avatar_sample.jpg",
-    "username": "学生",
+    "avatar": "/images/avatars/avatar_sample.jpg",
+    "nickname": "学生",
     "description": "这是个人简介",
     "type": "teacher",
     "level": "小学",
@@ -314,7 +314,7 @@ if status == "error" means error
 
 
 > * Successful Return
->> * {status,lessons:[{lessonID,price,updated,description,videoType,videoID,thumbnails}...]}
+>> * {status,lessons:[{lessonID,price,updated,description,videoType,videoID,thumbnails,commentnums,likenums}...]}
 
 > * Error Return
 >> * errcode = 1: 用户登录信息错误
@@ -333,7 +333,9 @@ if status == "error" means error
       "description": "课程描述",
       "videoType": "record",
       "videoID": "F7845E75DEBC6D3E9C33DC5901307461",
-      "thumbnails": "1ab929556253136862a10ebcf5719f9f1480993980751.jpg"
+      "thumbnails": "1ab929556253136862a10ebcf5719f9f1480993980751.jpg",
+	  "commentnums":1,
+	  "likenums":2
     },
 	...
   ]
@@ -352,7 +354,7 @@ if status == "error" means error
 
 > * Successful Return
 >> * student:
->> * {status,lessons:[{lessonID,price,updated,description,videoType,videoID,thumbnails,status,liveroom,livePassword}...]}
+>> * {status,lessons:[{lessonID,price,updated,description,videoType,videoID,thumbnails,status,billID,liveroom,livePassword}...]}
 >> * teacher:
 >> * {status,lessons:[{lessonID,price,updated,description,videoType,videoID,thumbnails,liveroom,livePassword:{teacherCCpassword,studentCCpassword}}...]}
 >> * livePassword：老师和学生的密码如果未支付状态，那么livePassword为空（为方便调试，密码都是shishuo ,即使没有支付接口都为空，客户端这边也能先调试）
@@ -376,7 +378,8 @@ student：
       "videoType": "live",
       "videoID": "0",
       "thumbnails": "/images/lesson_thumbnails/sample.jpg",
-      "status": true,
+      "billID": "584241cc812603d314e",      
+	  "status": true,
       "liveroom": "D97E93E203AF42A19C33DC5901307461",
       "livePassword": {
         "teacherCCpassword": "shishuo",

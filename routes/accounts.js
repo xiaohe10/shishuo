@@ -178,7 +178,7 @@ router.post('/changeavatar',multipartMiddleware,function (req, res){
               res.json({status:'error','errcode': 2});
               return;
             }else {
-              res.json({status:'success',user:{'userID':userID,'userAvatar':newavatar}});}
+              res.json({status:'success',user:{'userID':userID,'avatar':newavatar}});}
           });
         }
     })
@@ -198,7 +198,7 @@ router.post('/getinfo', function (req, res){
       return;
     }
     else{
-      res.json({status:'success',user:{'userID':userID,'userAvatar':user.avatar,'nickname':user.nickname,'description':user.description,'type':user.type,
+      res.json({status:'success',user:{'userID':userID,'avatar':user.avatar,'nickname':user.nickname,'description':user.description,'type':user.type,
                                         'level':user.level,'subject':user.subject,'school':user.school,'style':user.style,'sex':user.sex,'education':user.education}});
     }
   });
