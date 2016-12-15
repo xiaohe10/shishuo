@@ -38,7 +38,7 @@ router.post('/create', function(req, res) {
     			res.json({status:'error','errcode':2});return;
     		}
     		if(bill){
-    			res.json({status:'error','errcode':5,'billstatus':bill.status});return;
+    			res.json({status:'success','billID':bill._id});return;
     		}
     		if(!bill){
 	    		Lesson.findOne({_id:lessonID}).populate('user').exec(function(err,lesson){
