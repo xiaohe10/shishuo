@@ -72,16 +72,17 @@ router.post('/login',function(req,res){
 
 //修改密码
 router.post('/changepassword',function(req,res){
-  telephone = req.body.telephone;
+  // telephone = req.body.telephone;
   password = req.body.password;
   userID = req.body.userID;
   newpassword = req.body.newpassword;
   re_newpassword = req.body.re_newpassword;
-  if(telephone == "anonymous") {
-    res.json({status:'error','errcode':1});return;
+  token = req.body.token;
+  if(userID == "57c46e700d21db303f349c55") {
+    res.json({status:'error','errcode':0});return;
   }
   // fetch user and test password verification
-  User.findOne({ telephone: telephone }, function(err, user) {
+  User.findOne({ _id:userID,token:token}, function(err, user) {
     if (err) {
       res.json({status:'error','errcode':2});return;
     }
@@ -108,7 +109,7 @@ router.post('/changepassword',function(req,res){
                 res.json({status: 'error', 'errcode': 2});
                 return;
               }
-              User.update({_id:userID},{telephone:telephone,password:hash},function(err,numberAffected, rawResponse) {
+              User.update({_id:userID},{password:hash},function(err,numberAffected, rawResponse) {
                 if (err) {
                   res.json({status: 'error', 'errcode': 2});
                   return;
