@@ -20,6 +20,9 @@ var uuid = require('node-uuid');
 var fs = require('fs');
 var multipart = require('connect-multiparty');
 var multipartMiddleware = multipart();
+
+
+
 //*****************
 router.post('/abc', function(req, res) {
     userID = req.body.userID;
@@ -90,25 +93,87 @@ router.post('/choose', function(req, res) {
             res.json({status:'error','errcode':1});
             return;
         }
+
+        questionlist = {}
+
+        var questions = JSON.parse(fs.readFileSync('tiku.json', 'utf8'));
+
+
+
         query = {}
-        if(!!lessonType1) query["lessonType1"]= lessonType1
-        if(!!lessonType2) query["lessonType2"]= lessonType2
-        if(!!lessonlevel) query["lessonLevel"]= lessonlevel
-        if(!!lessonsubject) query["lessonSubject"]= lessonsubject
-        query = {}
-        Question.find(query,function(err,question){
-            if(err || question.length == 0){
-                console.log(err);
-                res.json({status:'error','errcode':3});return;
+        lessonlevel_map = {3:'高中',2:'初中',1:'小学',0:'幼儿园'}
+        lessonsubject_map = {0:"语文",1:"数学",2:"英语",3:"物理",4:"化学",5:"生物",6:"历史",7:"地理",8:"政治",9:"体育",10:"美术",11:"信息技术",12:"音乐",13:"其他",14:"综合"}
+        if(lessonlevel == undefined){
+            lessonlevel = 2;
+        }
+        if(lessonsubject == undefined){
+            lessonsubject = 1;
+        }
+        lessonlevel= lessonlevel_map[lessonlevel] //年级
+        lessonsubject= lessonsubject_map[lessonsubject] //学科
+
+        console.log('lessonlevel:',lessonlevel,',lessonsubject:',lessonsubject);
+
+        if((!!lessonlevel) && (!!lessonsubject)){
+            aval_ques = questions;
+            aval_ques = aval_ques[lessonlevel]
+            if(!!aval_ques){
+                aval_ques = aval_ques[lessonsubject];
+                if(!!aval_ques){
+                    range = aval_ques.length;
+                    rand_index =  Math.floor(Math.random() * (range));
+
+                    selected_que = aval_ques[rand_index];
+                    console.log(selected_que)
+
+                    thumbnails = selected_que.thumbnails;
+                    new_thumb = [];
+                    for (t in thumbnails){
+                        new_t = '/compressed/'+thumbnails[t]+'.jpg'
+                        new_thumb.push(new_t);
+                    }
+                    selected_que.thumbnails = new_thumb;
+                    res.json({status:'success','question':selected_que});
+                    return;
+                }
             }
-            //question = question[0];
-            all = question.length;
-            index = Math.floor(Math.random()*all);
+            if(!aval_ques){
+                query = {}
+                Question.find(query,function(err,question){
+                    if(err || question.length == 0){
+                        console.log(err);
+                        res.json({status:'error','errcode':3});return;
+                    }
+                    //question = question[0];
+                    all = question.length;
+                    index = Math.floor(Math.random()*all);
 
-            question = question[index];
-            res.json({status:'success','question':{'questionID':question._id,'questionContent':question.content,'thumbnails': question.thumbnails,'preparationtime': question.preparationtime,'answertime':question.answertime}});
+                    question = question[index];
+                    res.json({status:'success','question':{'questionID':question._id,'questionContent':question.content,'thumbnails': question.thumbnails,'preparationtime': question.preparationtime,'answertime':question.answertime}});
 
-        });
+                });
+            }
+        }
+
+        // if(!!lessonType1) query["lessonType1"]= lessonType1
+        // if(!!lessonType2) query["lessonType2"]= lessonType2
+        // if(!!lessonlevel) query["lessonLevel"]= lessonlevel_map[lessonlevel] //年级
+        // if(!!lessonsubject) query["lessonSubject"]= lessonsubject_map[lessonsubject] //学科
+        //
+        // query = {}
+        // Question.find(query,function(err,question){
+        //     if(err || question.length == 0){
+        //         console.log(err);
+        //         res.json({status:'error','errcode':3});return;
+        //     }
+        //     //question = question[0];
+        //     all = question.length;
+        //     index = Math.floor(Math.random()*all);
+        //
+        //     question = question[index];
+        //     res.json({status:'success','question':{'questionID':question._id,'questionContent':question.content,'thumbnails': question.thumbnails,'preparationtime': question.preparationtime,'answertime':question.answertime}});
+        //
+        // });
 
     });
 });
