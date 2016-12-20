@@ -14,6 +14,7 @@ var pay = require('./routes/pay');
 var bill = require('./routes/bill');
 var announcement = require('./routes/announcement');
 var suggestion = require('./routes/suggestion');
+var invitecode = require('./routes/invitecode');
 
 var app = express();
 var bodyParser = require('body-parser');
@@ -44,6 +45,7 @@ app.use('/pay',pay);
 app.use('/bill',bill);
 app.use('/announcement',announcement);
 app.use('/suggestion',suggestion);
+app.use('/invitecode',invitecode);
 
 
 

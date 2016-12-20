@@ -10,6 +10,7 @@ var uuid = require('node-uuid');
 var User = require('../models/user')
 var Lesson = require('../models/lesson')
 var Bill = require('../models/bill')
+var Invitecode = require('../models/invitecode')
 
 router.post('/register', function(req, res) {
   var user = new User({telephone:req.body.telephone,password:req.body.password});
@@ -23,16 +24,44 @@ router.post('/register', function(req, res) {
     user.level = req.body.level;
   }
   if(!!req.body.subject){
-    user.type = req.body.subject;
+    user.subject = req.body.subject;
   }
-  user.save(function(err){
-    if (err)  res.json({status:'error','errcode':1});
-    else {
-      res.json({status:'success',user:{'userID':user.id}});
-      console.log(user);
+  User.findOne({telephone:req.body.telephone},function(err,person){
+    if (err) {
+      res.json({status:'error','errcode':1});return;
     }
-  })
-  ;
+    if(person){
+      res.json({status:'error','errcode':3});return;
+    }
+    if(!person){
+      if(user.type == 'teacher' || !!req.body.invitecode){
+        Invitecode.findOne({code:req.body.invitecode},function(err,invitecode){
+          if(err) {
+            res.json({status:'error','errcode':1});return;
+          }
+          if(!invitecode){
+            res.json({status:'error','errcode':2});return;
+          }
+          user.save(function(err){
+            if (err)  res.json({status:'error','errcode':1});
+            else {
+              res.json({status:'success',user:{'userID':user.id}});
+              console.log(user);
+            }
+          });
+        });
+      }else{
+        user.save(function(err){
+          if (err)  res.json({status:'error','errcode':1});
+          else {
+            res.json({status:'success',user:{'userID':user.id}});
+            console.log(user);
+          }
+        });
+      }
+    }
+  });
+
 });
 router.post('/login',function(req,res){
 
