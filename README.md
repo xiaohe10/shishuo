@@ -158,8 +158,9 @@ if status == "error" means error
 >> * {user:{userID},status}
 
 > * Error Return
->> * errcode = 1: 此手机号已经注册
+>> * errcode = 1: 函数调用异常
 >> * errcode = 2: 邀请码不正确
+>> * errcode = 3: 此手机号已经注册
 
 > * example
 
