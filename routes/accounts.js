@@ -244,7 +244,7 @@ router.post('/changeinfo',function (req, res){
   level = req.body.level;
   sex = req.body.sex;
   style = req.body.style;
-    education = req.body.education;
+  education = req.body.education;
   User.findOne({ _id: userID,token:token }, function(err, user) {
     if (err) {
       res.json({status:'error','errcode':2});return;

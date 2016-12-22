@@ -50,7 +50,7 @@ router.post('/abc', function(req, res) {
                         lesson = new Lesson();
                         lesson.videoID = video.id;
                         lesson.description = video.desp;
-                        lesson.thumbnails = video.image;
+                        lesson.thumbnails = video.image.replace("0.jpg","1.jpg");
                         lesson.user = user;
 
                         lesson.save(function(err,lesson){
@@ -82,8 +82,8 @@ router.post('/choose', function(req, res) {
     token = req.body.token;
     lessonType1 = req.body.lessonType1;
     lessonType2 = req.body.lessonType2;
-    lessonlevel = req.body.lessonlevel;
-    lessonsubject = req.body.lessonsubject;
+    lessonlevel = req.body.lessonLevel;
+    lessonsubject = req.body.lessonSubject;
 
     User.findOne({ _id: userID,token:token }, function(err, user) {
         if (err) {
