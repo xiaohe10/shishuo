@@ -331,8 +331,21 @@ router.post('/mylessons', function (req, res){
                                   studentCCpassword: bill.lesson.studentCCpassword
                               }
                           }
+                          liveInfo = {
+                              liveRoomID: bill.lesson.liveRoomID,
+                              startdate: bill.lesson.startdate,
+                              enddate: bill.lesson.enddate,
+                              classstarttime: bill.lesson.classstarttime,
+                              classendtime: bill.lesson.classendtime,
+
+                              enrolldeadline: bill.lesson.enrolldeadline,
+
+                              classhours: bill.lesson.classhours,
+                              studentslimit: bill.lesson.studentslimit
+                          }
                           lessons_serialize.push({lessonID:bill.lesson.id,price:bill.lesson.price,updated:bill.lesson.updated,description:bill.lesson.description,
-                            videoType:bill.lesson.videoType,videoID:bill.lesson.videoID,thumbnails:bill.lesson.thumbnails,billID:bill.id,status:bill.status,liveroom:bill.lesson.liveRoomID,livePassword:livePassword,commentnums:bill.lesson.comments.length,likenums:bill.lesson.likeusers.length})
+                            videoType:bill.lesson.videoType,videoID:bill.lesson.videoID,thumbnails:bill.lesson.thumbnails,billID:bill.id,status:bill.status,
+                            liveInfo:liveInfo,livePassword:livePassword,commentnums:bill.lesson.comments.length,likenums:bill.lesson.likeusers.length})
                 });
                 res.json({status:'success','lessons':lessons_serialize});
             }
