@@ -19,18 +19,18 @@ router.post('/create',multipartMiddleware,function(req, res) {
     userID = req.body.userID;
     token = req.body.token;
     savedimages = [];
-	console.log("--------req");
-	console.log(req);
-    if(!!req.files){
-        if(!!req.files.newsimages){
-            console.log(req.files.newsimages);
-        }
-        else{
-            console.log("---no newsimages");
-        }
-    }else{
-        console.log("---no files");
-    }
+	// console.log("--------req");
+	// console.log(req);
+    // if(!!req.files){
+    //     if(!!req.files.newsimages){
+    //         console.log(req.files.newsimages);
+    //     }
+    //     else{
+    //         console.log("---no newsimages");
+    //     }
+    // }else{
+    //     console.log("---no files");
+    // }
 
     content = req.body.content;
     User.findOne({ _id: userID,token:token }, function(err, user) {
@@ -42,11 +42,11 @@ router.post('/create',multipartMiddleware,function(req, res) {
             return;
         }
         if(!!req.files && !!req.files.newsimages && !req.files.newsimages.length){
-            console.log("One Picture");
-            console.log(req.files.newsimages);
+            // console.log("One Picture");
+            // console.log(req.files.newsimages);
 
-            console.log(req.files.newsimages.name);
-            console.log(req.files.newsimages.path);
+            // console.log(req.files.newsimages.name);
+            // console.log(req.files.newsimages.path);
             var filestr = uuid.v1();
             var fileext = req.files.newsimages.name.split('.');
             var fileExt = fileext[fileext.length-1];
@@ -68,9 +68,9 @@ router.post('/create',multipartMiddleware,function(req, res) {
         }
         if(!!req.files && !!req.files.newsimages && req.files.newsimages.length>0){
             req.files.newsimages.forEach(function(e){
-                console.log("----------foreach");
-                console.log(e.name);
-                console.log(e.path);
+                // console.log("----------foreach");
+                // console.log(e.name);
+                // console.log(e.path);
                 var filestr = uuid.v1();
                 var fileext = e.name.split('.');
                 var fileExt = fileext[fileext.length-1];
@@ -213,6 +213,29 @@ router.post('/comments/create',function(req,res){
             });
         });
 
+    });
+})
+
+router.post('/delete',function(req,res){
+    userID = req.body.userID;
+    usertoken = req.body.token;
+    newsID = req.body.newsID;
+    User.findOne({ _id: userID,token:usertoken }, function(err, user) {
+        if (err) {
+            res.json({status:'error','errcode':2});return;
+        }
+        if(!user){
+            res.json({status:'error','errcode':1});
+            return;
+        }
+        News.remove({_id:newsID},function(err,news){
+            if(err){
+                res.json({status:'error','errcode':2});return;
+            }
+            // console.log(news);
+            // console.log("remove success!");
+            res.json({status:'success'});
+        });
     });
 })
 

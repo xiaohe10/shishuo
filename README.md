@@ -1,4 +1,6 @@
 # 师说 API 文档
+12.26更新说明
+>* 后台新增部落动态删除接口news/delete,接口详细说明见下方文档，前端应设置用户只能对自己发布的动态消息调用删除接口的权限
 
 12.14更新说明：
 >* accounts/mylessons接口对于学生显示已购买课程列表（创建订单，不一定支付完成），现在增加返回对应账单的billID，便于前端处理未支付完成订单，点击跳转到支付界面即可，现在增添返回对应视频的点赞数和评论数，均为真实数据
@@ -1157,6 +1159,33 @@ teacher：
 }
 ```
 
+
+
+###删除一条已发布动态
+
+> * /news/delete
+
+> * Input Parameters
+>> * userID:requested
+>> * token:requested
+>> * newsID: requested
+
+
+
+> * Successful Return
+>> * {status}
+
+> * Error Return
+>> * errcode = 1: 用户登录信息错误，请重新登陆
+>> * errcode = 2: 数据库操作函数异常
+
+> * example
+
+```
+{
+  "status": "success"
+}
+```
 
 ### 给朋友圈点赞
 
