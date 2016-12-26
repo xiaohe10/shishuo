@@ -358,7 +358,8 @@ if status == "error" means error
 
 > * Successful Return
 >> * student:
->> * {status,lessons:[{lessonID,price,updated,description,videoType,videoID,thumbnails,status,billID,liveroom,livePassword}...]}
+>> * {status,lessons:[{lessonID,price,updated,description,videoType,videoID,thumbnails,status,billID,liveInfo：{liveRoomID,startdate,enddate,classstarttime,classendtime,enrolldeadline,classhours,
+studentslimit},livePassword:{teacherCCpassword,studentCCpassword}}...]}}...]}
 >> * teacher:
 >> * {status,lessons:[{lessonID,price,updated,description,videoType,videoID,thumbnails,liveroom,livePassword:{teacherCCpassword,studentCCpassword}}...]}
 >> * livePassword：老师和学生的密码如果未支付状态，那么livePassword为空（为方便调试，密码都是shishuo ,即使没有支付接口都为空，客户端这边也能先调试）
@@ -375,20 +376,31 @@ student：
   "status": "success",
   "lessons": [
     {
-      "lessonID": "584241cc812603d314ec08d0",
+      "lessonID": "585c9b711d63643273cf1c72",
       "price": 1,
-      "updated": "2016-12-03T03:53:48.438Z",
-      "description": "的点点滴滴",
+      "updated": "2016-12-23T03:35:13.540Z",
+      "description": "这是一个测试",
       "videoType": "live",
       "videoID": "0",
       "thumbnails": "/images/lesson_thumbnails/sample.jpg",
-      "billID": "584241cc812603d314e",      
-	  "status": true,
-      "liveroom": "D97E93E203AF42A19C33DC5901307461",
+      "billID": "5860b9e9e4f58c5c0e542103",
+      "status": true,
+      "liveInfo": {
+        "liveRoomID": "86395DCD7AD71ACB9C33DC5901307461",
+        "startdate": "2016-01-01T16:00:00.000Z",
+        "enddate": "2016-01-02T16:00:00.000Z",
+        "classstarttime": "8:00",
+        "classendtime": "",
+        "enrolldeadline": "2015-12-31T16:00:00.000Z",
+        "classhours": 12,
+        "studentslimit": 20
+      },
       "livePassword": {
         "teacherCCpassword": "shishuo",
         "studentCCpassword": "shishuo"
-      }
+      },
+      "commentnums": 0,
+      "likenums": 0
     }
 	...
   ]
