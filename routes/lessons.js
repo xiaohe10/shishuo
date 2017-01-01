@@ -123,7 +123,7 @@ router.post('/choose', function(req, res) {
                     rand_index =  Math.floor(Math.random() * (range));
 
                     selected_que = aval_ques[rand_index];
-                    console.log(selected_que)
+                    // console.log(selected_que)
 
                     thumbnails = selected_que.thumbnails;
                     new_thumb = [];
