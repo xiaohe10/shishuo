@@ -112,7 +112,7 @@ router.post('/choose', function(req, res) {
         lessonsubject= lessonsubject_map[lessonsubject] //学科
         var aval_ques = null;
 
-        console.log('lessonlevel:',lessonlevel,',lessonsubject:',lessonsubject);
+        console.log('lessonType1',lessonType1,'lessonType2',lessonType2,'lessonlevel:',lessonlevel,',lessonsubject:',lessonsubject);
         if(lessonType1 == 0){
             if(lessonType2 == 3){
                 //结构化文本题库
@@ -135,6 +135,23 @@ router.post('/choose', function(req, res) {
                 return;
             }else{
                 //图片题库
+                //体育用文字题库
+                if(lessonsubject == '体育'){
+                    aval_ques = text_questions['体育']
+                    aval_ques = aval_ques[lessonlevel]
+                    range = aval_ques.length;
+                    rand_index =  Math.floor(Math.random() * (range));
+                    selected_que = aval_ques[rand_index];
+                    thumbnails = selected_que.thumbnails;
+                    new_thumb = [];
+                    for (t in thumbnails){
+                        new_t = '/compressed/'+thumbnails[t]+'.jpg'
+                        new_thumb.push(new_t);
+                    }
+                    selected_que.thumbnails = new_thumb;
+                    res.json({status:'success','question':{'questionID':0,'questionContent':selected_que,'thumbnails': [],'preparationtime': 30,'answertime':30}});
+                    return;
+                }
                 if((!!lessonlevel) && (!!lessonsubject)){
                     aval_ques = questions;
                     aval_ques = aval_ques[lessonlevel]
@@ -204,7 +221,25 @@ router.post('/choose', function(req, res) {
                 return;
 
             }else{
+
                 //其他用图片题库
+                //体育用文字题库
+                if(lessonsubject == '体育'){
+                    aval_ques = text_questions['体育']
+                    aval_ques = aval_ques[lessonlevel]
+                    range = aval_ques.length;
+                    rand_index =  Math.floor(Math.random() * (range));
+                    selected_que = aval_ques[rand_index];
+                    thumbnails = selected_que.thumbnails;
+                    new_thumb = [];
+                    for (t in thumbnails){
+                        new_t = '/compressed/'+thumbnails[t]+'.jpg'
+                        new_thumb.push(new_t);
+                    }
+                    selected_que.thumbnails = new_thumb;
+                    res.json({status:'success','question':{'questionID':0,'questionContent':selected_que,'thumbnails': [],'preparationtime': 30,'answertime':30}});
+                    return;
+                }
                 if((!!lessonlevel) && (!!lessonsubject)){
                     aval_ques = questions;
                     aval_ques = aval_ques[lessonlevel]
