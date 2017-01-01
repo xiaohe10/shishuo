@@ -21,6 +21,9 @@ var fs = require('fs');
 var multipart = require('connect-multiparty');
 var multipartMiddleware = multipart();
 
+var questions = JSON.parse(fs.readFileSync('tiku-order.json', 'utf8'));
+var text_questions = JSON.parse(fs.readFileSync('text-tiku.json', 'utf8'));
+
 
 
 //*****************
@@ -80,10 +83,10 @@ router.post('/abc', function(req, res) {
 router.post('/choose', function(req, res) {
     userID = req.body.userID;
     token = req.body.token;
-    lessonType1 = req.body.lessonType1;
-    lessonType2 = req.body.lessonType2;
-    lessonlevel = req.body.lessonLevel;
-    lessonsubject = req.body.lessonSubject;
+    lessonType1 = req.body.lessonType1; //0 代表教师资格证面试/ 1 代表是 教师招聘
+    lessonType2 = req.body.lessonType2; //0：说课，1：片段教学，2：试教，3：结构化面试 4：答辩
+    lessonlevel = req.body.lessonLevel; // 3:'高中',2:'初中',1:'小学',0:'幼儿园'
+    lessonsubject = req.body.lessonSubject; //0:"语文",1:"数学",2:"英语",3:"物理",4:"化学",5:"生物",6:"历史",7:"地理",8:"政治",9:"体育",10:"美术",11:"信息技术",12:"音乐",13:"其他",14:"综合"
 
     User.findOne({ _id: userID,token:token }, function(err, user) {
         if (err) {
@@ -95,10 +98,6 @@ router.post('/choose', function(req, res) {
         }
 
         questionlist = {}
-
-        var questions = JSON.parse(fs.readFileSync('tiku.json', 'utf8'));
-
-
 
         query = {}
         lessonlevel_map = {3:'高中',2:'初中',1:'小学',0:'幼儿园'}
