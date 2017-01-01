@@ -99,7 +99,7 @@ router.post('/choose', function(req, res) {
 
         questionlist = {}
 
-        query = {}
+
         lessonlevel_map = {3:'高中',2:'初中',1:'小学',0:'幼儿园'}
         lessonsubject_map = {0:"语文",1:"数学",2:"英语",3:"物理",4:"化学",5:"生物",6:"历史",7:"地理",8:"政治",9:"体育",10:"美术",11:"信息技术",12:"音乐",13:"其他",14:"综合"}
         if(lessonlevel == undefined){
@@ -110,69 +110,143 @@ router.post('/choose', function(req, res) {
         }
         lessonlevel= lessonlevel_map[lessonlevel] //年级
         lessonsubject= lessonsubject_map[lessonsubject] //学科
+        var aval_ques = null;
 
         console.log('lessonlevel:',lessonlevel,',lessonsubject:',lessonsubject);
+        if(lessonType1 == 0){
+            if(lessonType2 == 3){
+                //结构化文本题库
+                if(lessonlevel != '幼儿园'){
+                    lessonlevel = '中小学';
+                }
+                aval_ques = text_questions['结构化']
+                aval_ques = aval_ques[lessonlevel]
+                range = aval_ques.length;
+                rand_index =  Math.floor(Math.random() * (range));
+                selected_que = aval_ques[rand_index];
+                thumbnails = selected_que.thumbnails;
+                new_thumb = [];
+                for (t in thumbnails){
+                    new_t = '/compressed/'+thumbnails[t]+'.jpg'
+                    new_thumb.push(new_t);
+                }
+                selected_que.thumbnails = new_thumb;
+                res.json({status:'success','question':{'questionID':0,'questionContent':selected_que,'thumbnails': [],'preparationtime': 30,'answertime':30}});
+                return;
+            }else{
+                //图片题库
+                if((!!lessonlevel) && (!!lessonsubject)){
+                    aval_ques = questions;
+                    aval_ques = aval_ques[lessonlevel]
+                    if(!!aval_ques){
+                        aval_ques = aval_ques[lessonsubject];
+                        if(!!aval_ques){
+                            range = aval_ques.length;
+                            rand_index =  Math.floor(Math.random() * (range));
 
-        if((!!lessonlevel) && (!!lessonsubject)){
-            aval_ques = questions;
-            aval_ques = aval_ques[lessonlevel]
-            if(!!aval_ques){
-                aval_ques = aval_ques[lessonsubject];
-                if(!!aval_ques){
-                    range = aval_ques.length;
-                    rand_index =  Math.floor(Math.random() * (range));
+                            selected_que = aval_ques[rand_index];
+                            // console.log(selected_que)
 
-                    selected_que = aval_ques[rand_index];
-                    // console.log(selected_que)
-
-                    thumbnails = selected_que.thumbnails;
-                    new_thumb = [];
-                    for (t in thumbnails){
-                        new_t = '/compressed/'+thumbnails[t]+'.jpg'
-                        new_thumb.push(new_t);
+                            thumbnails = selected_que.thumbnails;
+                            new_thumb = [];
+                            for (t in thumbnails){
+                                new_t = '/compressed/'+thumbnails[t]+'.jpg'
+                                new_thumb.push(new_t);
+                            }
+                            selected_que.thumbnails = new_thumb;
+                            res.json({status:'success','question':selected_que});
+                            return;
+                        }
                     }
-                    selected_que.thumbnails = new_thumb;
-                    res.json({status:'success','question':selected_que});
-                    return;
                 }
             }
-            if(!aval_ques){
-                query = {}
-                Question.find(query,function(err,question){
-                    if(err || question.length == 0){
-                        console.log(err);
-                        res.json({status:'error','errcode':3});return;
+        }else{
+            //教师招聘
+
+
+            if(lessonType2 == 3){
+                //结构化面试
+                if(lessonlevel != '幼儿园'){
+                    lessonlevel = '中小学';
+                }
+                aval_ques = text_questions['结构化']
+                aval_ques = aval_ques[lessonlevel]
+                range = aval_ques.length;
+                rand_index =  Math.floor(Math.random() * (range));
+                selected_que = aval_ques[rand_index];
+                thumbnails = selected_que.thumbnails;
+                new_thumb = [];
+                for (t in thumbnails){
+                    new_t = '/compressed/'+thumbnails[t]+'.jpg'
+                    new_thumb.push(new_t);
+                }
+                selected_que.thumbnails = new_thumb;
+                res.json({status:'success','question':{'questionID':0,'questionContent':selected_que,'thumbnails': [],'preparationtime': 30,'answertime':30}});
+                return;
+            }else if(lessonType2 == 4){
+                //答辩
+                if(lessonlevel != '幼儿园'){
+                    lessonlevel = '中小学';
+                }
+                aval_ques = text_questions['答辩']
+                aval_ques = aval_ques[lessonlevel]
+                range = aval_ques.length;
+                rand_index =  Math.floor(Math.random() * (range));
+                selected_que = aval_ques[rand_index];
+                thumbnails = selected_que.thumbnails;
+                new_thumb = [];
+                for (t in thumbnails){
+                    new_t = '/compressed/'+thumbnails[t]+'.jpg'
+                    new_thumb.push(new_t);
+                }
+                selected_que.thumbnails = new_thumb;
+                res.json({status:'success','question':{'questionID':0,'questionContent':selected_que,'thumbnails': [],'preparationtime': 30,'answertime':30}});
+                return;
+
+            }else{
+                //其他用图片题库
+                if((!!lessonlevel) && (!!lessonsubject)){
+                    aval_ques = questions;
+                    aval_ques = aval_ques[lessonlevel]
+                    if(!!aval_ques){
+                        aval_ques = aval_ques[lessonsubject];
+                        if(!!aval_ques){
+                            range = aval_ques.length;
+                            rand_index =  Math.floor(Math.random() * (range));
+
+                            selected_que = aval_ques[rand_index];
+                            // console.log(selected_que)
+
+                            thumbnails = selected_que.thumbnails;
+                            new_thumb = [];
+                            for (t in thumbnails){
+                                new_t = '/compressed/'+thumbnails[t]+'.jpg'
+                                new_thumb.push(new_t);
+                            }
+                            selected_que.thumbnails = new_thumb;
+                            res.json({status:'success','question':selected_que});
+                            return;
+                        }
                     }
-                    //question = question[0];
-                    all = question.length;
-                    index = Math.floor(Math.random()*all);
-
-                    question = question[index];
-                    res.json({status:'success','question':{'questionID':question._id,'questionContent':question.content,'thumbnails': question.thumbnails,'preparationtime': question.preparationtime,'answertime':question.answertime}});
-
-                });
+                }
             }
         }
+        if(!aval_ques){
+            query = {}
+            Question.find(query,function(err,question){
+                if(err || question.length == 0){
+                    console.log(err);
+                    res.json({status:'error','errcode':3});return;
+                }
+                //question = question[0];
+                all = question.length;
+                index = Math.floor(Math.random()*all);
 
-        // if(!!lessonType1) query["lessonType1"]= lessonType1
-        // if(!!lessonType2) query["lessonType2"]= lessonType2
-        // if(!!lessonlevel) query["lessonLevel"]= lessonlevel_map[lessonlevel] //年级
-        // if(!!lessonsubject) query["lessonSubject"]= lessonsubject_map[lessonsubject] //学科
-        //
-        // query = {}
-        // Question.find(query,function(err,question){
-        //     if(err || question.length == 0){
-        //         console.log(err);
-        //         res.json({status:'error','errcode':3});return;
-        //     }
-        //     //question = question[0];
-        //     all = question.length;
-        //     index = Math.floor(Math.random()*all);
-        //
-        //     question = question[index];
-        //     res.json({status:'success','question':{'questionID':question._id,'questionContent':question.content,'thumbnails': question.thumbnails,'preparationtime': question.preparationtime,'answertime':question.answertime}});
-        //
-        // });
+                question = question[index];
+                res.json({status:'success','question':{'questionID':question._id,'questionContent':question.content,'thumbnails': question.thumbnails,'preparationtime': question.preparationtime,'answertime':question.answertime}});
+
+            });
+        }
 
     });
 });
