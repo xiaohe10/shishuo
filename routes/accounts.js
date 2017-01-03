@@ -63,6 +63,40 @@ router.post('/register', function(req, res) {
   });
 
 });
+
+router.post('/forgetpwd', function(req, res) {
+  var telephone = req.body.telephone;
+  var newpassword = req.body.newpassword;
+
+  User.findOne({telephone:telephone},function(err,user){
+    if (err) {
+      res.json({status:'error','errcode':1});return;
+    }
+    if(!user){
+      res.json({status:'error','errcode':2});return;
+    }
+    bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
+      if (err){
+        res.json({status: 'error', 'errcode': 1});
+        return;
+      }
+      // hash the password using our new salt
+      bcrypt.hash(newpassword, salt, function(err, hash) {
+        if (err){
+          res.json({status: 'error', 'errcode': 1});
+          return;
+        }
+        User.update({telephone:telephone},{password:hash},function(err,numberAffected, rawResponse) {
+          if (err) {
+            res.json({status: 'error', 'errcode': 1});
+            return;
+          }else res.json({status:'success'});
+        });
+      });
+    });
+  });
+});
+
 router.post('/login',function(req,res){
 
   var telephone = req.body.telephone;

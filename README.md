@@ -1,4 +1,8 @@
 # 师说 API 文档
+1.3更新说明
+>* 后台忘记密码对应接口accounts/forgetpwd,接口详细说明见下方文档，前端需要判断两次输入新密码是否一致，以及保证用户通过短信验证后调用修改密码接口
+
+
 12.26更新说明
 >* 后台新增部落动态删除接口news/delete,接口详细说明见下方文档，前端应设置用户只能对自己发布的动态消息调用删除接口的权限
 >* accounts/mylessons接口显示学生已购买课程时，增加返回直播课程相关的liveInfo
@@ -169,6 +173,29 @@ if status == "error" means error
 
 ```
 {"user":{"userID":"1001"},"status":"success"}
+```
+
+
+### 用户忘记密码
+> * /accounts/forgetpwd
+
+> * Input Parameters
+>> * telephone:requested
+>> * newpassword:requested
+
+
+> * Successful Return
+>> * {status}
+
+> * Error Return
+>> * errcode = 1: 函数调用异常
+>> * errcode = 2: 该用户尚未注册
+
+
+> * example
+
+```
+{"status":"success"}
 ```
 
 
