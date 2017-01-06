@@ -1,4 +1,7 @@
 # 师说 API 文档
+1.6更新说明
+>* 后台lesson/list接口，增加返回livePassword字段，当传入type为3对应前端磨课直播课程时，且直播课程price为0时增加返回对应直播间的老师和学生密码，其余情况返回livePassword为空，方便用户点击免费直播课程直接进入对应直播间，接口使用文档已更新
+
 1.3更新说明
 >* 后台忘记密码对应接口accounts/forgetpwd,接口详细说明见下方文档，前端需要判断两次输入新密码是否一致，以及保证用户通过短信验证后调用修改密码接口
 
@@ -658,7 +661,7 @@ teacher：
 >> * pagestart:optional 分页开始，默认为 0，每次刷新10个
 
 > * Successful Return
->> * {lessons:{lessonID,price,updated,description,videoType,thumbnails,commentnums,likenums,liveInfo:{liveRoomID,startdate,enddate,classstarttime,classendtime,enrolldeadline,classhours,studentslimit},teacher:{teacherID,avatar,nickname,teacherType}},status}
+>> * {lessons:{lessonID,price,updated,description,videoType,thumbnails,commentnums,likenums,liveInfo:{liveRoomID,startdate,enddate,classstarttime,classendtime,enrolldeadline,classhours,studentslimit},livePassword:{teacherCCpassword,studentCCpassword}，teacher:{teacherID,avatar,nickname,teacherType}},status}
 >> * thumbnails：课程缩略图，likenums：点赞数，commentnums:评论数，avatar:老师头像,description:课程描述,price:价格
 >> *  videoType:record代表录播，live 代表直播
 >> * liveInfo：直播房间号、开始日期等信息
@@ -696,6 +699,7 @@ teacher：
         "classhours": 100,
         "studentslimit": 100
       },
+	  "livePassword": "",
       "teacher": {
         "teacherID": "58340105a33d6b1c28e68b66",
         "avatar": "/images/avatars/95791d20-b2eb-11e6-b6af-1d3916fb4a28.jpeg",
@@ -706,6 +710,46 @@ teacher：
   ]
 }
 ```
+```
+{
+  "status": "success",
+  "lessons": [
+    {
+      "lessonID": "584241cc812603d314ec08d0",
+      "price": 0,
+      "updated": "2016-12-03T03:53:48.438Z",
+      "description": "的点点滴滴",
+      "videoType": "live",
+      "thumbnails": "sample.jpg",
+      "thumbnailswidth": 587,
+      "thumbnailsheight": 725,
+      "commentnums": "0",
+      "likenums": "0",
+      "liveInfo": {
+        "liveRoomID": "D97E93E203AF42A19C33DC5901307461",
+        "startdate": "2016-12-03T00:00:00.000Z",
+        "enddate": "2016-12-03T00:00:00.000Z",
+        "classstarttime": "11:53:30",
+        "classendtime": "12:53:00",
+        "enrolldeadline": "2016-12-04T00:00:00.000Z",
+        "classhours": 100,
+        "studentslimit": 100
+      },
+	  "livePassword": {
+        "teacherCCpassword": "shishuo",
+        "studentCCpassword": "shishuo"
+      },
+      "teacher": {
+        "teacherID": "58340105a33d6b1c28e68b66",
+        "avatar": "/images/avatars/95791d20-b2eb-11e6-b6af-1d3916fb4a28.jpeg",
+        "nickname": "ybb"
+      }
+    },
+	...
+  ]
+}
+```
+
 ###获取视频详情
 (直接获取了评论列表）
 > * /lesson/details

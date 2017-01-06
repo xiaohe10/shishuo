@@ -39,7 +39,7 @@ router.post('/abc', function(req, res) {
             res.json({status:'error','errcode':1});
             return;
         }
-        ccRecord.getRecordVideos("","","","6","json",function(videosinfo){
+        ccRecord.getRecordVideos("","","","16","json",function(videosinfo){
             console.log(videosinfo);
             videosinfo = JSON.parse(videosinfo);
             console.log(videosinfo.videos.video.length);
@@ -472,9 +472,18 @@ router.post('/list', function(req, res) {
                         studentslimit: lesson.studentslimit
                     }
 
+                    livePassword = ""
+                    if(lesson.videoType == "live" && lesson.price == 0){
+                        livePassword = {
+                            teacherCCpassword: lesson.teacherCCpassword,
+                            studentCCpassword: lesson.studentCCpassword
+                        }
+
+                    }
+
                     lessons_serialize.push({lessonID:lesson.id,price:lesson.price,updated:lesson.updated,description:lesson.description,videoType:lesson.videoType,
                                             thumbnails:lesson.thumbnails,commentnums:lesson.comments.length,likenums:lesson.likeusers.length,
-                                            liveInfo:liveInfo,teacher:{teacherID:lesson.user._id,avatar:lesson.user.avatar,nickname:lesson.user.nickname,teacherType:lesson.user.type}})
+                                            liveInfo:liveInfo,livePassword:livePassword,teacher:{teacherID:lesson.user._id,avatar:lesson.user.avatar,nickname:lesson.user.nickname,teacherType:lesson.user.type}})
                 });
                 // console.log(lessons_serialize.length);
                 res.json({status:'success','lessons':lessons_serialize});
