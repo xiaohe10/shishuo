@@ -377,6 +377,7 @@ router.post('/uploadvideo', upload.single('thumbnails'), function(req, res) {
     questionID = req.body.questionID;
     videoID = req.body.videoID;
     thumbnails = req.file.filename;
+    description = req.body.description;
 
 
     price = req.body.price;
@@ -397,6 +398,9 @@ router.post('/uploadvideo', upload.single('thumbnails'), function(req, res) {
         lesson.thumbnails = thumbnails;
         lesson.price = price;
         lesson.user = user;
+        if(!!description){
+            lesson.description = description;
+        }
         if(!!questionID){
             lesson.question = questionID;
         }
