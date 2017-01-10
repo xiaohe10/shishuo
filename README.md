@@ -1,4 +1,8 @@
 # 师说 API 文档
+1.10更新说明
+>* 后台lesson/uploadvideo接口，现要求增加传入录制视频的description，保存视频描述信息（之前的后台程序未保存该字段）
+>* accounts/changeavatar接口和accounts/changeinfo接口合并，修改个人信息分为两种情况，传入新头像文件和不传文件（头像无修改），统一使用accounts/changeinfo接口，传入头像文件时的文件对应fieldname应为avatar，完成前端一键修改头像和用户个人信息的功能
+
 1.6更新说明
 >* 后台lesson/list接口，增加返回livePassword字段，当传入type为3对应前端磨课直播课程时，且直播课程price为0时增加返回对应直播间的老师和学生密码，其余情况返回livePassword为空，方便用户点击免费直播课程直接进入对应直播间，接口使用文档已更新
 
@@ -100,7 +104,7 @@
 >* 4. 直播和课程合并在一起，先通过 lesson/create 建立课程，然后客户端创建直播间，通过 lesson/startlive 把直播信息和课程绑定在一起，从而在教学视频列表中显示出直播
 
 ## 服务器信息
-**接口 :** http://hengaigaoke.com:8090
+**接口 :** http://139.196.16.182:8090
 
 **匿名用户：** 
 `userID:"57c46e700d21db303f349c55"`
