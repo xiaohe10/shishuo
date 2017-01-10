@@ -268,9 +268,10 @@ router.post('/getinfo', function (req, res){
 });
 
 //用户修改个人信息接口
-router.post('/changeinfo',function (req, res){
+router.post('/changeinfo',multipartMiddleware,function (req, res){
   userID = req.body.userID;
   token = req.body.token;
+
   description = req.body.description;
   username = req.body.username;
   school = req.body.school;
@@ -287,13 +288,41 @@ router.post('/changeinfo',function (req, res){
       res.json({status:'error','errcode':1});
       return;
     }
-    User.update({_id:userID},{description:description,nickname:username,school:school,subject:subject,level:level,sex:sex,style:style,education:education},function(err,numberAffected, rawResponse) {
-    if (err) {
-        res.json({status:'error','errcode': 2});
-        return;
-      }else {
-        res.json({status:'success',user:{'userID':userID}});}
-    });
+    if(!!req.files && !!req.files.avatar){
+      var filestr = uuid.v1();
+      console.log("Received file:\n" + JSON.stringify(req.files));
+      var fileext = req.files.avatar.name.split('.');
+      var fileExt = fileext[fileext.length-1];
+      var filename = filestr+"."+fileExt;
+      var location = path.join(__dirname,'../public')+"/images/avatars/"+filename;
+      var readStream = fs.createReadStream(req.files.avatar.path)
+      var writeStream = fs.createWriteStream(location);
+      var newavatar = "/images/avatars/"+filename;
+      readStream.pipe(writeStream);
+      readStream.on('end',function(err){
+          if(err){
+            res.json({status:'error','errcode':2});
+          } else {
+            fs.unlinkSync(req.files.avatar.path);
+            User.update({_id:userID},{avatar:newavatar,description:description,nickname:username,school:school,subject:subject,level:level,sex:sex,style:style,education:education},function(err,numberAffected, rawResponse) {
+            if (err) {
+                res.json({status:'error','errcode': 2});
+                return;
+              }else {
+                res.json({status:'success',user:{'userID':userID,'avatar':newavatar}});}
+            });
+          }
+      })
+    }
+    else{
+      User.update({_id:userID},{description:description,nickname:username,school:school,subject:subject,level:level,sex:sex,style:style,education:education},function(err,numberAffected, rawResponse) {
+      if (err) {
+          res.json({status:'error','errcode': 2});
+          return;
+        }else {
+          res.json({status:'success',user:{'userID':userID}});}
+      });
+    }
   });
 });
 
