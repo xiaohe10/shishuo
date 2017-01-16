@@ -1,4 +1,8 @@
 # 师说 API 文档
+1.16更新说明
+>* lesson/list接口增加返回purchased字段，对应课程已购买人数
+>* lesson/details接口返回的comments中每条comment中增加返回一个user对象，包括该评论者的头像avatar和昵称nickname，具体说明见下方文档
+
 1.10更新说明
 >* 后台lesson/uploadvideo接口，现要求增加传入录制视频的description，保存视频描述信息（之前的后台程序未保存该字段）
 >* accounts/changeavatar接口和accounts/changeinfo接口合并，修改个人信息分为两种情况，传入新头像文件和不传文件（头像无修改），统一使用accounts/changeinfo接口，传入头像文件时的文件对应fieldname应为avatar，完成前端一键修改头像和用户个人信息的功能
@@ -665,7 +669,7 @@ teacher：
 >> * pagestart:optional 分页开始，默认为 0，每次刷新10个
 
 > * Successful Return
->> * {lessons:{lessonID,price,updated,description,videoType,thumbnails,commentnums,likenums,liveInfo:{liveRoomID,startdate,enddate,classstarttime,classendtime,enrolldeadline,classhours,studentslimit},livePassword:{teacherCCpassword,studentCCpassword}，teacher:{teacherID,avatar,nickname,teacherType}},status}
+>> * {lessons:{lessonID,price,updated,description,videoType,thumbnails,commentnums,likenums,purchased,liveInfo:{liveRoomID,startdate,enddate,classstarttime,classendtime,enrolldeadline,classhours,studentslimit},livePassword:{teacherCCpassword,studentCCpassword}，teacher:{teacherID,avatar,nickname,teacherType}},status}
 >> * thumbnails：课程缩略图，likenums：点赞数，commentnums:评论数，avatar:老师头像,description:课程描述,price:价格
 >> *  videoType:record代表录播，live 代表直播
 >> * liveInfo：直播房间号、开始日期等信息
@@ -693,6 +697,7 @@ teacher：
       "thumbnailsheight": 725,
       "commentnums": "0",
       "likenums": "0",
+      "purchased": 0,
       "liveInfo": {
         "liveRoomID": "D97E93E203AF42A19C33DC5901307461",
         "startdate": "2016-12-03T00:00:00.000Z",
@@ -789,7 +794,19 @@ teacher：
     "thumbnails": "/images/lesson_thumbnails/sample.jpg",
     "commentnums": "0",
     "likenums": "0",
-    "comments": [],
+    "comments": [
+      {
+        "_id": "586f2d023d7378305552f05f",
+        "user": {
+          "_id": "585f6a3b1d63643273cf1c87",
+          "nickname": "杨老师",
+          "avatar": "/images/avatars/4039fba0-d97d-11e6-8119-15ee789511ec.jpg"
+        },
+        "content": "声音小点",
+        "type": "text",
+        "username": "杨老师"
+      }
+    ],
     "videoType": "live",
     "teacher": {
       "teacherID": "582baf6d7f91281c6d98af1e",
