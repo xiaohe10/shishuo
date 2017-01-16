@@ -13,6 +13,9 @@ var UserSchema   = new Schema({
     telephone: {type:String,required:true,index:{unique:true}},
     password: { type: String, required: true },
     token: { type: String},
+
+    openid:{type:String,default:null},
+    
     sex:{type:String,default:"male"},
     subject:{type:String,default:"语文"},
     level:{type:String,default:"小学"},

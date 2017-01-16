@@ -30,6 +30,7 @@ var LessonSchema   = new Schema({
 
     classhours:{type:Number,min:0,default:0},
     studentslimit :{type:Number,min:0,default:0},
+    purchased:{type:Number,min:0,default:0},//课程的已购买人数
     //直播相关的信息结束
 
 

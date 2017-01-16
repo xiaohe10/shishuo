@@ -5,12 +5,64 @@ var SALT_WORK_FACTOR = 10;
 var multipart = require('connect-multiparty');
 var multipartMiddleware = multipart();
 var fs = require('fs');
+var randomstring = require("randomstring");
 var path = require('path');
 var uuid = require('node-uuid');
 var User = require('../models/user')
 var Lesson = require('../models/lesson')
 var Bill = require('../models/bill')
 var Invitecode = require('../models/invitecode')
+
+router.post('/verify',function(req, res) {
+    var userid = req.body.userid;
+    var token = req.body.token;
+    var avatar = req.body.avatar;
+    var username = req.body.username;
+    var sex = req.body.sex;
+
+    User.findOne({openid:userid},function(err,person){
+        if(!person){
+          var tele = randomstring.generate({
+                length:11,
+                charset:'numberic'
+            });
+          console.log(tele);
+          var avatar_file = '/images/avatars/' + userid + ".jpeg";
+          var location = path.join(__dirname,'../public')+avatar_file;
+          request(avatar).pipe(fs.createWriteStream(location)).on('close', function(){ return; });
+          const crypto = require('crypto');
+          usertoken = crypto.randomBytes(64).toString('hex');
+          var user = new User({
+            telephone:tele,
+            password:randomstring.generate(6),
+            nickname:username,
+            avatar:avatar_file,
+            token:usertoken,
+            openid:userid,
+            sex:sex
+          });
+          user.save(function(err){
+              if (err)  res.json({status:'error','errcode':1});
+              else {
+                res.json({status:'success',user:{'userID':user.id,"token":user.token,"avatar":user.avatar,"nickname":user.nickname,"description":user.description,"type":user.type}});
+                console.log(user);
+              }
+          });
+        }
+        if(!!person){
+          const crypto = require('crypto');
+          token = crypto.randomBytes(64).toString('hex');
+          person.token = token;
+          person.save(function(err){
+            if (err)  res.json({status:'error','errcode':0});
+            else{
+              res.json({status:'success',user:{'userID':person.id,"token":person.token,"avatar":person.avatar,"nickname":person.nickname,"description":person.description,"type":person.type}});
+              console.log(person);
+            }
+          });
+        }
+    });
+});
 
 router.post('/register', function(req, res) {
   var user = new User({telephone:req.body.telephone,password:req.body.password});
