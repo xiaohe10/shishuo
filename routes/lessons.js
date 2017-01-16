@@ -487,7 +487,7 @@ router.post('/list', function(req, res) {
                     }
 
                     lessons_serialize.push({lessonID:lesson.id,price:lesson.price,updated:lesson.updated,description:lesson.description,videoType:lesson.videoType,
-                                            thumbnails:lesson.thumbnails,commentnums:lesson.comments.length,likenums:lesson.likeusers.length,
+                                            thumbnails:lesson.thumbnails,commentnums:lesson.comments.length,likenums:lesson.likeusers.length,purchased:lesson.purchased,
                                             liveInfo:liveInfo,livePassword:livePassword,teacher:{teacherID:lesson.user._id,avatar:lesson.user.avatar,nickname:lesson.user.nickname,teacherType:lesson.user.type}})
                 });
                 // console.log(lessons_serialize.length);
@@ -510,7 +510,7 @@ router.post('/details', function(req, res) {
             res.json({status:'error','errcode':1});
             return;
         }
-        Lesson.findOne({_id:lessonID}).populate('user').populate('comments','_id user username type content replyto replytoName').exec(function(err,lesson){
+        Lesson.findOne({_id:lessonID}).populate('user').populate({path:'comments',select:'_id user username type content replyto replytoName',populate:{path:'user',select:'avatar nickname'}}).exec(function(err,lesson){
             if (err)  {
                 res.json({status:'error','errcode':2});return;
             }
