@@ -438,6 +438,7 @@ router.post('/list', function(req, res) {
             else {
                 var lessons_serialize = [];
                 lessons.forEach(function(lesson){
+                    // console.log(lesson.id);
                     if(type == 0){
                         if(lesson.videoType != "record" || lesson.user.type != "teacher" || lesson.price != 0){
                             return;
