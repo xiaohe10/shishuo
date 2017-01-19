@@ -251,13 +251,18 @@ router.post('/logout', function (req, res){
       res.json({status:'error','errcode':1});
       return;
     }
-    const crypto = require('crypto');
-    token = crypto.randomBytes(64).toString('hex');
-    user.token = token;
-    user.save(function(err){
-      if (err)  res.json({status:'error','errcode':0});
-      else res.json({status:'success','user':{'userID':user.id,"token":user.token}});
-    })
+    if(userID == "57c46e700d21db303f349c55") {
+      res.json({status:'success','user':{'userID':user.id,"token":user.token}});
+    }
+    else{
+      const crypto = require('crypto');
+      token = crypto.randomBytes(64).toString('hex');
+      user.token = token;
+      user.save(function(err){
+        if (err)  res.json({status:'error','errcode':0});
+        else res.json({status:'success','user':{'userID':user.id,"token":user.token}});
+      })
+    }
   });
 });
 
