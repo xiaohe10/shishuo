@@ -1,7 +1,13 @@
 # 师说 API 文档
+1.19更新说明
+>* bill/webhook支付金额与本地课程价格比对的bug修复
+>* accounts/logout接口新增对免登陆账号的判断，对于体验账号退出登录时不会更改该账号在数据库中的token值
+>* 更新用于第三方登录使用的accounts/verify接口相关说明
+
 1.16更新说明
 >* lesson/list接口增加返回purchased字段，对应课程已购买人数
->* lesson/details接口返回的comments中每条comment中增加返回一个user对象，包括该评论者的头像avatar和昵称nickname，具体说明见下方文档
+>* lesson/details接口返回的comments中每条comment中增加返回一个user对象，包括该评论者的头像avatar和昵称nickname，
+>具体说明见下方文档
 
 1.10更新说明
 >* 后台lesson/uploadvideo接口，现要求增加传入录制视频的description，保存视频描述信息（之前的后台程序未保存该字段）
@@ -108,7 +114,7 @@
 >* 4. 直播和课程合并在一起，先通过 lesson/create 建立课程，然后客户端创建直播间，通过 lesson/startlive 把直播信息和课程绑定在一起，从而在教学视频列表中显示出直播
 
 ## 服务器信息
-**接口 :** http://139.196.16.182:8090
+**接口 :** http://liangshiba.com:8090
 
 **匿名用户：** 
 `userID:"57c46e700d21db303f349c55"`
@@ -467,6 +473,42 @@ teacher：
   ]
 }
 ```
+
+### 第三方用户信息登录接口
+
+> * /accounts/verify
+> 
+> * Input Parameters
+>> * userID:requested(用户账号在第三方平台对应的userID)
+>> * avatar:requested(用户第三方账号对应的头像url)
+>> * username:requested(用户第三方账号的用户名)
+>> * sex:requested(用户第三方账号的性别信息，应根据实际情况转换成我们后台对应的male，female)
+
+
+
+> * Successful Return
+>> * {status,user:{userID,token,avatar,nickname,description,type}
+
+> * Error Return
+>> * errcode = 0: 登录失败
+>> * errcode = 1: 用户登录信息错误
+
+> * example
+
+```
+{
+  "status": "success",
+  "user": {
+    "userID": "58184fe203775a8f0fd1b096",
+    "token": "0f33f7ea745a0535329455301cc4ee41e782037f00e7ac81de10a89c6ef736661dc1b26f3a2132d2397fec1010fda4bcfbba279adff52654dc05c1979a86b3b5",
+    "avatar": "/images/avatars/avatar_sample.jpg",
+    "nickname": "老师",
+    "description": "这是个人简介",
+    "type": "student"
+  }
+}
+```
+
 
 ## 用户反馈接口
 

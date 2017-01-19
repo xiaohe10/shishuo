@@ -15,7 +15,6 @@ var Invitecode = require('../models/invitecode')
 
 router.post('/verify',function(req, res) {
     var userid = req.body.userid;
-    var token = req.body.token;
     var avatar = req.body.avatar;
     var username = req.body.username;
     var sex = req.body.sex;
