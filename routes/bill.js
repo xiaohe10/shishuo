@@ -166,9 +166,10 @@ router.post('/webhook', function(req, res) {
 			console.log("C");
 			return;
 		}
-		if(bill.status == true || transaction_fee != bill.money){
+		if(bill.status == true || transaction_fee != bill.money*100){
 			console.log("D");
 			return;
+
 		}
 		else{
             Lesson.update({_id:bill.lesson},{purchased:bill.lesson.purchased+1},function(err,numberAffected, rawResponse) {
