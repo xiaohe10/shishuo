@@ -8,13 +8,14 @@ var fs = require('fs');
 var randomstring = require("randomstring");
 var path = require('path');
 var uuid = require('node-uuid');
+var request = require('request');
 var User = require('../models/user')
 var Lesson = require('../models/lesson')
 var Bill = require('../models/bill')
 var Invitecode = require('../models/invitecode')
 
 router.post('/verify',function(req, res) {
-    var userid = req.body.userid;
+    var userid = req.body.userID;
     var avatar = req.body.avatar;
     var username = req.body.username;
     var sex = req.body.sex;
@@ -49,8 +50,8 @@ router.post('/verify',function(req, res) {
           });
         }
         if(!!person){
-          const crypto = require('crypto');
-          token = crypto.randomBytes(64).toString('hex');
+          const crypto1 = require('crypto');
+          token = crypto1.randomBytes(64).toString('hex');
           person.token = token;
           person.save(function(err){
             if (err)  res.json({status:'error','errcode':0});
