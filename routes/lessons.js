@@ -323,6 +323,7 @@ router.post('/createlive',function(req,res){
     studentslimit = req.body.studentslimit;
 
     questionID = req.body.questionID;
+    address = req.body.address;
     if(!price){
         price = 0;
     }
@@ -368,6 +369,9 @@ router.post('/createlive',function(req,res){
 
             if(!!questionID){
                 lesson.question = questionID;
+            }
+            if(!!address){
+                lesson.address = address;
             }
             lesson.price = price;
             //console.log(lesson);
@@ -508,7 +512,7 @@ router.post('/list', function(req, res) {
 
                     lessons_serialize.push({lessonID:lesson.id,price:lesson.price,updated:lesson.updated,description:lesson.description,videoType:lesson.videoType,
                                             thumbnails:lesson.thumbnails,commentnums:lesson.comments.length,likenums:lesson.likeusers.length,purchased:lesson.purchased,
-                                            liveInfo:liveInfo,livePassword:livePassword,teacher:{teacherID:lesson.user._id,avatar:lesson.user.avatar,nickname:lesson.user.nickname,teacherType:lesson.user.type}})
+                                            liveInfo:liveInfo,livePassword:livePassword,address:lesson.address,teacher:{teacherID:lesson.user._id,avatar:lesson.user.avatar,nickname:lesson.user.nickname,teacherType:lesson.user.type}})
                 });
                 // console.log(lessons_serialize.length);
                 res.json({status:'success','lessons':lessons_serialize});
