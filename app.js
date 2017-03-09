@@ -15,6 +15,7 @@ var bill = require('./routes/bill');
 var announcement = require('./routes/announcement');
 var suggestion = require('./routes/suggestion');
 var androidupdate = require('./routes/androidupdate');
+var invitecode = require('./routes/invitecode');
 
 var app = express();
 var bodyParser = require('body-parser');
@@ -46,6 +47,7 @@ app.use('/bill',bill);
 app.use('/announcement',announcement);
 app.use('/suggestion',suggestion);
 app.use('/androidupdate',androidupdate);
+app.use('/invitecode',invitecode);
 
 
 

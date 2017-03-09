@@ -38,7 +38,7 @@ router.post('/create', function(req, res) {
     			res.json({status:'error','errcode':2});return;
     		}
     		if(bill){
-    			res.json({status:'error','errcode':5,'billstatus':bill.status});return;
+    			res.json({status:'success','billID':bill._id});return;
     		}
     		if(!bill){
 	    		Lesson.findOne({_id:lessonID}).populate('user').exec(function(err,lesson){
@@ -139,7 +139,8 @@ router.post('/paid', function(req, res) {
 router.post('/webhook', function(req, res) {
 	var App_ID = '04250155-4651-42d1-917d-2f793f720806';//后续根据平台申请的更改
 	var App_Secret = '811671b6-34d6-4db5-b020-484dcc8bf844';//后续根据平台申请的更改
-	timestamp = req.body.timestamp; //1426817510111
+	console.log(req.body);
+    timestamp = req.body.timestamp; //1426817510111
 	sign = req.body.sign;
 	transaction_fee = req.body.transaction_fee;
 	transaction_id = req.body.transaction_id;
@@ -160,19 +161,26 @@ router.post('/webhook', function(req, res) {
 		console.log("B");
 		return;
 	}
-	Bill.findOne({_id:transaction_id},function(err,bill){
+	Bill.findOne({_id:transaction_id}).populate('lesson').exec(function(err,bill){
 		if(err){
 			console.log("C");
 			return;
 		}
-		if(bill.status == true || transaction_fee != bill.money){
+		if(bill.status == true || transaction_fee != bill.money*100){
 			console.log("D");
 			return;
+
 		}
 		else{
+            Lesson.update({_id:bill.lesson},{purchased:bill.lesson.purchased+1},function(err,numberAffected, rawResponse) {
+                if (err) {
+                    console.log("E");
+                  return;
+                }
+            });
 			Bill.update({_id:bill._id},{status:true},function(err,numberAffected, rawResponse) {
                 if (err) {
-                	console.log("E");
+					console.log("E");
                   return;
                 }else{
                 	console.log("F");

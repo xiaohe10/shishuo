@@ -3,7 +3,6 @@
  */
 var mongoose     = require('mongoose');
 
-// mongoose.connect('mongodb://localhost:27017/shishuo')
 mongoose.connect('mongodb://shishuo:shishuo@139.196.16.182:27017/shishuo')
 var Schema       = mongoose.Schema;
 var bcrypt = require('bcryptjs');
@@ -13,6 +12,9 @@ var UserSchema   = new Schema({
     telephone: {type:String,required:true,index:{unique:true}},
     password: { type: String, required: true },
     token: { type: String},
+
+    openid:{type:String,default:null},
+    
     sex:{type:String,default:"male"},
     subject:{type:String,default:"语文"},
     level:{type:String,default:"小学"},

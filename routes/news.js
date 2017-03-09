@@ -8,16 +8,30 @@ var router = express.Router();
 var User = require('../models/user')
 var News = require('../models/news')
 var Comment = require('../models/comment')
+var multipart = require('connect-multiparty');
+var multipartMiddleware = multipart();
+var fs = require('fs');
+var path = require('path');
+var uuid = require('node-uuid');
 var upload = require('./utils/upload').upload;
 
-router.post('/create', upload.array('newsimages',12),function(req, res) {
+router.post('/create',multipartMiddleware,function(req, res) {
     userID = req.body.userID;
     token = req.body.token;
-    savedimages = []
-    req.files.forEach(function(e){
-        savedimages.push(e.filename);
-    })
-    images = savedimages;
+    savedimages = [];
+	// console.log("--------req");
+	// console.log(req);
+    // if(!!req.files){
+    //     if(!!req.files.newsimages){
+    //         console.log(req.files.newsimages);
+    //     }
+    //     else{
+    //         console.log("---no newsimages");
+    //     }
+    // }else{
+    //     console.log("---no files");
+    // }
+
     content = req.body.content;
     User.findOne({ _id: userID,token:token }, function(err, user) {
         if (err) {
@@ -27,9 +41,59 @@ router.post('/create', upload.array('newsimages',12),function(req, res) {
             res.json({status:'error','errcode':1});
             return;
         }
+        if(!!req.files && !!req.files.newsimages && !req.files.newsimages.length){
+            // console.log("One Picture");
+            // console.log(req.files.newsimages);
+
+            // console.log(req.files.newsimages.name);
+            // console.log(req.files.newsimages.path);
+            var filestr = uuid.v1();
+            var fileext = req.files.newsimages.name.split('.');
+            var fileExt = fileext[fileext.length-1];
+            var filename = filestr+"."+fileExt;
+            var location = path.join(__dirname,'../public')+"/images/newsimages/"+filename;
+            var readStream = fs.createReadStream(req.files.newsimages.path)
+            var writeStream = fs.createWriteStream(location);
+            var imagelocation = "/images/newsimages/"+filename;
+            readStream.pipe(writeStream);
+            readStream.on('end',function(err){
+                if(err){
+                  res.json({status:'error','errcode':2});
+                  return;
+                } else {
+                  fs.unlinkSync(req.files.newsimages.path);
+                }
+            })
+            savedimages.push(imagelocation);        
+        }
+        if(!!req.files && !!req.files.newsimages && req.files.newsimages.length>0){
+            req.files.newsimages.forEach(function(e){
+                // console.log("----------foreach");
+                // console.log(e.name);
+                // console.log(e.path);
+                var filestr = uuid.v1();
+                var fileext = e.name.split('.');
+                var fileExt = fileext[fileext.length-1];
+                var filename = filestr+"."+fileExt;
+                var location = path.join(__dirname,'../public')+"/images/newsimages/"+filename;
+                var readStream = fs.createReadStream(e.path)
+                var writeStream = fs.createWriteStream(location);
+                var imagelocation = "/images/newsimages/"+filename;
+                readStream.pipe(writeStream);
+                readStream.on('end',function(err){
+                    if(err){
+                      res.json({status:'error','errcode':2});
+                      return;
+                    } else {
+                      fs.unlinkSync(e.path);
+                    }
+                })
+                savedimages.push(imagelocation);
+            })
+        }
         news = new News();
         news.user = user;
-        news.images = images;
+        news.images = savedimages;
         news.content = content;
         news.save(function(err){
             if (err)  {
@@ -61,7 +125,7 @@ router.post('/list', function(req, res) {
             else {
                 var news_serialize = [];
                 newses.forEach(function(news){
-                    news_serialize.push({newsID:news._id,updated:news.updated,content:news.content,commentnums:news.commentnums,likenums:news.likenums,
+                    news_serialize.push({newsID:news._id,updated:news.updated,content:news.content,commentnums:news.comments.length,likenums:news.likeusers.length,
                         likeusers:news.likeusers,images:news.images,
                         comments:news.comments,
                         user:{userID:news.user._id,avatar:news.user.avatar,nickname:news.user.nickname}})
@@ -149,6 +213,29 @@ router.post('/comments/create',function(req,res){
             });
         });
 
+    });
+})
+
+router.post('/delete',function(req,res){
+    userID = req.body.userID;
+    usertoken = req.body.token;
+    newsID = req.body.newsID;
+    User.findOne({ _id: userID,token:usertoken }, function(err, user) {
+        if (err) {
+            res.json({status:'error','errcode':2});return;
+        }
+        if(!user){
+            res.json({status:'error','errcode':1});
+            return;
+        }
+        News.remove({_id:newsID},function(err,news){
+            if(err){
+                res.json({status:'error','errcode':2});return;
+            }
+            // console.log(news);
+            // console.log("remove success!");
+            res.json({status:'success'});
+        });
     });
 })
 
